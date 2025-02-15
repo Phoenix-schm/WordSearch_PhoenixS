@@ -37,12 +37,17 @@ namespace WordSearch_PhoenixS
                 "Dog Nicknames", "Colors", "Poisonous Flowers", "Things In My Room", "Things To Eat",
                 "Fabric Types", "Managa Names", "Fonts", "DND Monsters", "Periodic Table Elements"
             };
+            string[] alphabet =
+            {
+                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q",
+                "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+            };
 
 
-            WriteLine("Welcome to the Amazing Word Search");
-            WriteLine("You have ten categories to choose from:");
+            Console.WriteLine("Welcome to the Amazing Word Search");
+            Console.WriteLine("You have ten categories to choose from:");
             DisplayCategories(categoryNames);
-            WriteLine("--------------------------");
+            Console.WriteLine("--------------------------");
             
 
             while(isPlaying)
@@ -50,7 +55,7 @@ namespace WordSearch_PhoenixS
                 stringInput = UserInput.InputCheck(categoryNames);
                 string input = stringInput.ToLower();
 
-                PlayerChoice(input, ref isPlaying);
+                PlayerChoice(input, ref isPlaying, dogNicknames);
             }
         }
 
@@ -58,51 +63,43 @@ namespace WordSearch_PhoenixS
         /// Holds all the choices the player can make
         /// </summary>
         /// <param name="input"> player input</param>
-        static void PlayerChoice(string input, ref bool boolean)
+        static void PlayerChoice(string input, ref bool boolean, string[] category)
         {
-            if (input == "quit" || input == "11")
+            switch (input)
             {
-                boolean = false;
+                case "dog nicknames":           case "1":
+                    WordSearchDefault();
+                    break;
+                case "colors":                  case "2":
+                    WordSearchDefault();
+                    break;
+                case "poisonous flowers":       case "3":
+                    break;
+                case "things in my room":       case "4":
+                    WordSearchDefault();
+                    break;
+                case "things to eat":           case "5":
+                    WordSearchDefault();
+                    break;
+                case "fabric types":            case "6":
+                    WordSearchDefault();
+                    break;
+                case "manga names":             case "7":
+                    WordSearchDefault();
+                    break;
+                case "fonts":                   case "8":
+                    WordSearchDefault();
+                    break;
+                case "dnd monsters":            case "9":
+                    WordSearchDefault();
+                    break;
+                case "periodic table elements":     case "10":
+                    WordSearchDefault();
+                    break;
+                case "quit":                    case "11":
+                    boolean = false;
+                    break;
             }
-            else
-            {
-                WordSearchDefault();
-            }
-            //switch (input)
-            //{
-            //    case "dog nicknames":       case "1":
-            //        WordSearchDefault();
-            //        break;
-            //    case "colors":              case "2":
-            //        WordSearchDefault();
-            //        break;
-            //    case "poisonous flowers":   case "3":
-            //        break;
-            //    case "things in my room":   case "4":
-            //        WordSearchDefault();
-            //        break;
-            //    case "things to eat":       case "5":
-            //        WordSearchDefault();
-            //        break;
-            //    case "fabric types":        case "6":
-            //        WordSearchDefault();
-            //        break;
-            //    case "manga names":         case "7":
-            //        WordSearchDefault();
-            //        break;
-            //    case "fonts":               case "8":
-            //        WordSearchDefault();
-            //        break;
-            //    case "dnd monsters":        case "9":
-            //        WordSearchDefault();
-            //        break;
-            //    case "periodic table elements": case "10":
-            //        WordSearchDefault();
-            //        break;
-            //    case "quit":                case "11":
-            //        boolean = false;
-            //        break;
-            //}
         }
 
         static void DisplayCategories(string[] categories)
@@ -110,10 +107,10 @@ namespace WordSearch_PhoenixS
             int num = 1;
             foreach (string category in categories)
             {
-                WriteLine(num + ") " + category);
+                Console.WriteLine(num + ") " + category);
                 num++;
             }
-            WriteLine(num + ") Quit");
+            Console.WriteLine(num + ") Quit");
         }
 
         /// <summary>
@@ -122,37 +119,40 @@ namespace WordSearch_PhoenixS
         static Array[] WordSearchDefault()
         {
 
-            OutputRow("01", out string[] row1);
-            OutputRow("02", out string[] row2);
-            OutputRow("03", out string[] row3);
-            OutputRow("04", out string[] row4);
-            OutputRow("05", out string[] row5);
-            OutputRow("06", out string[] row6);
-            OutputRow("07", out string[] row7);
-            OutputRow("08", out string[] row8);
-            OutputRow("09", out string[] row9);
-            OutputRow("10", out string[] row10);
-            OutputRow("11", out string[] row11);
-            OutputRow("12", out string[] row12);
-            OutputRow("13", out string[] row13);
-            OutputRow("14", out string[] row14);
-            OutputRow("15", out string[] row15);
-            OutputRow("16", out string[] row16);
-            OutputRow("17", out string[] row17);
-            OutputRow("18", out string[] row18);
-            OutputRow("19", out string[] row19);
-            OutputRow("20", out string[] row20);
+            OutputRow("01", out char[] row1);
+            OutputRow("02", out char[] row2);
+            OutputRow("03", out char[] row3);
+            OutputRow("04", out char[] row4);
+            OutputRow("05", out char[] row5);
+            OutputRow("06", out char[] row6);
+            OutputRow("07", out char[] row7);
+            OutputRow("08", out char[] row8);
+            OutputRow("09", out char[] row9);
+            OutputRow("10", out char[] row10);
+            OutputRow("11", out char[] row11);
+            OutputRow("12", out char[] row12);
+            OutputRow("13", out char[] row13);
+            OutputRow("14", out char[] row14);
+            OutputRow("15", out char[] row15);
+            OutputRow("16", out char[] row16);
+            OutputRow("17", out char[] row17);
+            OutputRow("18", out char[] row18);
+            OutputRow("19", out char[] row19);
+            OutputRow("20", out char[] row20);
 
 
             Array[] defaultWordSearch = { row1, row2, row3, row4, row5, row6, row7, row8,row9, row10,
                                    row11, row12, row13, row14, row15, row16, row17, row18, row19, row20};
             
-            WriteLine("Word Search Puzzle: ");
-            WriteLine("  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20");
+            Console.WriteLine("Word Search Puzzle: ");
+            string row0 = "  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20";
+            char[] charRow0 = row0.ToCharArray();
 
-            foreach(Array row in defaultWordSearch)
+            Console.WriteLine(charRow0);
+
+            foreach(char[] arrayRow in defaultWordSearch)
             {
-                foreach(string word in row)
+                foreach(char word in arrayRow)
                 {
                     Console.Write(word);
                 }
@@ -167,34 +167,74 @@ namespace WordSearch_PhoenixS
         /// <param name="rowNum"> the label for each row </param>
         /// <param name="row"> the array holding </param>
         /// <returns> a string array </returns>
-        static string[] OutputRow(string rowNum, out string[] row)
+        static char[] OutputRow(string rowNum, out char[] charRow)
         {
             string filler = ".";
+            int charCount = 0;
 
-            row = new string[21];
-            Array.Fill(row, " " + filler + " ");
+            string[] stringRow = new string[21];                      // Create a string[] that's filled with filler and rowNum
+            charRow = new char[62];
 
-            row[0] = rowNum;
-            return row;
+            Array.Fill(stringRow, " " + filler + " ");
+            stringRow[0] = rowNum;
+
+            // fills charRow[] with all elements of stringRow[]
+            for (int i = 0; i < stringRow.Length; i++)               //going through each element of row
+            {
+                char[] word = stringRow[i].ToCharArray();
+                for (int j = 0; j < word.Length; j++)        //going through each letter[j] of each word of row
+                {
+                    charRow[charCount] = word[j];
+                    charCount++;
+                }
+            }
+            return charRow;
         }
         
-        static string[] RandomWords(string[] wordList) // Adds 8 random words from 'wordList' into randomWords[]
+        static string[] RandomWordsArray(string[] wordList) // Adds 8 random words from 'wordList' into randomWords[]
         {
             Random rand = new Random();
             string[] randomWords = new string[8];
 
             for (int i = 0; i < 8; i++)
             {
-                randomWords.Append(wordList[rand.Next(0, 16)]);
+                randomWords.Append(wordList[rand.Next(0, 15)]);
             }
             return randomWords;
-        }       
-#region Misc
-        static void WriteLine(string sentence)
-        {
-            Console.WriteLine(sentence);
         }
-#endregion
+        static char[] ConvertWordToCharArray(string word)
+        {
+            char[] charOfWord = word.ToCharArray();
+            return charOfWord;
+        }
+        static void OutputWordSearch(char[] row, string[] category)
+        {
+            string[] randomWords = RandomWordsArray(category);          // creates a string[] of 8 words from a category
+            
+
+            foreach (char letter in row)
+            {
+                if (letter == '.')
+                {
+                    for(int i = 0; i < randomWords.Length; i++)
+                    {
+                        char[] word = ConvertWordToCharArray(randomWords[i]);
+                        for (int j = 0; j < word.Length; j++)
+                        {
+                            row[letter] = word[j];
+
+                        }
+
+                    }
+
+                }
+            }
+            Console.WriteLine(row);
+        }
+
+        #region Misc
+
+        #endregion
     }
     internal class UserInput
     {

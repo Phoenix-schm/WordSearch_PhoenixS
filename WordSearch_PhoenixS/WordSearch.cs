@@ -15,16 +15,16 @@ namespace WordSearch_PhoenixS
             bool isPlaying = true;
             string? stringInput;
             // each word search category
-            string[] dogNicknames = WordsList.ReturnWordArray("DogNames", wordList);
-            string[] colorsList = WordsList.ReturnWordArray("Colors", wordList);
-            string[] poisonFlowers = WordsList.ReturnWordArray("PoisonousPlants", wordList);
-            string[] thingsInRoom = WordsList.ReturnWordArray("ThingsInMyRoom", wordList);
-            string[] thingsToEat = WordsList.ReturnWordArray("ThingsToEat", wordList);
-            string[] fabricTypes = WordsList.ReturnWordArray("FabricTypes", wordList);
-            string[] mangaNames = WordsList.ReturnWordArray("MangaList", wordList);
-            string[] fonts = WordsList.ReturnWordArray("Fonts", wordList);
-            string[] dndMonsters = WordsList.ReturnWordArray("DNDmonsters", wordList);
-            string[] periodicElements = WordsList.ReturnWordArray("PeriodicElements", wordList);
+            string[] dogNicknames = WordList.ReturnWordArray("DogNames", wordList);
+            string[] colorsList = WordList.ReturnWordArray("Colors", wordList);
+            string[] poisonFlowers = WordList.ReturnWordArray("PoisonousPlants", wordList);
+            string[] thingsInRoom = WordList.ReturnWordArray("ThingsInMyRoom", wordList);
+            string[] thingsToEat = WordList.ReturnWordArray("ThingsToEat", wordList);
+            string[] fabricTypes = WordList.ReturnWordArray("FabricTypes", wordList);
+            string[] mangaNames = WordList.ReturnWordArray("MangaList", wordList);
+            string[] fonts = WordList.ReturnWordArray("Fonts", wordList);
+            string[] dndMonsters = WordList.ReturnWordArray("DNDmonsters", wordList);
+            string[] periodicElements = WordList.ReturnWordArray("PeriodicElements", wordList);
 
             // array of the arrays
             Array[] wordSearchArrays =
@@ -47,7 +47,7 @@ namespace WordSearch_PhoenixS
 
             while(isPlaying)
             {
-                stringInput = InputCheck(categoryNames);
+                stringInput = UserInput.InputCheck(categoryNames);
                 string input = stringInput.ToLower();
 
                 PlayerChoice(input, ref isPlaying);
@@ -119,7 +119,7 @@ namespace WordSearch_PhoenixS
         /// <summary>
         /// Creates the default version of the word search, filled with "."
         /// </summary>
-        static void WordSearchDefault()
+        static Array[] WordSearchDefault()
         {
 
             OutputRow("01", out string[] row1);
@@ -144,13 +144,13 @@ namespace WordSearch_PhoenixS
             OutputRow("20", out string[] row20);
 
 
-            Array[] wordSearch = { row1, row2, row3, row4, row5, row6, row7, row8,row9, row10,
+            Array[] defaultWordSearch = { row1, row2, row3, row4, row5, row6, row7, row8,row9, row10,
                                    row11, row12, row13, row14, row15, row16, row17, row18, row19, row20};
             
             WriteLine("Word Search Puzzle: ");
             WriteLine("  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20");
 
-            foreach(Array row in wordSearch)
+            foreach(Array row in defaultWordSearch)
             {
                 foreach(string word in row)
                 {
@@ -158,7 +158,7 @@ namespace WordSearch_PhoenixS
                 }
                 Console.WriteLine();
             }
-           
+            return defaultWordSearch;
         }
 
         /// <summary>
@@ -177,13 +177,33 @@ namespace WordSearch_PhoenixS
             row[0] = rowNum;
             return row;
         }
+        
+        static string[] RandomWords(string[] wordList) // Adds 8 random words from 'wordList' into randomWords[]
+        {
+            Random rand = new Random();
+            string[] randomWords = new string[8];
 
+            for (int i = 0; i < 8; i++)
+            {
+                randomWords.Append(wordList[rand.Next(0, 16)]);
+            }
+            return randomWords;
+        }       
+#region Misc
+        static void WriteLine(string sentence)
+        {
+            Console.WriteLine(sentence);
+        }
+#endregion
+    }
+    internal class UserInput
+    {
         /// <summary>
         /// Checks user input for string and int's for valid inputs
         /// </summary>
         /// <param name="categories"> the list of categories the player can choose from</param>
         /// <returns></returns>
-        static string InputCheck(string[] categories)
+        public static string InputCheck(string[] categories)
         {
             bool invalidInput = true;
             while (invalidInput)
@@ -212,17 +232,37 @@ namespace WordSearch_PhoenixS
                 else
                 {
                     invalidInput = true;
-                    WriteLine("Invalid input.");
+                    Console.WriteLine("Invalid input.");
                 }
             }
             return "Invalid input. Try again";
 
-       }
-#region Misc
-        static void WriteLine(string sentence)
-        {
-            Console.WriteLine(sentence);
         }
-#endregion
+    }
+    internal class WordList
+    {
+        /// <summary>
+        ///  Creates an array holding just the list of items for each word search category
+        /// </summary>
+        /// <param name="request"> the name of the category </param>
+        /// <param name="list"> the array it's accessing (should be an array made from words.txt file)</param>
+        /// <returns></returns>
+        public static string[] ReturnWordArray(string request, string[] list)
+        {
+            string[] returnedList = new string[15];
+
+            if (list.Contains(request))
+            {
+                int position = Array.IndexOf(list, request);        // returns the index position of 'request' in list[]
+                int j = 0;
+                for (int i = position + 1; i <= position + 15; i++)
+                {
+                    returnedList[j] = list[i].ToString();           // fills in each element of 'returnedList' with the corresponding list[]
+                    j++;
+                }
+                return returnedList;
+            }
+            return returnedList;                            // will return a blank array of 15 lines
+        }
     }
 }

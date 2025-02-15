@@ -37,12 +37,6 @@ namespace WordSearch_PhoenixS
                 "Dog Nicknames", "Colors", "Poisonous Flowers", "Things In My Room", "Things To Eat",
                 "Fabric Types", "Managa Names", "Fonts", "DND Monsters", "Periodic Table Elements"
             };
-            string[] alphabet =
-            {
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q",
-                "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-            };
-
 
             Console.WriteLine("Welcome to the Amazing Word Search");
             Console.WriteLine("You have ten categories to choose from:");
@@ -205,7 +199,7 @@ namespace WordSearch_PhoenixS
                 }
                 else if (i % 3 == 0)
                 {
-                    charRow[i] = '.';
+                    charRow[i] = RandomLetter();
                 }
             }
             return charRow;
@@ -226,6 +220,17 @@ namespace WordSearch_PhoenixS
         {
             char[] charOfWord = word.ToCharArray();
             return charOfWord;
+        }
+        static char RandomLetter()
+        {
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+            };
+            Random random = new Random();
+            int index = random.Next(0, alphabet.Length);
+            return alphabet[index];
         }
         static void OutputWordSearch(char[] row, string[] category)
         {

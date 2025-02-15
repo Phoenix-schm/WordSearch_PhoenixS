@@ -49,7 +49,7 @@ namespace WordSearch_PhoenixS
                 stringInput = UserInput.InputCheck(categoryNames);
                 string input = stringInput.ToLower();
 
-                PlayerChoice(input, ref isPlaying, dogNicknames);
+                PlayerChoice(input, ref isPlaying);
             }
         }
 
@@ -57,7 +57,7 @@ namespace WordSearch_PhoenixS
         /// Holds all the choices the player can make
         /// </summary>
         /// <param name="input"> player input</param>
-        static void PlayerChoice(string input, ref bool boolean, string[] category)
+        static void PlayerChoice(string input, ref bool boolean)
         {
             switch (input)
             {
@@ -112,58 +112,8 @@ namespace WordSearch_PhoenixS
         /// </summary>
         static Array[] WordSearchDefault()
         {
-            char[] num1 = { '0', '1', '2' };
-            char[] num2 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-            int iterator = 1;
-            //char[] row1 = OutPutCharRow('0', '1');
-            //char[] row2 = OutPutCharRow('0', '2');
-            //char[] row3 = OutPutCharRow('0', '3');
-            //char[] row4 = OutPutCharRow('0', '4');
-            //char[] row5 = OutPutCharRow('0', '5');
-            //char[] row6 = OutPutCharRow('0', '6');
-            //char[] row7 = OutPutCharRow('0', '7');
-            //char[] row8 = OutPutCharRow('0', '8');
-            //char[] row9 = OutPutCharRow('0', '9');
-            //char[] row10 = OutPutCharRow('1', '0');
-            //char[] row11 = OutPutCharRow('1', '1');
-            //char[] row12 = OutPutCharRow('1', '2');
-            //char[] row13 = OutPutCharRow('1', '3');
-            //char[] row14 = OutPutCharRow('1', '4');
-            //char[] row15 = OutPutCharRow('1', '5');
-            //char[] row16 = OutPutCharRow('1', '6');
-            //char[] row17 = OutPutCharRow('1', '7');
-            //char[] row18 = OutPutCharRow('1', '8');
-            //char[] row19 = OutPutCharRow('1', '9');
-            //char[] row20 = OutPutCharRow('2', '0');
+            Array[] defaultWordSearch = WordSearchCreation();
 
-
-            Array[] defaultWordSearch = new Array[20];
-            for (int i = 0; i <= defaultWordSearch.Length; i++)
-            {
-                if (i < 9)
-                {                    
-                    defaultWordSearch[i] = OutPutCharRow(num1[0], num2[iterator]);
-                    iterator++;
-                }
-                else if (i >= 9 && i < 19)
-                {
-                    if (i == 9)
-                    {
-                        iterator = 0;
-                    }
-
-                    defaultWordSearch[i] = OutPutCharRow(num1[1], num2[iterator]);
-                    iterator++;
-                }
-                else if (i == 19)
-                {
-                    defaultWordSearch[i] = OutPutCharRow(num1[2], num2[0]);
-                }
-            }
-
-                //Array[] defaultWordSearch = { row1, row2, row3, row4, row5, row6, row7, row8,row9, row10,
-                //                   row11, row12, row13, row14, row15, row16, row17, row18, row19, row20};
-            
             Console.WriteLine("Word Search Puzzle: ");
             string row0 = "  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20";
             char[] charRow0 = row0.ToCharArray();
@@ -181,13 +131,44 @@ namespace WordSearch_PhoenixS
             return defaultWordSearch;
         }
 
-        static char[] OutPutCharRow(char num1, char num2)
+        static Array[] WordSearchCreation()         //Outputs a wordSearch[] array with each index being a char[], automatically numbered
         {
-            char[] charRow = new char[62];
+            char[] num1 = { '0', '1', '2' };
+            char[] num2 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+            int iterator = 1;
 
-            Array.Fill(charRow, ' ');
+            Array[] wordSearch = new Array[20];
+            for (int i = 0; i <= wordSearch.Length; i++)
+            {
+                if (i < 9)
+                {
+                    wordSearch[i] = OutputWordSearchRow(num1[0], num2[iterator]);
+                    iterator++;
+                }
+                else if (i >= 9 && i < 19)
+                {
+                    if (i == 9)
+                    {
+                        iterator = 0;
+                    }
+                    wordSearch[i] = OutputWordSearchRow(num1[1], num2[iterator]);
+                    iterator++;
+                }
+                else if (i == 19)
+                {
+                    wordSearch[i] = OutputWordSearchRow(num1[2], num2[0]);
+                }
+            }
+            return wordSearch;
+        }
 
-            for (int i = 0; i < charRow.Length; i++)
+        static char[] OutputWordSearchRow(char num1, char num2)
+        {
+            char[] charRow = new char[62];                  // creates the row
+
+            Array.Fill(charRow, ' ');                       // fills it with blank spaces
+
+            for (int i = 0; i < charRow.Length; i++)        // fills each index of charRow[], first two indexes are numbers
             {
                 if (i == 0)
                 {
@@ -205,7 +186,7 @@ namespace WordSearch_PhoenixS
             return charRow;
         }
         
-        static string[] RandomWordsArray(string[] wordList) // Adds 8 random words from 'wordList' into randomWords[]
+        static string[] RandomWordsArray(string[] wordList) // Creates 8 random words from 'wordList' into randomWords[]
         {
             Random rand = new Random();
             string[] randomWords = new string[8];
@@ -218,11 +199,13 @@ namespace WordSearch_PhoenixS
         }
         static char[] ConvertWordToCharArray(string word)
         {
+            //converts 'word' into a char[]
             char[] charOfWord = word.ToCharArray();
             return charOfWord;
         }
         static char RandomLetter()
         {
+            // Outputs a random letter from alphabet[]
             char[] alphabet =
             {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
@@ -256,10 +239,6 @@ namespace WordSearch_PhoenixS
             }
             Console.WriteLine(row);
         }
-
-        #region Misc
-
-        #endregion
     }
     internal class UserInput
     {

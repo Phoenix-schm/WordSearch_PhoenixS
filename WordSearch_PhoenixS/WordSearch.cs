@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 
 namespace WordSearch_PhoenixS
 {
@@ -98,10 +99,9 @@ namespace WordSearch_PhoenixS
             
             for(int i = 0; i < eightRandomWords.Length; i++)
             {
-                char[] randomWord = ConvertWordToCharArray("cutiepatootie");
+                char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);
                 NewWordSearch(randomWord, newWordSearch, eightRandomWords);
             }
-
 
             string row0 = "  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20";
             char[] charRow0 = row0.ToCharArray();
@@ -115,7 +115,17 @@ namespace WordSearch_PhoenixS
             {
                 foreach (char letter in row)
                 {
-                    Console.Write(letter);
+                    if (Char.IsLower(letter))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(letter);
+                    }
+                    else
+                    {
+                        Console.ResetColor();
+                        Console.Write(letter);
+                    }
+
                 }
                 Console.WriteLine();
             }

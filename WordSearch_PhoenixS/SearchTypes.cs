@@ -57,7 +57,7 @@ namespace WordSearch_PhoenixS
         {
             int trueWordLength = word * 2;
             int index = row - trueWordLength;
-            int canFitRange = WordSearch.RandomNumber(3, index - 6);
+            int canFitRange = WordSearch.RandomNumber(3, index - 11);
             return canFitRange;
         }
         public static int ChooseRandomRow()

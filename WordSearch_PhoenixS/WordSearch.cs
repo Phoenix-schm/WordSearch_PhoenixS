@@ -21,7 +21,7 @@ namespace WordSearch_PhoenixS
 
             Console.WriteLine("Welcome to the Amazing Word Search");
             Console.WriteLine("You have ten categories to choose from:");
-            DisplayCategories(validUserInputs);
+            DisplayValidUserInputs(validUserInputs);
             Console.WriteLine("--------------------------");
 
             while(isPlaying)
@@ -31,18 +31,19 @@ namespace WordSearch_PhoenixS
                 validInput = validInput.ToLower();
 
                 PlayerChoice(validInput, ref isPlaying, validUserInputs);
-                Console.WriteLine("Type 'Show List' to show the categories again.");
+                //Console.WriteLine("Type 'Show List' to show the categories again.");
             }
         }
 
-        static void DisplayCategories(string[] categories)
+        static void DisplayValidUserInputs(string[] categories)                  // displays each category/valid input and its associated number
         {
-            for (int i = 1; i < categories.Length - 1; i++)
+            for (int i = 1; i < categories.Length; i++)
             {
-                Console.WriteLine(i + ") " +  categories[i]);
+                Console.WriteLine(i + ") " +  categories[i - 1]);
             }
             Console.WriteLine();
         }
+
         /// <summary>
         /// Holds all the choices the player can make
         /// </summary>
@@ -85,22 +86,25 @@ namespace WordSearch_PhoenixS
                     boolean = false;
                     break;
                 case "show list":               case "12":
-                    DisplayCategories(categoriesDisplay);
+                    DisplayValidUserInputs(categoriesDisplay);
                     break;
 
             }
         }
 
-
+        /// <summary>
+        /// Creates a word search using the inputCategory
+        /// </summary>
+        /// <param name="inputCategory"> the category the user chose </param>
         static void CategoryWordSearchCreation(string[] inputCategory)
         {
-            Array[] newWordSearch = DefaultWordSearchArray();
-            string[] eightRandomWords = RandomWordsFromCategoryArray(inputCategory);
+            Array[] newWordSearch = DefaultWordSearchArray();                               // Creates a default version of the word search
+            string[] eightRandomWords = RandomWordsFromCategoryArray(inputCategory);        // choose eight random words from inputCategory
             
-            for(int i = 0; i < eightRandomWords.Length; i++)
+            for(int i = 0; i < eightRandomWords.Length; i++)                                // passes in each random word
             {
                 char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);
-                NewWordSearch(randomWord, newWordSearch, eightRandomWords);
+                newWordSearch = NewWordSearch(randomWord, newWordSearch, eightRandomWords); // each time a word is passed in it creates a new word search
             }
 
             string row0 = "  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20";
@@ -109,8 +113,7 @@ namespace WordSearch_PhoenixS
             Console.WriteLine("Word Search Puzzle: ");
             Console.WriteLine(charRow0);
 
-
-
+            // outputs the whole word search
             foreach (char[] row in newWordSearch)
             {
                 foreach (char letter in row)
@@ -125,29 +128,29 @@ namespace WordSearch_PhoenixS
                         Console.ResetColor();
                         Console.Write(letter);
                     }
-
                 }
                 Console.WriteLine();
             }
 
             Console.WriteLine();
-            Console.WriteLine("Search for these words:");
+            //Console.WriteLine("Search for these words:");
             foreach(string word in eightRandomWords)
             {
                 Console.WriteLine(word);
             }
-            Console.WriteLine();
-
         }
 
         static Array[] NewWordSearch(char[] word, Array[] currentWordSearchArray, string[] category)
         {
-            int randomNum = RandomNumber(0, 8);
+            int randomNum = ValueReturn.RandomNumber(0, 2);
 
             switch(0)
             {
-                case 0: case 1:         // left or right
-                    currentWordSearchArray = SearchTypes.SearchTypeHorizontal(word, currentWordSearchArray, category);
+                case 0:
+                    currentWordSearchArray = Horizontal.OutputWord_InOrder(word, currentWordSearchArray, category);
+                    return currentWordSearchArray;
+                case 1:         // left or right
+                    currentWordSearchArray = Horizontal.OutputWord_Reverse(word, currentWordSearchArray, category);
                     return currentWordSearchArray;
                 case 2:  case 3:        // up or down
                     return currentWordSearchArray;
@@ -162,9 +165,11 @@ namespace WordSearch_PhoenixS
 
         public static Array[] DefaultWordSearchArray()         //Outputs a wordSearch[] array with each index being a char[], numbered
         {
+            // variables used only for numbering of each row in wordSearch
             char[] num1 = { '0', '1', '2' };
             char[] num2 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
             int iterator = 1;
+            //
 
             Array[] wordSearch = new Array[20];
             for (int i = 0; i <= wordSearch.Length; i++)
@@ -190,7 +195,7 @@ namespace WordSearch_PhoenixS
             }
             return wordSearch;
         }
-        static char[] DefaultWordSearchRow(char num1, char num2)
+        static char[] DefaultWordSearchRow(char num1, char num2)  // Outputs a row, numbered and filled with random letters
         {
             char[] charRow = new char[62];                  // creates the row
             Array.Fill(charRow, ' ');                       // fills it with blank spaces
@@ -215,11 +220,17 @@ namespace WordSearch_PhoenixS
 
         static char[] ConvertWordToCharArray(string word)
         {
-            //converts 'word' into a char[]
+            //converts string 'word' into a char[]
             char[] charOfWord = word.ToCharArray();
             return charOfWord;
         }
-        public static string[] RandomWordsFromCategoryArray(string[] categoryWordList) // Creates 8 random words from 'wordList' into randomWords[]
+        
+        /// <summary>
+        /// Creates a string[] of eight random words of user choice category
+        /// </summary>
+        /// <param name="categoryWordList"> The list of words that the eight words will be chosen from </param>
+        /// <returns></returns>
+        public static string[] RandomWordsFromCategoryArray(string[] categoryWordList)
         {
             string[] randomWords = new string[8];
             int[] randomIntList = new int[8];
@@ -227,7 +238,7 @@ namespace WordSearch_PhoenixS
 
             while (index < 8)                               // while there is still room in randomIntList
             {
-                int randomInt = RandomNumber(0, 15);        // Create a random number 0 - 14
+                int randomInt = ValueReturn.RandomNumber(0, 15);        // Create a random number 0 - 14
                 if (randomIntList.Contains(randomInt))      // if randomIntList already has that number
                 {
                     continue;
@@ -254,15 +265,8 @@ namespace WordSearch_PhoenixS
                 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
             };
 
-            int index = RandomNumber(0, alphabet.Length);
+            int index = ValueReturn.RandomNumber(0, alphabet.Length);
             return alphabet[index];
-        }
-
-        public static int RandomNumber(int minNumber, int maxNumber)
-        {
-            Random random = new Random();
-            int index = random.Next(minNumber, maxNumber);
-            return index;
         }
 
     }

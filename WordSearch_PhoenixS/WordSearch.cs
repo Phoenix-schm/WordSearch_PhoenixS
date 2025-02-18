@@ -98,6 +98,8 @@ namespace WordSearch_PhoenixS
         /// <param name="inputCategory"> the category the user chose </param>
         static void CategoryWordSearchCreation(string[] inputCategory)
         {
+            char[,] newArray = WordSearchArray2();
+
             Array[] newWordSearch = DefaultWordSearchArray();                               // Creates a default version of the word search
             string[] eightRandomWords = RandomWordsFromCategoryArray(inputCategory);        // choose eight random words from inputCategory
             
@@ -114,30 +116,45 @@ namespace WordSearch_PhoenixS
             Console.WriteLine(charRow0);
 
             // outputs the whole word search
-            foreach (char[] row in newWordSearch)
+            //foreach (char[] row in newWordSearch)
+            //{
+            //    foreach (char letter in row)
+            //    {
+            //        if (Char.IsLower(letter))
+            //        {
+            //            Console.ForegroundColor = ConsoleColor.Green;
+            //            Console.Write(letter);
+            //        }
+            //        else
+            //        {
+            //            Console.ResetColor();
+            //            Console.Write(letter);
+            //        }
+            //    }
+            //    Console.WriteLine();
+            //}
+            for(int y_axis = 0; y_axis < newArray.GetLength(0);y_axis++)
             {
-                foreach (char letter in row)
+                for(int x_axis = 0;x_axis < newArray.GetLength(1);x_axis++)
                 {
-                    if (Char.IsLower(letter))
+                    if (x_axis == 0 || x_axis == 1)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(letter);
+                        Console.Write(newArray[y_axis, x_axis]);
                     }
                     else
                     {
-                        Console.ResetColor();
-                        Console.Write(letter);
+                        Console.Write(" " + newArray[y_axis,x_axis] + " ");
                     }
                 }
                 Console.WriteLine();
             }
 
-            Console.WriteLine();
-            //Console.WriteLine("Search for these words:");
-            foreach(string word in eightRandomWords)
-            {
-                Console.WriteLine(word);
-            }
+            //Console.WriteLine();
+            ////Console.WriteLine("Search for these words:");
+            //foreach(string word in eightRandomWords)
+            //{
+            //    Console.WriteLine(word);
+            //}
         }
 
         static Array[] NewWordSearch(char[] word, Array[] currentWordSearchArray, string[] category)
@@ -149,7 +166,7 @@ namespace WordSearch_PhoenixS
                 case 0:
                     currentWordSearchArray = Horizontal.OutputWord_InOrder(word, currentWordSearchArray, category);
                     return currentWordSearchArray;
-                case 1:         // left or right
+                case 1:
                     currentWordSearchArray = Horizontal.OutputWord_Reverse(word, currentWordSearchArray, category);
                     return currentWordSearchArray;
                 case 2:  case 3:        // up or down
@@ -194,6 +211,48 @@ namespace WordSearch_PhoenixS
                 }
             }
             return wordSearch;
+        }
+        static char[,] WordSearchArray2()
+        {
+            char[,] defaultWordSearch = new char[20, 22];
+
+            char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+            int iterator = 1;
+
+            for (int y_axis = 0; y_axis < defaultWordSearch.GetLength(0); y_axis++)
+            {
+                for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
+                {
+                    if (x_axis == 0)
+                    {
+                        if (y_axis < 9)
+                        {
+                            defaultWordSearch[y_axis, x_axis] = '0';
+                        }
+                        else if (y_axis >= 9 && y_axis < 19)
+                        {
+                            defaultWordSearch[y_axis, x_axis] = '1';
+                        }
+                        else if (y_axis == 19)
+                        {
+                            defaultWordSearch[y_axis, x_axis] = '2';
+                        }
+                    }
+                    else if (x_axis == 1)
+                    {
+                        if (iterator == 10)
+                        {
+                            iterator = 0;
+                        }
+                        defaultWordSearch[y_axis, x_axis] = numbers[iterator++];
+                    }
+                    else
+                    {
+                        defaultWordSearch[y_axis, x_axis] = RandomLetter();
+                    }
+                }
+            }
+            return defaultWordSearch;
         }
         static char[] DefaultWordSearchRow(char num1, char num2)  // Outputs a row, numbered and filled with random letters
         {

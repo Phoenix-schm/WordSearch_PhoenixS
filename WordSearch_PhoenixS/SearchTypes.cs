@@ -1,7 +1,7 @@
 ﻿
 namespace WordSearch_PhoenixS
 {
-    internal class ValueReturn
+    internal class ReturnValue
     {
 
 
@@ -65,13 +65,13 @@ namespace WordSearch_PhoenixS
         public static int ReturnValidRow(Array[] justLettersWordSearch, string[] randomWord)
         {
             bool validRow = false;
-            while (!validRow)                                                                                       // while the row is invalid
+            while (!validRow)                                                                             // while the row is invalid
             {
                 int randomRow = RandomNumber(0, justLettersWordSearch.Length);                           // generate a randomRow
                 
                 // for insuring it won't go on forever if there is no valid rows
-                int invalidRows_InOrder = 0;
-                int invalidRows_Reverse = 0;
+                int invalidRows = 0;
+                int reverse_invalidRows = 0;
 
                 for (int chosenRow = randomRow; chosenRow < justLettersWordSearch.Length; chosenRow++)  // chosenRow equals randomRow.
                 {                                                                                       // If that row isn't valid then go to the next one
@@ -79,25 +79,25 @@ namespace WordSearch_PhoenixS
                     string rowLetters = string.Join("", (char[])justLettersWordSearch[chosenRow]);      // create string from chosenRow
 
                     Array.Reverse(justLettersWordSearch[chosenRow]);                                        // Puts the chosenRow in reverse
-                    string reverseRowLetters = string.Join("", (char[])justLettersWordSearch[chosenRow]);   // Create a string from the reversed chosenRow
+                    string r_RowLetters = string.Join("", (char[])justLettersWordSearch[chosenRow]);   // Create a string from the reversed chosenRow
 
                     for (int i = 0; i < randomWord.Length; i++)                                     // Going through each random word
                     {
-                        if (rowLetters.Contains(randomWord[i]))                                     // if the row contains one of the randomWords
+                        string r_RandomWord = string.Empty;
+                        for (int r_index = randomWord[i].Length -1; r_index >=0; r_index--)         // create a reverse version of the word
                         {
-                            validRow = false;
-                            invalidRows_InOrder++;
+                            r_RandomWord += randomWord[i][r_index];
                         }
 
-                        string reverseRandomWord = string.Empty;
-                        for (int j = randomWord[i].Length -1; j >=0; j--)                           // create a reverse version of the word
-                        {
-                            reverseRandomWord += randomWord[i][j];
-                        }
-                        if (reverseRowLetters.Contains(reverseRandomWord))                          // if the reverse row contains the reversed word
+                        if (rowLetters.Contains(randomWord[i]) || rowLetters.Contains(r_RandomWord))        // if the row contains one of the randomWords
                         {
                             validRow = false;
-                            invalidRows_Reverse++;
+                            invalidRows++;
+                        }
+                        if (r_RowLetters.Contains(randomWord[i]) || r_RowLetters.Contains(r_RandomWord))    // if the reverse row contains randomWords
+                        {
+                            validRow = false; 
+                            reverse_invalidRows++;
                         }
                     }
 
@@ -106,14 +106,14 @@ namespace WordSearch_PhoenixS
                         return chosenRow;
                     }
                 }
-                if (invalidRows_Reverse == 19 && invalidRows_InOrder == 19)                    // if there are no valid rows
+                if (reverse_invalidRows == 19 && invalidRows == 19)                    // if there are no valid rows
                 {
                     return -1;
                 }
-
             }
             return -1;       // no valid row
         }
+
     }
     internal class Horizontal           // Hosts functions related to horizontal SearchTypes
     {
@@ -129,16 +129,16 @@ namespace WordSearch_PhoenixS
             int wordIndex = 0;                                                                       // chosenWord index that will be used
 
             Array[] justLettersWordSearch = JustTheLetters_Horizontal(currentArray);                 // only the letters in the word search. For hosting comparisons
-            int validRow = ValueReturn.ReturnValidRow(justLettersWordSearch, categoryArray);            // Checks if the row already has a word in it.
+            int validRow = ReturnValue.ReturnValidRow(justLettersWordSearch, categoryArray);            // Checks if the row already has a word in it.
                                                                                                      // (should be changed later to instead see if chosenWord can fit alongside other word)
             char[] row = (char[])currentArray[validRow];                                             // the current row being changed
 
             if (row != null)                                    // in case shit went wrong
             {
                 // chosenWord will begin to be placed at a location that will accomodate its size
-                for (int i = ValueReturn.PlaceWordAtIndex_InOrder(62, chosenWord.Length); wordIndex < chosenWord.Length; i++)
+                for (int i = ReturnValue.PlaceWordAtIndex_InOrder(62, chosenWord.Length); wordIndex < chosenWord.Length; i++)
                 {
-                    if (ValueReturn.SkipThesePartsOfRow(row[i], i) == true)        // skips the numbers and spaces
+                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)        // skips the numbers and spaces
                     {
                         continue;
                     }
@@ -168,14 +168,14 @@ namespace WordSearch_PhoenixS
             int wordIndex = 0;
 
             Array[] justLettersWordSearch = JustTheLetters_Horizontal(currentArray);
-            int validRow = ValueReturn.ReturnValidRow(justLettersWordSearch, categoryArray);
+            int validRow = ReturnValue.ReturnValidRow(justLettersWordSearch, categoryArray);
             char[] row = (char[])currentArray[validRow];
 
             if (row != null)
             {
-                for (int i = ValueReturn.PlaceWordAtIndex_InReverse(chosenWord.Length); wordIndex < chosenWord.Length; i--)
+                for (int i = ReturnValue.PlaceWordAtIndex_InReverse(chosenWord.Length); wordIndex < chosenWord.Length; i--)
                 {
-                    if (ValueReturn.SkipThesePartsOfRow(row[i], i) == true)
+                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)
                     {
                         continue;
                     }
@@ -205,7 +205,7 @@ namespace WordSearch_PhoenixS
                 char[] justTheLetters = new char[20];
                 for (int i = 0; i < row.Length; i++)
                 {
-                    if (ValueReturn.SkipThesePartsOfRow(row[i], i) == true)
+                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)
                     {
                         continue;
                     }

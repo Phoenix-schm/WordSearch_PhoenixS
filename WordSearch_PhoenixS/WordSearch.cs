@@ -142,9 +142,9 @@ namespace WordSearch_PhoenixS
 
         static Array[] NewWordSearch(char[] word, Array[] currentWordSearchArray, string[] category)
         {
-            int randomNum = ValueReturn.RandomNumber(0, 2);
+            int randomNum = ReturnValue.RandomNumber(0, 2);
 
-            switch(0)
+            switch(randomNum)
             {
                 case 0:
                     currentWordSearchArray = Horizontal.OutputWord_InOrder(word, currentWordSearchArray, category);
@@ -238,7 +238,7 @@ namespace WordSearch_PhoenixS
 
             while (index < 8)                               // while there is still room in randomIntList
             {
-                int randomInt = ValueReturn.RandomNumber(0, 15);        // Create a random number 0 - 14
+                int randomInt = ReturnValue.RandomNumber(0, 15);        // Create a random number 0 - 14
                 if (randomIntList.Contains(randomInt))      // if randomIntList already has that number
                 {
                     continue;
@@ -265,7 +265,7 @@ namespace WordSearch_PhoenixS
                 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
             };
 
-            int index = ValueReturn.RandomNumber(0, alphabet.Length);
+            int index = ReturnValue.RandomNumber(0, alphabet.Length);
             return alphabet[index];
         }
 

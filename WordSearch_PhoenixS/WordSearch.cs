@@ -98,9 +98,8 @@ namespace WordSearch_PhoenixS
         /// <param name="inputCategory"> the category the user chose </param>
         static void CategoryWordSearchCreation(string[] inputCategory)
         {
-            char[,] newArray = WordSearchArray2();
+            char[,] newWordSearch = DefaultWordSearch();
 
-            Array[] newWordSearch = DefaultWordSearchArray();                               // Creates a default version of the word search
             string[] eightRandomWords = RandomWordsFromCategoryArray(inputCategory);        // choose eight random words from inputCategory
             
             for(int i = 0; i < eightRandomWords.Length; i++)                                // passes in each random word
@@ -115,49 +114,42 @@ namespace WordSearch_PhoenixS
             Console.WriteLine("Word Search Puzzle: ");
             Console.WriteLine(charRow0);
 
-            // outputs the whole word search
-            //foreach (char[] row in newWordSearch)
-            //{
-            //    foreach (char letter in row)
-            //    {
-            //        if (Char.IsLower(letter))
-            //        {
-            //            Console.ForegroundColor = ConsoleColor.Green;
-            //            Console.Write(letter);
-            //        }
-            //        else
-            //        {
-            //            Console.ResetColor();
-            //            Console.Write(letter);
-            //        }
-            //    }
-            //    Console.WriteLine();
-            //}
-            for(int y_axis = 0; y_axis < newArray.GetLength(0);y_axis++)
+            for(int y_axis = 0; y_axis < newWordSearch.GetLength(0);y_axis++)
             {
-                for(int x_axis = 0;x_axis < newArray.GetLength(1);x_axis++)
+                for(int x_axis = 0;x_axis < newWordSearch.GetLength(1);x_axis++)
                 {
                     if (x_axis == 0 || x_axis == 1)
                     {
-                        Console.Write(newArray[y_axis, x_axis]);
+                        Console.ResetColor();
+                        Console.Write(newWordSearch[y_axis, x_axis]);
                     }
                     else
                     {
-                        Console.Write(" " + newArray[y_axis,x_axis] + " ");
+                        if (!Char.IsLower(newWordSearch[y_axis,x_axis]))
+                        {
+                            Console.ResetColor();
+                            Console.Write(" " + newWordSearch[y_axis,x_axis] + " ");
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(" " + newWordSearch[y_axis, x_axis] + " ");
+                        }
                     }
                 }
+                Console.ResetColor();
                 Console.WriteLine();
             }
 
-            //Console.WriteLine();
-            ////Console.WriteLine("Search for these words:");
-            //foreach(string word in eightRandomWords)
-            //{
-            //    Console.WriteLine(word);
-            //}
+            Console.WriteLine();
+            //Console.WriteLine("Search for these words:");
+            foreach (string word in eightRandomWords)
+            {
+                Console.WriteLine(word);
+            }
         }
 
-        static Array[] NewWordSearch(char[] word, Array[] currentWordSearchArray, string[] category)
+        static char[,] NewWordSearch(char[] word, char[,] currentWordSearchArray, string[] category)
         {
             int randomNum = ReturnValue.RandomNumber(0, 2);
 
@@ -179,40 +171,7 @@ namespace WordSearch_PhoenixS
                     return currentWordSearchArray;
             }
         }
-
-        public static Array[] DefaultWordSearchArray()         //Outputs a wordSearch[] array with each index being a char[], numbered
-        {
-            // variables used only for numbering of each row in wordSearch
-            char[] num1 = { '0', '1', '2' };
-            char[] num2 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-            int iterator = 1;
-            //
-
-            Array[] wordSearch = new Array[20];
-            for (int i = 0; i <= wordSearch.Length; i++)
-            {
-                if (i < 9)                                          // from row 0 to 9
-                {
-                    wordSearch[i] = DefaultWordSearchRow(num1[0], num2[iterator]);
-                    iterator++;
-                }
-                else if (i >= 9 && i < 19)                          // from row 10 to 19
-                {
-                    if (i == 9)
-                    {
-                        iterator = 0;
-                    }
-                    wordSearch[i] = DefaultWordSearchRow(num1[1], num2[iterator]);
-                    iterator++;
-                }
-                else if (i == 19)                                   // row 20
-                {
-                    wordSearch[i] = DefaultWordSearchRow(num1[2], num2[0]);
-                }
-            }
-            return wordSearch;
-        }
-        static char[,] WordSearchArray2()
+        static char[,] DefaultWordSearch()
         {
             char[,] defaultWordSearch = new char[20, 22];
 
@@ -253,28 +212,6 @@ namespace WordSearch_PhoenixS
                 }
             }
             return defaultWordSearch;
-        }
-        static char[] DefaultWordSearchRow(char num1, char num2)  // Outputs a row, numbered and filled with random letters
-        {
-            char[] charRow = new char[62];                  // creates the row
-            Array.Fill(charRow, ' ');                       // fills it with blank spaces
-
-            for (int i = 0; i < charRow.Length; i++)        // fills each index of charRow[], first two indexes are numbers
-            {
-                if (i == 0)
-                {
-                    charRow[0] = num1;
-                }
-                else if (i == 1)
-                {
-                    charRow[1] = num2;
-                }
-                else if (i % 3 == 0)
-                {
-                    charRow[i] = RandomLetter();
-                }
-            }
-            return charRow;
         }
 
         static char[] ConvertWordToCharArray(string word)

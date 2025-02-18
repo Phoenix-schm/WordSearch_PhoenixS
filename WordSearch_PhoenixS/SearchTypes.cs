@@ -22,15 +22,13 @@ namespace WordSearch_PhoenixS
 
         public static int PlaceWordAtIndex_InOrder(int row, int word)               // Outputs an index number that can accomodate placing 'word'
         {
-            int trueWordLength = word * 3;
-            int index = row - trueWordLength;
-            int canFitHere = RandomNumber(3, index);
+            int index = row - word;
+            int canFitHere = RandomNumber(2, index);
             return canFitHere;
         }
         public static int PlaceWordAtIndex_InReverse(int word)                      // Outputs an index number that can accomodate placing 'word' in reverse
         {
-            int trueWordLength = word * 3;
-            int canFitRange = RandomNumber(trueWordLength, 62);
+            int canFitRange = RandomNumber(word + 2, 22);
             return canFitRange;
         }
         public static int ChooseRandomRow()
@@ -59,27 +57,35 @@ namespace WordSearch_PhoenixS
         /// <summary>
         /// returns a row that doesn't have a word in it yet. Can be hopefully be reused for diagonals and columns
         /// </summary>
-        /// <param name="justLettersWordSearch"> should take in only the letter parts of the word search </param>
+        /// <param name="wordSearch"> should take in only the letter parts of the word search </param>
         /// <param name="randomWord"> the list of eight random words it will check for</param>
         /// <returns> returns the index of valid a valid row </returns>
-        public static int ReturnValidRow(Array[] justLettersWordSearch, string[] randomWord)
+        public static int ReturnValidRow(char[,] wordSearch, string[] randomWord)
         {
             bool validRow = false;
             while (!validRow)                                                                             // while the row is invalid
             {
-                int randomRow = RandomNumber(0, justLettersWordSearch.Length);                           // generate a randomRow
+                int randomRow = RandomNumber(0, 20);                           // generate a randomRow
                 
                 // for insuring it won't go on forever if there is no valid rows
                 int invalidRows = 0;
                 int reverse_invalidRows = 0;
 
-                for (int chosenRow = randomRow; chosenRow < justLettersWordSearch.Length; chosenRow++)  // chosenRow equals randomRow.
+                for (int chosenRow = randomRow; chosenRow < wordSearch.GetLength(0); chosenRow++)  // chosenRow equals randomRow.
                 {                                                                                       // If that row isn't valid then go to the next one
                     validRow = true;                                                                    // default is that the row is valid
-                    string rowLetters = string.Join("", (char[])justLettersWordSearch[chosenRow]);      // create string from chosenRow
+                    char[] rowLetters = new char[22];   // create string from chosenRow
+                    for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
+                    {
+                        rowLetters[x_axis] = (wordSearch[chosenRow, x_axis]);
+                    }
 
-                    Array.Reverse(justLettersWordSearch[chosenRow]);                                        // Puts the chosenRow in reverse
-                    string r_RowLetters = string.Join("", (char[])justLettersWordSearch[chosenRow]);   // Create a string from the reversed chosenRow
+                    string stringRowLetters = string.Join("", rowLetters);
+                    Array.Reverse(rowLetters);
+                    string r_stringRowLetters = string.Join("", rowLetters);
+
+                    //Array.Reverse(wordSearch[chosenRow]);                                        // Puts the chosenRow in reverse
+                    //string r_RowLetters = string.Join("", (char[])wordSearch[chosenRow]);   // Create a string from the reversed chosenRow
 
                     for (int i = 0; i < randomWord.Length; i++)                                     // Going through each random word
                     {
@@ -89,12 +95,12 @@ namespace WordSearch_PhoenixS
                             r_RandomWord += randomWord[i][r_index];
                         }
 
-                        if (rowLetters.Contains(randomWord[i]) || rowLetters.Contains(r_RandomWord))        // if the row contains one of the randomWords
+                        if (stringRowLetters.Contains(randomWord[i]) || stringRowLetters.Contains(r_RandomWord))        // if the row contains one of the randomWords
                         {
                             validRow = false;
                             invalidRows++;
                         }
-                        if (r_RowLetters.Contains(randomWord[i]) || r_RowLetters.Contains(r_RandomWord))    // if the reverse row contains randomWords
+                        if (r_stringRowLetters.Contains(randomWord[i]) || r_stringRowLetters.Contains(r_RandomWord))    // if the reverse row contains randomWords
                         {
                             validRow = false; 
                             reverse_invalidRows++;
@@ -124,29 +130,18 @@ namespace WordSearch_PhoenixS
         /// <param name="currentArray"> the current word search, modified each time function is used </param>
         /// <param name="categoryArray"> the list of 8 random words </param>
         /// <returns></returns>
-        public static Array[] OutputWord_InOrder(char[] chosenWord, Array[] currentArray, string[] categoryArray)
+        public static char[,] OutputWord_InOrder(char[] chosenWord, char[,] currentArray, string[] categoryArray)
         {
             int wordIndex = 0;                                                                       // chosenWord index that will be used
-
-            Array[] justLettersWordSearch = JustTheLetters_Horizontal(currentArray);                 // only the letters in the word search. For hosting comparisons
-            int validRow = ReturnValue.ReturnValidRow(justLettersWordSearch, categoryArray);            // Checks if the row already has a word in it.
-                                                                                                     // (should be changed later to instead see if chosenWord can fit alongside other word)
-            char[] row = (char[])currentArray[validRow];                                             // the current row being changed
-
-            if (row != null)                                    // in case shit went wrong
+            int validRow = ReturnValue.ReturnValidRow(currentArray, categoryArray);            // Checks if the row already has a word in it.
+                                                                                               // (should be changed later to instead see if chosenWord can fit alongside other word)
+            if (validRow != -1)                                                                // in case shit went wrong
             {
                 // chosenWord will begin to be placed at a location that will accomodate its size
-                for (int i = ReturnValue.PlaceWordAtIndex_InOrder(62, chosenWord.Length); wordIndex < chosenWord.Length; i++)
+                for (int x_axis = ReturnValue.PlaceWordAtIndex_InOrder(20, chosenWord.Length); wordIndex < chosenWord.Length; x_axis++)
                 {
-                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)        // skips the numbers and spaces
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        row[i] = chosenWord[wordIndex];                         // row at 'i' will now be changed to each letter of chosenWord
-                        wordIndex++;
-                    }
+                    currentArray[validRow, x_axis] = chosenWord[wordIndex];                         // row at 'i' will now be changed to each letter of chosenWord
+                    wordIndex++;
                 }
 
             }
@@ -156,36 +151,19 @@ namespace WordSearch_PhoenixS
             }
             return currentArray;
         }
-        /// <summary>
-        /// Outputs chosenWord in reverse order from right to left
-        /// </summary>
-        /// <param name="chosenWord"></param>
-        /// <param name="currentArray"></param>
-        /// <param name="categoryArray"></param>
-        /// <returns></returns>
-        public static Array[] OutputWord_Reverse(char[] chosenWord, Array[] currentArray, string[] categoryArray)
+        public static char[,] OutputWord_Reverse(char[] chosenWord, char[,] currentArray, string[] categoryArray)
         {
-            int wordIndex = 0;
-
-            Array[] justLettersWordSearch = JustTheLetters_Horizontal(currentArray);
-            int validRow = ReturnValue.ReturnValidRow(justLettersWordSearch, categoryArray);
-            char[] row = (char[])currentArray[validRow];
-
-            if (row != null)
+            int wordIndex = 0;                                                                       // chosenWord index that will be used
+            int validRow = ReturnValue.ReturnValidRow(currentArray, categoryArray);            // Checks if the row already has a word in it.
+                                                                                               // (should be changed later to instead see if chosenWord can fit alongside other word)
+            if (validRow != -1)                                                                // in case shit went wrong
             {
-                for (int i = ReturnValue.PlaceWordAtIndex_InReverse(chosenWord.Length); wordIndex < chosenWord.Length; i--)
+                // chosenWord will begin to be placed at a location that will accomodate its size
+                for (int x_axis = ReturnValue.PlaceWordAtIndex_InReverse(chosenWord.Length); wordIndex < chosenWord.Length; x_axis--)
                 {
-                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        row[i] = chosenWord[wordIndex];
-                        wordIndex++;
-                    }
+                    currentArray[validRow, x_axis] = chosenWord[wordIndex];                         // row at 'i' will now be changed to each letter of chosenWord
+                    wordIndex++;
                 }
-
             }
             else
             {
@@ -193,40 +171,5 @@ namespace WordSearch_PhoenixS
             }
             return currentArray;
         }
-        public static Array[] JustTheLetters_Horizontal(Array[] currentWordSearch)
-        {
-            Array[] lettersWordSearch = new Array[currentWordSearch.Length];
-            int newLetterIndex = 0;
-            int newArrayIndex = 0;
-
-            foreach (char[] row in currentWordSearch)
-            {
-                newLetterIndex = 0;
-                char[] justTheLetters = new char[20];
-                for (int i = 0; i < row.Length; i++)
-                {
-                    if (ReturnValue.SkipThesePartsOfRow(row[i], i) == true)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        if (newLetterIndex < justTheLetters.Length)
-                        {
-                            justTheLetters[newLetterIndex] = row[i];
-                            newLetterIndex++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-                lettersWordSearch[newArrayIndex] = justTheLetters;
-                newArrayIndex++;
-            }
-            return lettersWordSearch;
-        }
-
     }
 }

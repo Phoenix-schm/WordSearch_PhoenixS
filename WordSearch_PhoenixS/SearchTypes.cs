@@ -1,7 +1,9 @@
 ﻿
+using System.Runtime.ExceptionServices;
+
 namespace WordSearch_PhoenixS
 {
-    internal class ReturnValue
+    class ReturnValue
     {
 
 
@@ -38,19 +40,24 @@ namespace WordSearch_PhoenixS
             return index;
         }
 
+
         /// <summary>
         /// returns a row that doesn't have a word in it yet. Can be hopefully be reused for diagonals and columns
         /// </summary>
         /// <param name="wordSearch_version"> should take in only the letter parts of the word search </param>
         /// <param name="wordList"> the list of eight random words it will check for</param>
         /// <returns> returns the index of valid a valid row </returns>
-        public static int ReturnValidRow(char[,] wordSearch_version, string[] wordList)
+        public static int ReturnValidRow(char[,] wordSearch_version, string[] wordList, char[] chosenWord)
         {
             bool validRow = false;
+            int chosenWordLength = chosenWord.Length;
+
             while (!validRow)                                                                           // While the row is invalid
             {
                 int randomRow = RandomNumber(0, 20);                                                    // Generate a randomRow
                 int invalidRows = 0;                                                                    // variable insures it won't go on forever
+                int wordLength = 0;
+                int positionOfWord_max = 0;
 
                 for (int chosenRow = randomRow; chosenRow < wordSearch_version.GetLength(0); chosenRow++)   // ChosenRow equals randomRow.
                 {                                                                                                // if that row isn't valid then go to the next one
@@ -58,10 +65,32 @@ namespace WordSearch_PhoenixS
 
                     for (int letter = 0; letter < wordSearch_version.GetLength(1);  letter++)           // Going through each letter in the chosenRow
                     {
-                        if (Char.IsLower(wordSearch_version[chosenRow, letter]))                        // if chosenRow contains a lowercase letter
+                        if (Char.IsLetter(wordSearch_version[chosenRow, letter]))                        // if chosenRow contains a lowercase letter
                         {
-                            validRow = false;                                                           // then the chosenRow is invalid and move on to next row
-                            break;
+                            validRow = false;                                                           // then the chosenRow is invalid
+
+                            positionOfWord_max = Array.IndexOf(wordList, letter);                             // gets the index position of the last letter
+                            wordLength++;
+                        }
+                    }
+
+                    int positionOfWord_min = positionOfWord_max - wordLength;
+                    // checking if the word can fit before the other word
+                    for (int letterInWord = positionOfWord_min; letterInWord > wordSearch_version.GetLength(1) - 2; letterInWord--)
+                    {
+                        chosenWordLength--;
+                        if (chosenWordLength <= 0)
+                        {
+                            validRow = true;
+                        }
+                    }
+                    // checking if the word can fit after the other word
+                    for (int letterInWord = positionOfWord_max; letterInWord < wordSearch_version.GetLength(1); letterInWord++)
+                    {
+                        chosenWordLength--;
+                        if (chosenWordLength <= 0)
+                        {
+                            validRow = true;
                         }
                     }
 
@@ -83,7 +112,7 @@ namespace WordSearch_PhoenixS
         }
 
     }
-    internal class Horizontal           // Hosts functions related to horizontal SearchTypes
+    public class Horizontal           // Hosts functions related to horizontal SearchTypes
     {
         /// <summary>
         /// Outputs a word in the word search from left to right
@@ -124,7 +153,12 @@ namespace WordSearch_PhoenixS
             return currentWordSearch;
         }
     }
-    internal class Vertical
+    public class Vertical
     {
+        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, string[] eightCategoryWords, int randomChoice)
+        {
+
+            return currentWordSearch;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace WordSearch_PhoenixS
 {
-    internal class WordSearch
+    class WordSearch
     {
         static void Main(string[] args)
         {
@@ -54,34 +54,34 @@ namespace WordSearch_PhoenixS
             switch (input)
             {
                 case "dog nicknames":           case "1":
-                    CategoryWordSearchCreation(WordList.dogNicknames);
+                    CategoryWordSearchCreation(CategoryList.dogNicknames);
                     break;
                 case "colors":                  case "2":
-                    CategoryWordSearchCreation(WordList.colors);
+                    CategoryWordSearchCreation(CategoryList.colors);
                     break;
                 case "poisonous flowers":       case "3":
-                    CategoryWordSearchCreation(WordList.poisonPlants);
+                    CategoryWordSearchCreation(CategoryList.poisonPlants);
                     break;
                 case "things in my room":       case "4":
-                    CategoryWordSearchCreation(WordList.thingsInMyRoom);
+                    CategoryWordSearchCreation(CategoryList.thingsInMyRoom);
                     break;
                 case "things to eat":           case "5":
-                    CategoryWordSearchCreation(WordList.thingsToEat);
+                    CategoryWordSearchCreation(CategoryList.thingsToEat);
                     break;
                 case "fabric types":            case "6":
-                    CategoryWordSearchCreation(WordList.fabrictypes);
+                    CategoryWordSearchCreation(CategoryList.fabrictypes);
                     break;
                 case "manga names":             case "7":
-                    CategoryWordSearchCreation(WordList.mangaList);
+                    CategoryWordSearchCreation(CategoryList.mangaList);
                     break;
                 case "fonts":                   case "8":
-                    CategoryWordSearchCreation(WordList.fonts);
+                    CategoryWordSearchCreation(CategoryList.fonts);
                     break;
                 case "dnd monsters":            case "9":
-                    CategoryWordSearchCreation(WordList.dndMonsters);
+                    CategoryWordSearchCreation(CategoryList.dndMonsters);
                     break;
                 case "periodic table elements":     case "10":
-                    CategoryWordSearchCreation(WordList.periodicElements);
+                    CategoryWordSearchCreation(CategoryList.periodicElements);
                     break;
                 case "quit":                    case "11":
                     boolean = false;
@@ -141,7 +141,7 @@ namespace WordSearch_PhoenixS
                         if (!Char.IsLower(wordSearch[y_axis, x_axis]))
                         {
                             Console.ResetColor();
-                            Console.Write(" " + Char.ToUpper(wordSearch[y_axis, x_axis]) + " ");
+                            Console.Write(" " + RandomLetter() + " ");
                         }
                         else
                         {
@@ -210,7 +210,7 @@ namespace WordSearch_PhoenixS
                     }
                     else                                                                // Everything else in the word search can be a random letter
                     {
-                        defaultWordSearch[y_axis, x_axis] = RandomLetter();
+                        defaultWordSearch[y_axis, x_axis] = ' ';
                     }
                 }
             }
@@ -270,7 +270,7 @@ namespace WordSearch_PhoenixS
         }
 
     }
-    internal class UserInput
+    class UserInput
     {
         /// <summary>
         /// Checks user input for string and int's for valid inputs
@@ -312,47 +312,5 @@ namespace WordSearch_PhoenixS
 
         }
     }
-    internal class WordList
-    {
-        public static string[] dogNicknames = CreateCategoryList("DogNames");              // 01
-        public static string[] colors = CreateCategoryList("Colors");                      // 02
-        public static string[] poisonPlants = CreateCategoryList("PoisonousPlants");       // 03
-        public static string[] thingsToEat = CreateCategoryList("ThingsToEat");            // 04
-        public static string[] thingsInMyRoom = CreateCategoryList("ThingsInMyRoom");      // 05
-        public static string[] fabrictypes = CreateCategoryList("FabricTypes");            // 06
-        public static string[] mangaList = CreateCategoryList("MangaList");                // 07
-        public static string[] fonts = CreateCategoryList("Fonts");                        // 08
-        public static string[] dndMonsters = CreateCategoryList("DNDmonsters");            // 09
-        public static string[] periodicElements = CreateCategoryList("PeriodicElements");  // 10
 
-        /// <summary>
-        ///  Creates an array holding just the list of items of a category
-        /// </summary>
-        /// <param name="categoryName"> the name of the category </param>
-        /// <param name="wordList"> the array it's accessing (should be an array made from words.txt file)</param>
-        /// <returns></returns>
-        public static string[] CreateCategoryList(string categoryName)
-        {
-            string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);
-            string wordsFromFile = file.ReadToEnd();
-            file.Close();
-
-            string[] wordList = wordsFromFile.Split("\r\n");
-            string[] returnedList = new string[15];
-
-            if (wordList.Contains(categoryName))
-            {
-                int position = Array.IndexOf(wordList, categoryName);                         // returns the index position of 'request' in wordList[]
-                int newIndex = 0;
-                for (int wordIndex = position + 1; wordIndex <= position + 15; wordIndex++)   // will output the words in category, skipping the title of the category
-                {
-                    returnedList[newIndex] = wordList[wordIndex].ToString();                  // fills in each element of 'returnedList' with the corresponding word from wordList[]
-                    newIndex++;
-                }
-                return returnedList;
-            }
-            return returnedList;                            // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
-        }
-    }
 }

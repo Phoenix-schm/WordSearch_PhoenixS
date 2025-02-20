@@ -101,7 +101,7 @@ namespace WordSearch_PhoenixS
         /// <param name="inputCategory"> the category the user chose </param>
         static void CategoryWordSearchCreation(string[] inputCategory)
         {
-            char[,] newWordSearch = DefaultWordSearch();                                // Creates the default version of the word search first
+            char[,] newWordSearch = DefaultWordSearch();                                // Creates the default version of the word search first, filled with blanks
             string[] eightRandomWords = RandomWordsFromCategory(inputCategory);         // Choose eight random words from inputCategory
             
             for(int i = 0; i < eightRandomWords.Length; i++)                            // Passes in each random word
@@ -124,40 +124,44 @@ namespace WordSearch_PhoenixS
         static void DisplayWordSearch(char[,] wordSearch)
         {
             Console.WriteLine("Word Search Puzzle: ");
-            Console.WriteLine("  01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20");
+
+            string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
+            Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
+
+            string[] NumberedxAxis = NumberedAxisInWordSearch();
 
             // Displays the wordsearch, currently colors are for help debugging
             for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
             {
+                Console.Write(NumberedxAxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (x_axis == 0 || x_axis == 1)
+                    if (Char.IsLower(wordSearch[y_axis, x_axis]))                               // if there's a letter, turn it green (for debugging purposes)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" " + Char.ToUpper(wordSearch[y_axis, x_axis]) + " ");
+                    }
+                    else                                                                        // else, fill the word search with random letters
                     {
                         Console.ResetColor();
-                        Console.Write(wordSearch[y_axis, x_axis]);
+                        Console.Write(" " + RandomLetter() + " ");
                     }
-                    else
-                    {
-                        if (!Char.IsLower(wordSearch[y_axis, x_axis]))
-                        {
-                            Console.ResetColor();
-                            Console.Write(" " + RandomLetter() + " ");
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(" " + Char.ToUpper(wordSearch[y_axis, x_axis]) + " ");
-                        }
-                    }
+                    
                 }
                 Console.ResetColor();
                 Console.WriteLine();
             }
         }
+        static string[] NumberedAxisInWordSearch()
+        {
+            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
+                                     "11","12","13","14","15","16","17","18","19","20"};
+            return NumberedAxis;
+        }
 
         static char[,] NewWordSearch(char[] word, char[,] currentWordSearchArray, string[] category)
         {
-            int randomNum = ReturnValue.RandomNumber(0, 2);
+            int randomNum = SearchType.RandomNumber(0, 2);
 
             switch(randomNum)
             {
@@ -174,44 +178,15 @@ namespace WordSearch_PhoenixS
                     return currentWordSearchArray;
             }
         }
-        static char[,] DefaultWordSearch()
+        static char[,] DefaultWordSearch()                      // Fills the word search with blank spaces
         {
-            char[,] defaultWordSearch = new char[20, 22];
-
-            char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-            int iterator = 1;
+            char[,] defaultWordSearch = new char[20, 20];
 
             for (int y_axis = 0; y_axis < defaultWordSearch.GetLength(0); y_axis++)
             {
                 for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
                 {
-                    if (x_axis == 0)                                                    // on the first element of every row
-                    {                                                                   // is equal to a number (the 10's place)
-                        if (y_axis < 9)
-                        {
-                            defaultWordSearch[y_axis, x_axis] = '0';
-                        }
-                        else if (y_axis >= 9 && y_axis < 19)
-                        {
-                            defaultWordSearch[y_axis, x_axis] = '1';
-                        }
-                        else if (y_axis == 19)
-                        {
-                            defaultWordSearch[y_axis, x_axis] = '2';
-                        }
-                    }
-                    else if (x_axis == 1)                                               // on the second element on every row
-                    {                                                                   // is equal to a number (the 1's place)
-                        if (iterator == 10)
-                        {
-                            iterator = 0;
-                        }
-                        defaultWordSearch[y_axis, x_axis] = numbers[iterator++];
-                    }
-                    else                                                                // Everything else in the word search can be a random letter
-                    {
-                        defaultWordSearch[y_axis, x_axis] = ' ';
-                    }
+                    defaultWordSearch[y_axis, x_axis] = ' ';
                 }
             }
             return defaultWordSearch;
@@ -232,22 +207,9 @@ namespace WordSearch_PhoenixS
         static string[] RandomWordsFromCategory(string[] categoryWordList)
         {
             string[] randomWords = new string[8];
-            int[] randomIntList = new int[8];
-            int index = 0;
 
             // creates an int[] of random eight numbers
-            while (index < 8)                                       // while there is still room in randomIntList
-            {
-                int randomInt = ReturnValue.RandomNumber(0, 15);    // Create a random number 0 - 14
-                if (randomIntList.Contains(randomInt))              // if randomIntList already has that number
-                {
-                    continue;
-                }
-                else
-                {
-                    randomIntList[index++] = randomInt;             // add that number to randomIntList
-                }
-            }
+            int[] randomIntList = ReturnRandomNumberList(8, 15);
 
             for (int i = 0; i < 8; i++)
             {
@@ -255,21 +217,37 @@ namespace WordSearch_PhoenixS
             }
             return randomWords;
         }
-
         static char RandomLetter()
         {
             // Outputs a random letter from alphabet[] (excludes X, Y, Z)
-            char[] alphabet =
-            {
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-                'R', 'S', 'T', 'U', 'V', 'W'
-            };
+            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                                'R', 'S', 'T', 'U', 'V', 'W' };
 
-            int index = ReturnValue.RandomNumber(0, alphabet.Length);
+            int index = SearchType.RandomNumber(0, alphabet.Length);
             return alphabet[index];
         }
+        public static int[] ReturnRandomNumberList(int maxIndex, int maxRandomNumber)
+        {
+            int index = 0;
+            int[] randomIntList = new int[maxIndex];
 
+            while (index < maxIndex)
+            {
+                int randomInt = SearchType.RandomNumber(0, maxRandomNumber);
+
+                if (randomIntList.Contains(randomInt))
+                {
+                    continue;
+                }
+                else
+                {
+                    randomIntList[index++] = randomInt;
+                }
+            }
+            return randomIntList;
+        }
     }
+
     class UserInput
     {
         /// <summary>

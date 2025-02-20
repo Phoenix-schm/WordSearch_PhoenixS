@@ -1,21 +1,13 @@
-﻿
-using System.Runtime.ExceptionServices;
-
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     public class SearchType
     {
-        public static int PlaceWordAtIndex_InOrder(int row, int word)               // Outputs an index number that can accomodate placing 'word'
-        {
-            int index = row - word;
-            int canFitHere = RandomNumber(0, index);
-            return canFitHere;
-        }
-        public static int PlaceWordAtIndex_InReverse(int word)                      // Outputs an index number that can accomodate placing 'word' in reverse
-        {
-            int canFitRange = RandomNumber(word, 20);
-            return canFitRange;
-        }
+        /// <summary>
+        /// Outputs a random number between minNumber(inclusive) and maxNumber(exclusive)
+        /// </summary>
+        /// <param name="minNumber"></param>
+        /// <param name="maxNumber"></param>
+        /// <returns></returns>
         public static int RandomNumber(int minNumber, int maxNumber)
         {
             Random random = new Random();
@@ -23,16 +15,17 @@ namespace WordSearch_PhoenixS
             return index;
         }
 
-
         /// <summary>
         /// returns a row that doesn't have a word in it yet. Can be hopefully be reused for diagonals and columns
         /// </summary>
         /// <param name="wordSearch_version"> should take in only the letter parts of the word search </param>
         /// <param name="wordList"> the list of eight random words it will check for</param>
+        /// <param name="chosenWord"> The char array holding the word being inputed into the current word search </param>
+        /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1) </param>
         /// <returns> returns the index of valid a valid row </returns>
         public static int[] ReturnValidIndex(char[,] wordSearch_version, string[] wordList, char[] chosenWord, int orderType)
         {
-            int[] randomRowsList = WordSearch.ReturnRandomNumberList(8, 9);                           // Creates a list of random rows
+            int[] randomRowsList = WordSearch.ReturnRandomNumberList(20, 20);                           // Creates a list of random rows
             int xIndex = 0;
 
             for (int i = 0; i < randomRowsList.Length; i++)                                             // going through every row in a random assortment
@@ -51,7 +44,7 @@ namespace WordSearch_PhoenixS
                         otherWord_positionMax = letter;                                                 // will return the maxIndex position of the other word
                         otherWord_Length++;                                                             // each iteration adds to the other word length
                     }
-                    if (validRow == false && letter == ' ')
+                    if (validRow == false && letter == ' ')                                             // If the row contains another letter, assume the row is full
                     {
                         for (int j = letter; letter < wordSearch_version.GetLength(1); letter++)
                         {
@@ -101,11 +94,34 @@ namespace WordSearch_PhoenixS
                 }
             }
 
-            Console.WriteLine("Didn't get to the point to get a valid row");
+            //Console.WriteLine("Didn't get a valid row");
             int[] invalidIndex = { -1, -1 };
             return invalidIndex;
         }
+        public static char[,] RotateWordSearch(char[,] currentWordSearch)
+        {
+            char[,] verticalWordSearch = new char[20, 20];
 
+            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+            {
+                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
+                {
+                    verticalWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
+                }
+            }
+            return verticalWordSearch;
+        }
+
+        /// <summary>
+        /// Checks chosenRow that contains already contains a word for if chosenWord can fit inside chosenRow, based on orderType
+        /// </summary>
+        /// <param name="chosenRow"> The row that's being checked</param>
+        /// <param name="chosenWord"> The word that is being placed into the row</param> 
+        /// <param name="positionofOtherWord_min"> The minimum index position of the otherWord</param>
+        /// <param name="positionOfOtherWord_max"> The maximum index position of the otherWord</param>
+        /// <param name="wordSearch_version"> The word search versioin. Can be either Horizontal, Vertical, or Diagonal </param>
+        /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1)</param>
+        /// <returns></returns>
         static int CheckForValidXindex(int chosenRow, char[] chosenWord, int positionofOtherWord_min, int positionOfOtherWord_max, char[,] wordSearch_version, int orderType)
         {
             int xIndex = -1;                                                    // Defaults at -1

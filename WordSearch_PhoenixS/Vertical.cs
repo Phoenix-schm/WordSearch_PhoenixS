@@ -1,19 +1,15 @@
-﻿namespace WordSearch_PhoenixS
+﻿using System.Security;
+
+namespace WordSearch_PhoenixS
 {
-    public class Horizontal : SearchType         // Hosts functions related to horizontal SearchTypes
+    public class Vertical : SearchType
     {
-        /// <summary>
-        /// Outputs a word in the word search from left to right
-        /// </summary>
-        /// <param name="chosenWord"> one of the random words </param>
-        /// <param name="currentWordSearch"> the current word search, modified each time function is used </param>
-        /// <param name="eightCategoryWords"> the list of 8 random words </param>
-        /// <returns></returns>
         public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, string[] eightCategoryWords, int orderType)
         {
             int chosenWord_index = 0;                                                                       // chosenWord index that will be used
-
             currentWordSearch = RotateWordSearch(currentWordSearch);
+
+
             int[] validIndex = ReturnValidIndex(currentWordSearch, eightCategoryWords, chosenWord, orderType);
             int validY = validIndex[0];
             int validX = validIndex[1];
@@ -24,15 +20,15 @@
             }
             else
             {
-                switch(orderType)
+                switch (orderType)
                 {
-                    case 0: // outputs the random word in order into the chosen row starting at ValidX
+                    case 2: // outputs the random word in order into the chosen row starting at ValidX
                         for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis++, chosenWord_index++)
                         {
                             currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
                         }
                         break;
-                    case 1: // outputs the random word in reverse into the chosen row starting at validX
+                    case 3: // outputs the random word in reverse into the chosen row starting at validX
                         for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis--, chosenWord_index++)
                         {
                             currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
@@ -40,6 +36,7 @@
                         break;
                 }
             }
+            WordSearch.DisplayWordSearch(currentWordSearch);
 
             return currentWordSearch;
         }

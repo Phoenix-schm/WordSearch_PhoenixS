@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace WordSearch_PhoenixS
 {
@@ -28,7 +24,7 @@ namespace WordSearch_PhoenixS
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);
+            StreamReader file = new StreamReader(filePath);                                  // Checks if the filePath exists
             string wordsFromFile = file.ReadToEnd();
             file.Close();
 

@@ -107,7 +107,7 @@ namespace WordSearch_PhoenixS
         {
             char[,] newWordSearch = DefaultWordSearch(' ');                                // Creates the default version of the word search first, filled with blanks
             string[] eightRandomWords = RandomWordsFromCategory(inputCategory);         // Choose eight random words from inputCategory
-            
+
             for(int i = 0; i < eightRandomWords.Length; i++)                            // Passes in each random word
             {
                 char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);
@@ -185,7 +185,7 @@ namespace WordSearch_PhoenixS
         /// <returns></returns>
         static char[,] NewWordSearch(char[] word, char[,] currentWordSearchArray, string[] category)
         {
-            int randomNum = SearchType.RandomNumber(0, 4);
+            int randomNum = SearchType.RandomNumber(0, 2);
 
             switch(randomNum)
             {

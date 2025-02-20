@@ -13,7 +13,7 @@
         {
             int chosenWord_index = 0;                                                                       // chosenWord index that will be used
 
-            currentWordSearch = RotateWordSearch(currentWordSearch);
+            //currentWordSearch = RotateWordSearch(currentWordSearch);
             int[] validIndex = ReturnValidIndex(currentWordSearch, eightCategoryWords, chosenWord, orderType);
             int validY = validIndex[0];
             int validX = validIndex[1];
@@ -41,6 +41,7 @@
                 }
             }
 
+            //WordSearch.DisplayWordSearch(currentWordSearch);
             return currentWordSearch;
         }
     }

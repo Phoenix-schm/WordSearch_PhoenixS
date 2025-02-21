@@ -8,9 +8,9 @@ namespace WordSearch_PhoenixS
         {
             int chosenWord_index = 0;                                                                       // chosenWord index that will be used
             currentWordSearch = RotateWordSearch(currentWordSearch);
-            WordSearch.DisplayWordSearch(currentWordSearch);
+            //WordSearch.DisplayWordSearch(currentWordSearch);
 
-            int[] validIndex = ReturnValidIndex(currentWordSearch, eightCategoryWords, chosenWord, orderType);
+            int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
             int validY = validIndex[0];
             int validX = validIndex[1];
 
@@ -37,7 +37,7 @@ namespace WordSearch_PhoenixS
                 }
             }
             // rotates the wordsearch back to its orginal postion
-            currentWordSearch = RotateWordSearch(RotateWordSearch(RotateWordSearch(currentWordSearch)));
+            currentWordSearch = RotateWordSearch(currentWordSearch);
             WordSearch.DisplayWordSearch(currentWordSearch);
 
             return currentWordSearch;

@@ -23,80 +23,71 @@
         /// <param name="chosenWord"> The char array holding the word being inputed into the current word search </param>
         /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1) </param>
         /// <returns> returns the index of valid a valid row </returns>
-        public static int[] ReturnValidIndex(char[,] wordSearch, string[] wordList, char[] chosenWord, int orderType)
+        public static int[] ReturnValidIndex(char[,] wordSearch, char[] chosenWord, int orderType)
         {
+            int amountOfSpaces = wordSearch.GetLength(1);                                             // insure's this can be used for diagonal wordSearch placement
             int amountOfRows = wordSearch.GetLength(0);
-            int amountofLetters = wordSearch.GetLength(1);
-
             int[] randomRowsList = WordSearch.ReturnRandomNumberList(amountOfRows, amountOfRows);                           // Creates a list of random rows
 
             int xIndex = 0;
 
-            for (int i = 0; i < randomRowsList.Length; i++)                                             // going through every row in a random assortment
+            for (int i = 0; i < randomRowsList.Length; i++)                                                       // Going through every row in a random assortment
             {
-                int[] randomLettersList = WordSearch.ReturnRandomNumberList(amountofLetters, amountofLetters);
                 int chosenRow = randomRowsList[i];
 
+                int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);     // Creates a random list of positions
+                
                 bool validRow = false;
 
-                int minimumRange = 0;
-                int maximumRange = 0;
-                int isFilledWithBlanks = 0;
+                int minRange_NewWordPosition = 0;
+                int maxRange_NewWordPosition = 0;
 
-                for (int letter = 0; letter < amountofLetters; letter++)                                    // checks row for if it only contains blank spaces
-                {
-                    if (wordSearch[chosenRow, letter] == ' ')
-                    {
-                        isFilledWithBlanks++;
-                    }
-                    if (isFilledWithBlanks >= 19)
-                    {
-                        validRow = true;
-                        maximumRange = 19 - chosenWord.Length;
-                        break;
-                    }
-                }
-                
+                maxRange_NewWordPosition = CheckRowIsEntirelyBlank(chosenRow, wordSearch, ref validRow, maxRange_NewWordPosition, chosenWord);
 
-                for (int j = randomLettersList[0];  j < randomLettersList.Length; j++)                      // Picks a random place in the row to start at
+                for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place in the row to start at
                 {
-                    if (validRow == true)
+                    if (validRow == true)                                                                       // if the CheckRowIsEntirelyBlank() returned true
                     {
                         break;
                     }
                     int additionalRange = 0;
                     int canFitHere = 0;
-                    for (int letter = j; letter < wordSearch.GetLength(1); letter++)                        // checking every letter from that starting point
+
+                    for (int letter = randomPosition; letter < amountOfSpaces; letter++)                        // checking every letter from that randomPosition
                     {
-                        if (wordSearch[chosenRow, letter] == ' ' && canFitHere < chosenWord.Length)          // if there's blank spaces
+                        if (wordSearch[chosenRow, letter] == ' ' && canFitHere < chosenWord.Length)             // if there's blank spaces
                         {
                             canFitHere++;
                         }
-                        else if (wordSearch[chosenRow, letter] != ' ' && canFitHere >= chosenWord.Length)    // if the there is a letter, but the word can fit inside
-                        {
-                            additionalRange += canFitHere;
-                            // defaults to in order index
-                            minimumRange = letter - additionalRange;
-                            maximumRange = letter - chosenWord.Length;
-                            validRow = true;
-                            break;
-                        }
-                        else if (wordSearch[chosenRow, letter] == ' ' && letter < wordSearch.GetLength(1) && canFitHere >= chosenWord.Length)
+                        else if (wordSearch[chosenRow, letter] == ' ' && letter < amountOfSpaces && canFitHere >= chosenWord.Length) // if there's still room in the row and the word can already fit
                         {
                             additionalRange++;
                         }
-                        else if (wordSearch[chosenRow, letter] == ' ' && canFitHere >= chosenWord.Length)
+                        else if (wordSearch[chosenRow, letter] != ' ' && canFitHere >= chosenWord.Length)       // if the there is a letter, but the word can fit beforehand
                         {
+                            Console.WriteLine("I'm going to be between a letter");
                             additionalRange += canFitHere;
                             // defaults to in order index
-                            minimumRange = letter - additionalRange;
-                            maximumRange = letter - chosenWord.Length;
+                            minRange_NewWordPosition = letter - additionalRange;
+                            maxRange_NewWordPosition = letter - chosenWord.Length;
                             validRow = true;
                             break;
                         }
-                        else                                                                                // if there's a letter
+                        else if (canFitHere >= chosenWord.Length)                                               // There's no more space, but the word can fit          
                         {
+                            Console.WriteLine("there's no more space but I can still fit");
+                            additionalRange += canFitHere;
+                            // defaults to in order index
+                            minRange_NewWordPosition = letter - additionalRange;
+                            maxRange_NewWordPosition = letter - chosenWord.Length;
+                            validRow = true;
+                            break;
+                        }
+                        else                                                                                     // if there's no room for the new word
+                        {
+                            Console.WriteLine("There was no room this time");
                             canFitHere = 0;
+                            additionalRange = 0;
                             validRow = false;
                             break;
                         }
@@ -113,12 +104,12 @@
                     switch (orderType)
                     {
                         case 0:                 // in order
-                            xIndex = RandomNumber(minimumRange, maximumRange);
+                            xIndex = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
                             break;
                         case 1:                 // in reverse
-                            minimumRange += chosenWord.Length - 1;
-                            maximumRange += chosenWord.Length;
-                            xIndex = RandomNumber(minimumRange, maximumRange);
+                            minRange_NewWordPosition += chosenWord.Length - 1;
+                            maxRange_NewWordPosition += chosenWord.Length;
+                            xIndex = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
                             //xIndex = validXIndex + chosenWord.Length - 1;
                             break;
                     }
@@ -145,6 +136,28 @@
                 }
             }
             return verticalWordSearch;
+        }
+
+        static int CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref bool rowValidity, int maxRange, char[] _chosenWord)
+        {
+            int isFilledWithBlanks = 0;
+            int rowLength = _wordSearch.GetLength(1);
+
+            for (int letter = 0; letter < rowLength; letter++)                                  // checks row for only contains blank spaces
+            {
+                if (_wordSearch[_chosenRow, letter] == ' ')
+                {
+                    isFilledWithBlanks++;
+                }
+                if (isFilledWithBlanks > 19)                                                    // if the whole row contains blanks
+                {
+                    rowValidity = true;
+                    maxRange = 19 - _chosenWord.Length;
+                    break;
+                }                                                                               // else, maxRange doesn't change
+            }
+
+            return maxRange;
         }
     }
 }

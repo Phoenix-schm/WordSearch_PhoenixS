@@ -6,40 +6,40 @@ namespace WordSearch_PhoenixS
         /// <summary>
         /// Checks user input for string and int's for valid inputs
         /// </summary>
-        /// <param name="userInputsList"> the list of categories the player can choose from</param>
+        /// <param name="validInputList"> the list of categories the player can choose from</param>
         /// <returns></returns>
-        public static string InputCheck(string[] userInputsList)
+        public static string InputCheck(string[] validInputList)
         {
             bool invalidInput = true;
 
-            while (invalidInput)                                        // no way to break out of whileloop unless the input is valid
+            while (invalidInput)                                                    // no way to break out of whileloop unless the input is valid
             {
-                string? input = Console.ReadLine();
+                string? userInput = Console.ReadLine();
 
-                if (input != null)
+                if (userInput != null)
                 {
-                    foreach (string choice in userInputsList)
+                    foreach (string choice in validInputList)                       // checks for if userInput is one of the listed valid inputs (string)
                     {
-                        if (input.ToLower() == choice.ToLower())
+                        if (userInput.ToLower() == choice.ToLower())
                         {
-                            return input;
+                            return userInput;
                         }
                     }
-                    for (int i = 0; i <= userInputsList.Length + 1; i++)
+                    for (int i = 0; i <= validInputList.Length + 1; i++)            // checks if the user is a valid number
                     {
-                        if (input == i.ToString())
+                        if (userInput == i.ToString())
                         {
-                            return input;
+                            return userInput;
                         }
                     }
-                    Console.WriteLine("Invalid Input. Try Again.");     // Occcurs only if the other for/each loops don't catch anything
+                    Console.WriteLine("Invalid Input. Try Again.");                 // Occcurs only if the other for/each loops don't catch anything
                 }
                 else
                 {
                     Console.WriteLine("Cannot input nothing. Try again.");
                 }
             }
-            return "Invalid input. Try again";
+            return "Invalid input. Wait what?";                                     // Shouldn't occur unless something went wrong
 
         }
     }

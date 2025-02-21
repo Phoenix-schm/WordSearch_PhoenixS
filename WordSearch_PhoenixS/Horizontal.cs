@@ -41,7 +41,7 @@
                 }
             }
 
-            //WordSearch.DisplayWordSearch(currentWordSearch);
+            WordSearch.DisplayWordSearch(currentWordSearch);
             return currentWordSearch;
         }
     }

@@ -58,6 +58,9 @@ namespace WordSearch_PhoenixS
             switch (input)
             {
                 case "dog nicknames":           case "1":
+                    string[] dogNicknames = CategoryList.dogNicknames;
+                    string[] eightRandomWords = RandomWordsFromCategory(dogNicknames);
+                    
                     CategoryWordSearchCreation(CategoryList.dogNicknames);
                     break;
                 case "colors":                  case "2":
@@ -105,21 +108,17 @@ namespace WordSearch_PhoenixS
         /// <param name="inputCategory"> the category the user chose </param>
         static void CategoryWordSearchCreation(string[] inputCategory)
         {
-            char[,] newWordSearch = DefaultWordSearch(' ');                                // Creates the default version of the word search first, filled with blanks
-            string[] eightRandomWords = RandomWordsFromCategory(inputCategory);         // Choose eight random words from inputCategory
+            char[,] newWordSearch = DefaultWordSearch(' ');                                 // Creates the default version of the word search first, filled with blanks
+            string[] eightRandomWords = RandomWordsFromCategory(inputCategory);             // Choose eight random words from inputCategory
 
-            for(int i = 0; i < eightRandomWords.Length; i++)                            // Passes in each random word
+            for(int i = 0; i < eightRandomWords.Length; i++)                                // Passes in each random word
             {
-                char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);
+                char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);            // chooses a random word from the list
                 newWordSearch = NewWordSearch(randomWord, newWordSearch, eightRandomWords); // Each time a word is passed in it creates a new word search
             }
 
             Console.WriteLine("Word Search Puzzle: ");
             DisplayWordSearch(newWordSearch);
-
-            //char[,] verticalWordSearch = Vertical.RotateWordSearch(newWordSearch);
-            //DisplayWordSearch(verticalWordSearch);
-
 
             Console.WriteLine();
             Console.WriteLine("Search for these words:");
@@ -171,8 +170,8 @@ namespace WordSearch_PhoenixS
         /// <returns> string array holding numbers from "01" 0 "20" </returns>
         static string[] NumberedAxisInWordSearch()
         {
-            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
-                                     "11","12","13","14","15","16","17","18","19","20"};
+            string[] NumberedAxis = {"00","01","02","03","04","05","06","07","08","9",
+                                     "10","11","12","13","14","15","16","17","18","19"};
             return NumberedAxis;
         }
 
@@ -185,15 +184,21 @@ namespace WordSearch_PhoenixS
         /// <returns></returns>
         static char[,] NewWordSearch(char[] word, char[,] currentWordSearchArray, string[] category)
         {
-            int randomNum = SearchType.RandomNumber(0, 2);
+            int SearchType = WordSearch_PhoenixS.SearchType.RandomNumber(0, 4);
 
-            switch(randomNum)
+            switch(SearchType)
             {
-                case 0:  case 1:            // horizontal outputs
-                    currentWordSearchArray = Horizontal.OutputWordInWordSearch(word, currentWordSearchArray, category, randomNum);
+                case 0:                     // Horizontal in Order
+                    currentWordSearchArray = Horizontal.OutputWordInWordSearch(word, currentWordSearchArray, category, 0);
                     return currentWordSearchArray;
-                case 2:  case 3:            // Vertical outpus
-                    currentWordSearchArray = Vertical.OutputWordInWordSearch(word, currentWordSearchArray, category, randomNum);
+                case 1:                     // horizontal in reverse
+                    currentWordSearchArray = Horizontal.OutputWordInWordSearch(word, currentWordSearchArray, category, 1);
+                    return currentWordSearchArray;
+                case 2:
+                    currentWordSearchArray = Vertical.OutputWordInWordSearch(word, currentWordSearchArray, category, 0);
+                    return currentWordSearchArray;
+                case 3:            // Vertical outpus
+                    currentWordSearchArray = Vertical.OutputWordInWordSearch(word, currentWordSearchArray, category, 1);
                     return currentWordSearchArray;
                 case 4:  case 5:        // '/' diagonal 
                     return currentWordSearchArray;                
@@ -267,16 +272,16 @@ namespace WordSearch_PhoenixS
         /// <summary>
         /// Creates a list of random numbers with no duplicates
         /// </summary>
-        /// <param name="maxIndex"> The maximum amount of integers that can be held in the array </param>
+        /// <param name="maxNumberInList"> The maximum amount of integers that can be held in the array </param>
         /// <param name="maxRandomNumber"> Array will be filled with numbers betwee 0 (inclusive) and maxRandomNumber (exclusive)</param>
         /// <returns></returns>
-        public static int[] ReturnRandomNumberList(int maxIndex, int maxRandomNumber)
+        public static int[] ReturnRandomNumberList(int maxNumberInList, int maxRandomNumber)
         {
             int index = 0;
-            int[] randomIntList = new int[maxIndex];
+            int[] randomIntList = new int[maxNumberInList];
             int useZeroOnce = 0;
 
-            while (index < maxIndex)
+            while (index < maxNumberInList)
             {
                 int randomInt = SearchType.RandomNumber(0, maxRandomNumber);
 
@@ -291,7 +296,7 @@ namespace WordSearch_PhoenixS
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;
                     }
-                    else if (randomInt != 0)
+                    else if (randomInt != 0)                                                    
                     {
                         randomIntList[index++] = randomInt;
                     }

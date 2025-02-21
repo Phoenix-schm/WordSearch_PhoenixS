@@ -24,7 +24,7 @@ namespace WordSearch_PhoenixS
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);                                  // Checks if the filePath exists
+            StreamReader file = new StreamReader(filePath);                                   // Creates the file path if it doesn't exist
             string wordsFromFile = file.ReadToEnd();
             file.Close();
 

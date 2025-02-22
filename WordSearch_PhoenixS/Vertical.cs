@@ -38,7 +38,7 @@ namespace WordSearch_PhoenixS
             }
             // rotates the wordsearch back to its orginal postion
             currentWordSearch = RotateWordSearch(currentWordSearch);
-            WordSearch.DisplayWordSearch(currentWordSearch);
+           // WordSearch.DisplayWordSearch(currentWordSearch);
 
             return currentWordSearch;
         }

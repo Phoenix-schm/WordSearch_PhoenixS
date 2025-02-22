@@ -111,14 +111,18 @@ namespace WordSearch_PhoenixS
             char[,] newWordSearch = DefaultWordSearch(' ');                                 // Creates the default version of the word search first, filled with blanks
             string[] eightRandomWords = RandomWordsFromCategory(inputCategory);             // Choose eight random words from inputCategory
 
+
             for(int i = 0; i < eightRandomWords.Length; i++)                                // Passes in each random word
             {
                 char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);            // chooses a random word from the list
                 newWordSearch = NewWordSearch(randomWord, newWordSearch, eightRandomWords); // Each time a word is passed in it creates a new word search
             }
 
-            Console.WriteLine("Word Search Puzzle: ");
             DisplayWordSearch(newWordSearch);
+
+            SearchType.DiagonalWordSearch(newWordSearch);
+
+            Console.WriteLine("Word Search Puzzle: ");
 
             Console.WriteLine();
             Console.WriteLine("Search for these words:");
@@ -213,7 +217,7 @@ namespace WordSearch_PhoenixS
         /// Creates the default word search filled with blank spaces
         /// </summary>
         /// <returns> A 20 by 20 2-dimensional character array </returns>
-        static char[,] DefaultWordSearch(char fillWordSearch)
+        public static char[,] DefaultWordSearch(char fillWordSearch)
         {
             char[,] defaultWordSearch = new char[20, 20];
 
@@ -261,7 +265,7 @@ namespace WordSearch_PhoenixS
         /// Outputs a random letter from the alphabet (excludes X, Y, Z) uppercase
         /// </summary>
         /// <returns></returns>
-        static char RandomLetter()
+        public static char RandomLetter()
         {
             char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
                                 'R', 'S', 'T', 'U', 'V', 'W' };

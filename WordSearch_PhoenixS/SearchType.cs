@@ -65,7 +65,6 @@
                         }
                         else if (wordSearch[chosenRow, letter] != ' ' && canFitHere >= chosenWord.Length)       // if the there is a letter, but the word can fit beforehand
                         {
-                            Console.WriteLine("I'm going to be between a letter");
                             additionalRange += canFitHere;
                             // defaults to in order index
                             minRange_NewWordPosition = letter - additionalRange;
@@ -75,7 +74,6 @@
                         }
                         else if (canFitHere >= chosenWord.Length)                                               // There's no more space, but the word can fit          
                         {
-                            Console.WriteLine("there's no more space but I can still fit");
                             additionalRange += canFitHere;
                             // defaults to in order index
                             minRange_NewWordPosition = letter - additionalRange;
@@ -85,7 +83,6 @@
                         }
                         else                                                                                     // if there's no room for the new word
                         {
-                            Console.WriteLine("There was no room this time");
                             canFitHere = 0;
                             additionalRange = 0;
                             validRow = false;
@@ -124,20 +121,6 @@
             int[] invalidIndex = { -1, -1 };
             return invalidIndex;
         }
-        public static char[,] RotateWordSearch(char[,] currentWordSearch)
-        {
-            char[,] verticalWordSearch = new char[20, 20];
-
-            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
-            {
-                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
-                {
-                    verticalWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
-                }
-            }
-            return verticalWordSearch;
-        }
-
         static int CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref bool rowValidity, int maxRange, char[] _chosenWord)
         {
             int isFilledWithBlanks = 0;
@@ -159,5 +142,79 @@
 
             return maxRange;
         }
+        public static char[,] RotateWordSearch(char[,] currentWordSearch)
+        {
+            char[,] verticalWordSearch = new char[20, 20];
+
+            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+            {
+                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
+                {
+                    verticalWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
+                }
+            }
+            return verticalWordSearch;
+        }
+        public static char[,] DiagonalWordSearch(char[,] currentWordSearch)
+        {
+            char[,] diagonalWordSearch = new char[40, 20];
+            int iterator = 0;
+
+            for (int i = 0; i < diagonalWordSearch.GetLength(0); i++)
+            {
+                if (i >= 20)
+                {
+                    iterator++;
+                }
+
+                for (int y_axis = 0; y_axis< currentWordSearch.GetLength(0); y_axis++)
+                {
+                    for (int x_axis = 0; x_axis< currentWordSearch.GetLength(1); x_axis++)
+                    {
+                        if (y_axis + x_axis == i && i < 20)
+                        {
+                            diagonalWordSearch[i, x_axis] = currentWordSearch[y_axis, x_axis];
+                        }
+                        else if (y_axis + x_axis == i && i >= 20)
+                        {
+                            diagonalWordSearch[i, x_axis - iterator] = currentWordSearch[y_axis, x_axis];
+                        }
+
+                    }
+                }
+                for (int x_axisDiagonal = 0; x_axisDiagonal < diagonalWordSearch.GetLength(1); x_axisDiagonal++)
+                {
+                    if (diagonalWordSearch[i, x_axisDiagonal] != ' ')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        diagonalWordSearch[i, x_axisDiagonal] = '0';
+                    }
+                }
+            }
+
+            for (int y_axis = 0; y_axis < diagonalWordSearch.GetLength(0); y_axis++ )
+            {
+                for (int x_axis = 0; x_axis < diagonalWordSearch.GetLength(1); x_axis++)
+                {
+                    if (Char.IsLetter(diagonalWordSearch[y_axis, x_axis]))                               // if there's a letter, turn it green (for debugging purposes)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" " + diagonalWordSearch[y_axis, x_axis] + " ");
+                    }
+                    else                                                                        // else, fill the word search with random letters
+                    {
+                        Console.ResetColor();
+                        Console.Write(" " + diagonalWordSearch[y_axis, x_axis] + " ");
+                    }
+                }
+                Console.WriteLine();
+            }
+            
+            return diagonalWordSearch;
+        }
+
     }
 }

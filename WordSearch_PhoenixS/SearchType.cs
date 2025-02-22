@@ -14,6 +14,94 @@
             int index = random.Next(minNumber, maxNumber);
             return index;
         }
+        public static char[,] RotateWordSearch(char[,] currentWordSearch)
+        {
+            char[,] newWordSearch = new char[20, 20];
+
+            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+            {
+                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
+                {
+                    newWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
+                }
+            }
+            return newWordSearch;
+        }
+        public static char[,] ReverseWordSearch(char[,] currentWordSearch)
+        {
+            char[,] newWordsearch = new char[20, 20];
+
+            for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++ )
+            {
+                int reversalX_axis = currentWordSearch.GetUpperBound(1);
+                for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+                {
+                    newWordsearch[y_axis, x_axis] = currentWordSearch[y_axis, reversalX_axis--];
+                }
+            }
+            return newWordsearch;
+        }
+
+        public static char[,] TransformToDiagonalWordSearch(char[,] currentWordSearch, int diagonalType)
+        {
+            if (diagonalType == 6 || diagonalType == 7)
+            {
+                currentWordSearch = ReverseWordSearch(currentWordSearch);
+            }
+
+            char[,] diagonalWordSearch = new char[40, 20];
+
+            for (int i = 0; i < diagonalWordSearch.GetLength(0); i++)
+            {
+                for (int y_axis = 0; y_axis< currentWordSearch.GetLength(0); y_axis++)
+                {
+                    for (int x_axis = 0; x_axis< currentWordSearch.GetLength(1); x_axis++)
+                    {
+                        if (y_axis + x_axis == i)
+                        {
+                            diagonalWordSearch[i, x_axis] = currentWordSearch[y_axis, x_axis];
+                        }
+                    }
+                }
+                //for (int x_axisDiagonal = 0; x_axisDiagonal < diagonalWordSearch.GetLength(1); x_axisDiagonal++)
+                //{
+                //    if (diagonalWordSearch[i, x_axisDiagonal] != ' ')
+                //    {
+                //        continue;
+                //    }
+                //    else
+                //    {
+                //        diagonalWordSearch[i, x_axisDiagonal] = '0';
+                //    }
+                //}
+            }
+
+            return diagonalWordSearch;
+        }
+        public static char[,] RevertDiagonalWordSearchToNormal(char[,] diagonalWordSearch, int diagonalType)
+        {
+            char[,] normalWordSearch = new char[20,20];
+
+            for (int y_axis = 0; y_axis < normalWordSearch.GetLength(0); y_axis++)
+            {
+                for (int x_axis = 0; x_axis < normalWordSearch.GetLength(1); x_axis++)
+                {
+                    for (int i = 0; i < diagonalWordSearch.GetLength(0); i++)
+                    {
+                        if (y_axis == i - x_axis)
+                        {
+                            normalWordSearch[y_axis, x_axis] = diagonalWordSearch[i, x_axis];
+                        }
+                    }
+                }
+            }
+            if (diagonalType == 6 || diagonalType == 7)                                              // reverses the transformation completely
+            {
+                normalWordSearch = ReverseWordSearch(normalWordSearch);
+            }
+
+            return normalWordSearch;
+        }
 
         /// <summary>
         /// returns a row that doesn't have a word in it yet. Can be hopefully be reused for diagonals and columns
@@ -23,7 +111,7 @@
         /// <param name="chosenWord"> The char array holding the word being inputed into the current word search </param>
         /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1) </param>
         /// <returns> returns the index of valid a valid row </returns>
-        public static int[] ReturnValidIndex(char[,] wordSearch, char[] chosenWord, int orderType)
+        static int[] ReturnValidIndex(char[,] wordSearch, char[] chosenWord, int orderType)
         {
             int amountOfSpaces = wordSearch.GetLength(1);                                             // insure's this can be used for diagonal wordSearch placement
             int amountOfRows = wordSearch.GetLength(0);
@@ -132,89 +220,47 @@
                 {
                     isFilledWithBlanks++;
                 }
-                if (isFilledWithBlanks > 19)                                                    // if the whole row contains blanks
+                if (isFilledWithBlanks > rowLength - 1)                                                    // if the whole row contains blanks
                 {
                     rowValidity = true;
-                    maxRange = 19 - _chosenWord.Length;
+                    maxRange = rowLength - 1 - _chosenWord.Length;
                     break;
                 }                                                                               // else, maxRange doesn't change
             }
 
             return maxRange;
         }
-        public static char[,] RotateWordSearch(char[,] currentWordSearch)
+
+        public static char[,] PlaceChosenWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType)
         {
-            char[,] verticalWordSearch = new char[20, 20];
+            int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
+            int validY = validIndex[0];
+            int validX = validIndex[1];
 
-            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+            if (validY == -1 || validX == -1)
             {
-                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
-                {
-                    verticalWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
-                }
+                Console.WriteLine("No valid rows to choose from");
             }
-            return verticalWordSearch;
-        }
-        public static char[,] DiagonalWordSearch(char[,] currentWordSearch)
-        {
-            char[,] diagonalWordSearch = new char[40, 20];
-            int iterator = 0;
-
-            for (int i = 0; i < diagonalWordSearch.GetLength(0); i++)
+            else
             {
-                if (i >= 20)
+                int chosenWord_index = 0;                                                                       // chosenWord index that will be used
+                switch (orderType)
                 {
-                    iterator++;
-                }
-
-                for (int y_axis = 0; y_axis< currentWordSearch.GetLength(0); y_axis++)
-                {
-                    for (int x_axis = 0; x_axis< currentWordSearch.GetLength(1); x_axis++)
-                    {
-                        if (y_axis + x_axis == i && i < 20)
+                    case 0: // outputs the random word in order into the chosen row starting at ValidX
+                        for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis++, chosenWord_index++)
                         {
-                            diagonalWordSearch[i, x_axis] = currentWordSearch[y_axis, x_axis];
+                            currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
                         }
-                        else if (y_axis + x_axis == i && i >= 20)
+                        break;
+                    case 1: // outputs the random word in reverse into the chosen row starting at validX
+                        for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis--, chosenWord_index++)
                         {
-                            diagonalWordSearch[i, x_axis - iterator] = currentWordSearch[y_axis, x_axis];
+                            currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
                         }
-
-                    }
-                }
-                for (int x_axisDiagonal = 0; x_axisDiagonal < diagonalWordSearch.GetLength(1); x_axisDiagonal++)
-                {
-                    if (diagonalWordSearch[i, x_axisDiagonal] != ' ')
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        diagonalWordSearch[i, x_axisDiagonal] = '0';
-                    }
+                        break;
                 }
             }
-
-            for (int y_axis = 0; y_axis < diagonalWordSearch.GetLength(0); y_axis++ )
-            {
-                for (int x_axis = 0; x_axis < diagonalWordSearch.GetLength(1); x_axis++)
-                {
-                    if (Char.IsLetter(diagonalWordSearch[y_axis, x_axis]))                               // if there's a letter, turn it green (for debugging purposes)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" " + diagonalWordSearch[y_axis, x_axis] + " ");
-                    }
-                    else                                                                        // else, fill the word search with random letters
-                    {
-                        Console.ResetColor();
-                        Console.Write(" " + diagonalWordSearch[y_axis, x_axis] + " ");
-                    }
-                }
-                Console.WriteLine();
-            }
-            
-            return diagonalWordSearch;
+            return currentWordSearch;
         }
-
     }
 }

@@ -120,8 +120,6 @@ namespace WordSearch_PhoenixS
 
             DisplayWordSearch(newWordSearch);
 
-            SearchType.DiagonalWordSearch(newWordSearch);
-
             Console.WriteLine("Word Search Puzzle: ");
 
             Console.WriteLine();
@@ -183,33 +181,41 @@ namespace WordSearch_PhoenixS
         /// Adds 'word' to the word search. Randomly chooses how the word will be displayed in the word search
         /// </summary>
         /// <param name="word"> Word to be added to the word search</param>
-        /// <param name="currentWordSearchArray"> The current iteratioin of the word search</param>
+        /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
         /// <param name="category"> The string array of the category the user chose</param>
         /// <returns></returns>
-        static char[,] NewWordSearch(char[] word, char[,] currentWordSearchArray, string[] category)
+        static char[,] NewWordSearch(char[] word, char[,] currentWordSearch, string[] category)
         {
-            int SearchType = WordSearch_PhoenixS.SearchType.RandomNumber(0, 4);
+            int searchType = SearchType.RandomNumber(4, 8);
 
-            switch(SearchType)
+            switch(searchType)
             {
                 case 0:                     // Horizontal in Order
-                    currentWordSearchArray = Horizontal.OutputWordInWordSearch(word, currentWordSearchArray, category, 0);
-                    return currentWordSearchArray;
+                    currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 0);              // Horizontal, in order
+                    return currentWordSearch;
                 case 1:                     // horizontal in reverse
-                    currentWordSearchArray = Horizontal.OutputWordInWordSearch(word, currentWordSearchArray, category, 1);
-                    return currentWordSearchArray;
+                    currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 1);              // Horizontal, in reverse
+                    return currentWordSearch;
                 case 2:
-                    currentWordSearchArray = Vertical.OutputWordInWordSearch(word, currentWordSearchArray, category, 0);
-                    return currentWordSearchArray;
+                    currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 0);                // Vertical, in order
+                    return currentWordSearch;
                 case 3:            // Vertical outpus
-                    currentWordSearchArray = Vertical.OutputWordInWordSearch(word, currentWordSearchArray, category, 1);
-                    return currentWordSearchArray;
-                case 4:  case 5:        // '/' diagonal 
-                    return currentWordSearchArray;                
-                case 6:  case 7:        // '\' diagonal
-                    return currentWordSearchArray;
+                    currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 1);                // Vertical, in reverse
+                    return currentWordSearch;
+                case 4:             
+                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchType);    // Diagonal '/', in order
+                    return currentWordSearch;
+                case 5:
+                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchType);    // Diagonal '/', in reverse
+                    return currentWordSearch;
+                case 6: 
+                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchType);    // Diagonal '\', in order
+                    return currentWordSearch;
+                case 7:
+                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchType);    // Diagonal '/', in reverse
+                    return currentWordSearch;
                 default:
-                    return currentWordSearchArray;
+                    return currentWordSearch;
             }
         }
         

@@ -45,6 +45,7 @@ namespace WordSearch_PhoenixS
         public static string CheckWordChoice(string[] eightCategoryWord)
         {
             bool validInput = false;
+            Console.Write("Type the word when you've found it in the wordsearch: ");
 
             while (!validInput)                                     // no way to break out of while
             {
@@ -56,7 +57,7 @@ namespace WordSearch_PhoenixS
                     {
                         if (userInput.ToUpper() == word)
                         {
-                            return userInput;
+                            return word;
                         }
                     }
                     Console.WriteLine("That is not a word in the word search");

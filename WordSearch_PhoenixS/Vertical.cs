@@ -21,5 +21,12 @@ namespace WordSearch_PhoenixS
 
             return currentWordSearch;
         }
+
+        public static bool CheckUserCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord)
+        {
+            wordSearch = RotateWordSearch(wordSearch);
+            bool isValidCoordinates = CheckCoordinates(userX, userY, wordSearch, chosenWord, false);        // reverse x and y to accomodate rotation 
+            return isValidCoordinates;
+        }
     }
 }

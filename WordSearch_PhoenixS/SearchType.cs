@@ -194,7 +194,6 @@
    
             }
 
-            Console.WriteLine("Didn't get a valid row");
             int[] invalidIndex = { -1, -1 };
             return invalidIndex;
         }
@@ -252,6 +251,48 @@
                 }
             }
             return currentWordSearch;
+        }
+        public static bool CheckCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord, bool isDiagonal)
+        {
+            char[] chosenWordChar = chosenWord.ToCharArray();
+            int chosenWordIndex = 0;
+            int y_axis = userY;
+
+            if (isDiagonal == true)
+            {
+                y_axis = userY + userX ;
+            }
+
+            for (int x_axis = userX; x_axis < wordSearch.GetLength(1); x_axis++)          // checks for word in order
+            {
+                char letterInWordSearch = wordSearch[y_axis, x_axis];
+                char letterInChosenWord = chosenWord[chosenWordIndex];
+                if (letterInWordSearch == letterInChosenWord)
+                {
+                    chosenWordIndex++;
+                }
+                if (chosenWordIndex == chosenWordChar.Length - 1)
+                {
+                    return true;
+                }
+            }
+            // reset variable checkers
+            chosenWordIndex = 0;
+            for (int x_axis = userX; x_axis >= wordSearch.GetLowerBound(1); x_axis--)          // checks for word in reverse
+            {
+                char letterInWordSearch = wordSearch[y_axis, x_axis];
+                char letterInChosenWord = chosenWord[chosenWordIndex];
+
+                if (letterInWordSearch == letterInChosenWord)
+                {
+                    chosenWordIndex++;
+                }
+                if (chosenWordIndex == chosenWordChar.Length - 1)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -28,9 +28,10 @@
                 validInput = validInput.ToLower();
 
                 PlayWordSearchFromCategory(validInput, ref isPlaying, validUserInputs);
+                Console.WriteLine();
                 Console.WriteLine("Congrats! You made it through the word search");
-                Console.WriteLine("-----------------------------");
-                Console.WriteLine("Type 'Show List' to show the categories again.");
+                Console.WriteLine(" \n ----------------------------- \n");
+                DisplayValidUserInputs(validUserInputs);
             }
         }
 
@@ -61,23 +62,31 @@
                     PlayWordSearch_Game(CategoryList.dogNicknames, wordSearch);
                     break;
                 case "colors":                  case "2":
-
+                    PlayWordSearch_Game(CategoryList.colors, wordSearch);
                     break;
                 case "poisonous flowers":       case "3":
+                    PlayWordSearch_Game(CategoryList.poisonPlants, wordSearch);
                     break;
                 case "things in my room":       case "4":
+                    PlayWordSearch_Game(CategoryList.thingsInMyRoom, wordSearch);
                     break;
                 case "things to eat":           case "5":
+                    PlayWordSearch_Game(CategoryList.thingsToEat, wordSearch);
                     break;
                 case "fabric types":            case "6":
+                    PlayWordSearch_Game(CategoryList.fabrictypes, wordSearch);
                     break;
                 case "manga names":             case "7":
+                    PlayWordSearch_Game(CategoryList.mangaList, wordSearch);
                     break;
                 case "fonts":                   case "8":
+                    PlayWordSearch_Game(CategoryList.fonta, wordSearch);
                     break;
                 case "dnd monsters":            case "9":
+                    PlayWordSearch_Game(CategoryList.dndMonsters, wordSearch);
                     break;
                 case "periodic table elements":     case "10":
+                    PlayWordSearch_Game(CategoryList.periodicElements, wordSearch);
                     break;
                 case "quit":                    case "11":
                     boolean = false;
@@ -95,20 +104,7 @@
             string[] eightRandomWords = RandomWordsFromCategory(category);
             wordSearch = CategoryWordSearchCreation(eightRandomWords, wordSearch);
 
-            Console.WriteLine("Word Search Puzzle: ");
-            DisplayWordSearch(wordSearch);
-            Console.WriteLine();
-            Console.WriteLine("Search for these words:");
-            foreach (string word in eightRandomWords)
-            {
-                Console.WriteLine(word);
-            }
-
-            Console.Write("Type the word when you've found it in the wordsearch: ");
-            string? userInput = UserInput.CheckWordChoice(eightRandomWords);
-
-            int userY_axis = UserInput.CheckIfValidNumber("y");
-            int userX_axis = UserInput.CheckIfValidNumber("x");
+            FindTheWord(wordSearch, eightRandomWords);
         }
 
         /// <summary>
@@ -237,6 +233,59 @@
                 }
             }
             return defaultWordSearch;
+        }
+        static void FindTheWord(char[,] wordSearch,string[] randomWordsList)
+        {
+            bool isValid;
+            foreach(string word in randomWordsList)
+            {
+                do
+                {
+                    Console.WriteLine("Word Search Puzzle: ");
+                    DisplayWordSearch(wordSearch);
+                    Console.WriteLine();
+                    Console.WriteLine("Search for these words:");
+                    foreach (string displayWord in randomWordsList)
+                    {
+                        Console.WriteLine(displayWord);
+                    }
+
+                    string? userInput = UserInput.CheckWordChoice(randomWordsList);
+
+                    int userY_axis = UserInput.CheckIfValidNumber("y");
+                    int userX_axis = UserInput.CheckIfValidNumber("x"); 
+                    isValid = CheckUserCoordinates(userY_axis, userX_axis, wordSearch, userInput);
+                    if (!isValid)
+                    {
+                        Console.WriteLine("That wasn't a valid coordinate. Try again.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < randomWordsList.Length; i++)
+                        {
+                            if (userInput == randomWordsList[i])
+                            {
+                                randomWordsList[i] = "";
+                            }
+                        }
+                    }
+                } while (!isValid);
+
+            }
+        }
+        static bool CheckUserCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord)
+        {
+            bool isValid = Horizontal.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+            if (!isValid)
+            {
+                isValid = Vertical.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+                if (!isValid)
+                {
+                    isValid = Diagonal.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+                }
+            }
+            return isValid;
+
         }
 
         /// <summary>

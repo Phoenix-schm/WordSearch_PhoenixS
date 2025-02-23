@@ -110,10 +110,5 @@ namespace WordSearch_PhoenixS
             Console.WriteLine("Something bad happened here.");
             return -1;
         }
-
-        public static void CheckLetterIndex(int y, int x)
-        {
-
-        }
     }
 }

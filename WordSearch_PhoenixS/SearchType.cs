@@ -252,9 +252,9 @@
             }
             return currentWordSearch;
         }
-        public static bool CheckCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord, bool isDiagonal)
+        public static bool CheckCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord, bool isDiagonal)
         {
-            char[] chosenWordChar = chosenWord.ToCharArray();
+            //char[] chosenWordChar = chosenWord.ToCharArray();
             int chosenWordIndex = 0;
             int y_axis = userY;
 
@@ -265,14 +265,17 @@
 
             for (int x_axis = userX; x_axis < wordSearch.GetLength(1); x_axis++)          // checks for word in order
             {
-                char letterInWordSearch = wordSearch[y_axis, x_axis];
-                char letterInChosenWord = chosenWord[chosenWordIndex];
-                if (letterInWordSearch == letterInChosenWord)
+                if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])
                 {
                     chosenWordIndex++;
                 }
-                if (chosenWordIndex == chosenWordChar.Length - 1)
+                if (chosenWordIndex == chosenWord.Length - 1)
                 {
+                    chosenWordIndex = 0;
+                    for (int chosenWordArea = x_axis + 1; chosenWordIndex < chosenWord.Length; chosenWordArea--, chosenWordIndex++)
+                    {
+                        wordSearch[y_axis, chosenWordArea] = '@';
+                    }
                     return true;
                 }
             }
@@ -280,15 +283,17 @@
             chosenWordIndex = 0;
             for (int x_axis = userX; x_axis >= wordSearch.GetLowerBound(1); x_axis--)          // checks for word in reverse
             {
-                char letterInWordSearch = wordSearch[y_axis, x_axis];
-                char letterInChosenWord = chosenWord[chosenWordIndex];
-
-                if (letterInWordSearch == letterInChosenWord)
+                if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])
                 {
                     chosenWordIndex++;
                 }
-                if (chosenWordIndex == chosenWordChar.Length - 1)
+                if (chosenWordIndex == chosenWord.Length - 1)
                 {
+                    chosenWordIndex = 0;
+                    for (int chosenWordArea = x_axis - 1; chosenWordIndex < chosenWord.Length; chosenWordArea++, chosenWordIndex++)
+                    { 
+                        wordSearch[y_axis, chosenWordArea] = '@';
+                    }
                     return true;
                 }
             }

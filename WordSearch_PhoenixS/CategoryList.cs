@@ -24,25 +24,26 @@ namespace WordSearch_PhoenixS
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);                                   // Creates the file path if it doesn't exist
+            StreamReader file = new StreamReader(filePath);                              // Creates the file path if it doesn't exist
             string wordsFromFile = file.ReadToEnd();
             file.Close();
 
             string[] wordList = wordsFromFile.Split("\r\n");
             string[] returnedList = new string[15];
 
-            if (wordList.Contains(categoryName))
+            for (int i = 0; i < returnedList.Length; i++)
             {
-                int position = Array.IndexOf(wordList, categoryName);                         // returns the index position of 'request' in wordList[]
-                int newIndex = 0;
-                for (int wordIndex = position + 1; wordIndex <= position + 15; wordIndex++)   // will output the words in category, skipping the title of the category
+                if (wordList.Contains(categoryName))
                 {
-                    returnedList[newIndex] = wordList[wordIndex].ToString();                  // fills in each element of 'returnedList' with the corresponding word from wordList[]
-                    newIndex++;
+                    int position = Array.IndexOf(wordList, categoryName) + 1;           // returns the index position of the first word in 'request' in wordList[]
+                    returnedList[i] = wordList[position + i];
                 }
-                return returnedList;
+                else
+                {
+                    Console.WriteLine("Incorrect categoryName");
+                }
             }
-            return returnedList;                            // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
+            return returnedList;                                                        // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
         }
     }
 }

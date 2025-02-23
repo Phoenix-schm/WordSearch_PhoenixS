@@ -14,7 +14,6 @@ namespace WordSearch_PhoenixS
         public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
             currentWordSearch = RotateWordSearch(currentWordSearch);            // rotate currentWordSearch so that it can output vertically
-
             currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
 
             currentWordSearch = RotateWordSearch(currentWordSearch);           // rotates the wordsearch back to its orginal postion
@@ -22,10 +21,11 @@ namespace WordSearch_PhoenixS
             return currentWordSearch;
         }
 
-        public static bool CheckUserCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord)
+        public static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
             wordSearch = RotateWordSearch(wordSearch);
-            bool isValidCoordinates = CheckCoordinates(userX, userY, wordSearch, chosenWord, false);        // reverse x and y to accomodate rotation 
+            bool isValidCoordinates = CheckCoordinates(userX, userY, ref wordSearch, chosenWord, false);        // reverse x and y to accomodate rotation 
+            wordSearch = RotateWordSearch(wordSearch);
             return isValidCoordinates;
         }
     }

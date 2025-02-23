@@ -16,9 +16,10 @@
 
             return currentWordSearch;
         }
-        public static bool CheckUserCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord)
+        public static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
-            bool isValidCoordinates = CheckCoordinates(userY, userX, wordSearch, chosenWord, false);
+
+            bool isValidCoordinates = CheckCoordinates(userY, userX, ref wordSearch, chosenWord, false);
             return isValidCoordinates;
         }
     }

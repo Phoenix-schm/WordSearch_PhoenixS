@@ -15,14 +15,9 @@
                 "Quit", "Show List"
             };
 
-            Console.WriteLine("Welcome to the Amazing Word Search");
-            Console.WriteLine("You have ten categories to choose from:");
-            DisplayValidUserInputs(validUserInputs);
-            Console.WriteLine("--------------------------");
-            Console.WriteLine();
-
             while(isPlaying)
             {
+                DisplayStartMessage(validUserInputs);
                 Console.Write("Please input your choice of wordsearch: ");
                 validInput = UserInput.CheckCategoryChoice(validUserInputs);
                 validInput = validInput.ToLower();
@@ -30,9 +25,15 @@
                 PlayWordSearchFromCategory(validInput, ref isPlaying, validUserInputs);
                 Console.WriteLine();
                 Console.WriteLine("Congrats! You made it through the word search");
-                Console.WriteLine(" \n ----------------------------- \n");
-                DisplayValidUserInputs(validUserInputs);
+                Console.WriteLine("-----------------------------\n");
             }
+        }
+        static void DisplayStartMessage(string[] validUserInputs)
+        {
+            Console.WriteLine("Welcome to the Amazing Word Search");
+            Console.WriteLine("You have ten categories to choose from:");
+            DisplayValidUserInputs(validUserInputs);
+            Console.WriteLine("-------------------------- \n");
         }
 
         /// <summary>
@@ -45,7 +46,6 @@
             {
                 Console.WriteLine(i + ") " +  validInputsList[i - 1]);
             }
-            Console.WriteLine();
         }
 
         /// <summary>
@@ -54,7 +54,7 @@
         /// <param name="input"> player input</param>
         static void PlayWordSearchFromCategory(string input, ref bool boolean, string[] categoriesDisplay)
         {
-            char[,] wordSearch = DefaultWordSearch();
+            char[,] wordSearch = DefaultWordSearch(' ');
 
             switch (input)
             {
@@ -80,7 +80,7 @@
                     PlayWordSearch_Game(CategoryList.mangaList, wordSearch);
                     break;
                 case "fonts":                   case "8":
-                    PlayWordSearch_Game(CategoryList.fonta, wordSearch);
+                    PlayWordSearch_Game(CategoryList.fonts, wordSearch);
                     break;
                 case "dnd monsters":            case "9":
                     PlayWordSearch_Game(CategoryList.dndMonsters, wordSearch);
@@ -126,12 +126,13 @@
         /// Displays the word search. Including numbered axises.
         /// </summary>
         /// <param name="wordSearch"> Word search to be displayed</param>
-        public static void DisplayWordSearch(char[,] wordSearch)
+        public static void DisplayWordSearch(char[,] fakeWordSearch, char[,] wordSearch)
         {
             string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
             Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
 
             string[] NumberedXaxis = NumberedAxisInWordSearch();
+
 
             // Displays the wordsearch, currently colors are for help debugging
             for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
@@ -139,21 +140,47 @@
                 Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (Char.IsLetter(wordSearch[y_axis, x_axis]))                               // if there's a letter, turn it green (for debugging purposes)
+                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
+                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                    }
+                    else if (wordSearch[y_axis, x_axis] == '@')
+                    {
+                        Console.Write(" " + " " + " ");
                     }
                     else                                                                        // else, fill the word search with random letters
                     {
                         Console.ResetColor();
-                        Console.Write(" " + RandomLetter() + " ");
+                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
                     }
                     
                 }
                 Console.ResetColor();
                 Console.WriteLine();
             }
+        }
+        static char[,] FillFakeWordSearch(char[,] fakeWordSearch, char[,] realWordSearch)
+        {
+            for (int y_axis = 0; y_axis < fakeWordSearch.GetLength(0); y_axis++)
+            {
+                for (int x_axis = 0; x_axis < fakeWordSearch.GetLength(1); x_axis++)
+                {
+                    if (realWordSearch[y_axis, x_axis] != ' ')                                  // if the real word search has a letter
+                    {
+                        fakeWordSearch[y_axis, x_axis] = realWordSearch[y_axis, x_axis];
+                    }
+                    else if (fakeWordSearch[y_axis, x_axis] != ' ')                             // if there's already a letter in fakeWordSearch
+                    {
+                        continue;
+                    }
+                    else                                                                        // fakeWordSearch is empty
+                    {
+                        fakeWordSearch[y_axis, x_axis] = RandomLetter();
+                    }
+                }
+            }
+            return fakeWordSearch;
         }
 
         /// <summary>
@@ -221,7 +248,7 @@
         /// Creates the default word search filled with blank spaces
         /// </summary>
         /// <returns> A 20 by 20 2-dimensional character array </returns>
-        public static char[,] DefaultWordSearch()
+        public static char[,] DefaultWordSearch(char fillerChar)
         {
             char[,] defaultWordSearch = new char[20, 20];
 
@@ -229,20 +256,23 @@
             {
                 for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
                 {
-                    defaultWordSearch[y_axis, x_axis] = ' ';
+                    defaultWordSearch[y_axis, x_axis] = fillerChar;
                 }
             }
             return defaultWordSearch;
         }
         static void FindTheWord(char[,] wordSearch,string[] randomWordsList)
         {
+            char[,] fakeWordSearch = DefaultWordSearch(' ');                                                // FOR DISPLAY PURPOSES ONLY
+
             bool isValid;
             foreach(string word in randomWordsList)
             {
                 do
                 {
+                    fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);
                     Console.WriteLine("Word Search Puzzle: ");
-                    DisplayWordSearch(wordSearch);
+                    DisplayWordSearch(fakeWordSearch, wordSearch);
                     Console.WriteLine();
                     Console.WriteLine("Search for these words:");
                     foreach (string displayWord in randomWordsList)
@@ -254,7 +284,7 @@
 
                     int userY_axis = UserInput.CheckIfValidNumber("y");
                     int userX_axis = UserInput.CheckIfValidNumber("x"); 
-                    isValid = CheckUserCoordinates(userY_axis, userX_axis, wordSearch, userInput);
+                    isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
                     if (!isValid)
                     {
                         Console.WriteLine("That wasn't a valid coordinate. Try again.");
@@ -273,15 +303,15 @@
 
             }
         }
-        static bool CheckUserCoordinates(int userY, int userX, char[,] wordSearch, string chosenWord)
+        static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
-            bool isValid = Horizontal.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+            bool isValid = Horizontal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
             if (!isValid)
             {
-                isValid = Vertical.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+                isValid = Vertical.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
                 if (!isValid)
                 {
-                    isValid = Diagonal.CheckUserCoordinates(userY, userX, wordSearch, chosenWord);
+                    isValid = Diagonal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
                 }
             }
             return isValid;
@@ -323,7 +353,7 @@
         /// </summary>
         /// <param name="maxNumberInList"> The maximum amount of integers that can be held in the array (exclusive) </param>
         /// <param name="maxRandomNumber"> Array will be filled with numbers betwee 0 (inclusive) and maxRandomNumber (exclusive)</param>
-        /// <returns></returns>
+        /// <returns>index of random numbers, no duplicates </returns>
         public static int[] ReturnRandomNumberList(int maxNumberInList, int maxRandomNumber)
         {
             int index = 0;

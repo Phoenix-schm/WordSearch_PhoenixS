@@ -9,9 +9,9 @@
         /// <param name="currentWordSearch"> the current word search, modified each time function is used </param>
         /// <param name="orderType"> the list of 8 random words </param>
         /// <returns></returns>
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType)
+        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
-            currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType);
+            currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
 
             return currentWordSearch;
         }

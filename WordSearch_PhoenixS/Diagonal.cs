@@ -2,14 +2,15 @@
 {
     class Diagonal : SearchType
     {
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, int diagonalType)
+        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
         {
             char[,] diagonalVersion = TransformToDiagonalWordSearch(currentWordSearch, diagonalType);
-            diagonalVersion = PlaceChosenWordInWordSearch(chosenWord, diagonalVersion, orderType);
+            diagonalVersion = PlaceChosenWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);
 
             currentWordSearch = RevertDiagonalWordSearchToNormal(diagonalVersion, diagonalType);
 
             return currentWordSearch;
         }
+
     }
 }

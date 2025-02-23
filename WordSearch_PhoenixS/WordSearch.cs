@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Drawing;
-
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     class WordSearch
     {
@@ -23,15 +19,17 @@ namespace WordSearch_PhoenixS
             Console.WriteLine("You have ten categories to choose from:");
             DisplayValidUserInputs(validUserInputs);
             Console.WriteLine("--------------------------");
+            Console.WriteLine();
 
             while(isPlaying)
             {
-                Console.WriteLine();
                 Console.Write("Please input your choice of wordsearch: ");
-                validInput = UserInput.InputCheck(validUserInputs);
+                validInput = UserInput.CheckCategoryChoice(validUserInputs);
                 validInput = validInput.ToLower();
 
-                PlayerChoice(validInput, ref isPlaying, validUserInputs);
+                PlayWordSearchFromCategory(validInput, ref isPlaying, validUserInputs);
+                Console.WriteLine("Congrats! You made it through the word search");
+                Console.WriteLine("-----------------------------");
                 Console.WriteLine("Type 'Show List' to show the categories again.");
             }
         }
@@ -53,42 +51,33 @@ namespace WordSearch_PhoenixS
         /// Holds all the choices the player can make
         /// </summary>
         /// <param name="input"> player input</param>
-        static void PlayerChoice(string input, ref bool boolean, string[] categoriesDisplay)
+        static void PlayWordSearchFromCategory(string input, ref bool boolean, string[] categoriesDisplay)
         {
+            char[,] wordSearch = DefaultWordSearch();
+
             switch (input)
             {
                 case "dog nicknames":           case "1":
-                    string[] dogNicknames = CategoryList.dogNicknames;
-                    string[] eightRandomWords = RandomWordsFromCategory(dogNicknames);
-                    
-                    CategoryWordSearchCreation(CategoryList.dogNicknames);
+                    PlayWordSearch_Game(CategoryList.dogNicknames, wordSearch);
                     break;
                 case "colors":                  case "2":
-                    CategoryWordSearchCreation(CategoryList.colors);
+
                     break;
                 case "poisonous flowers":       case "3":
-                    CategoryWordSearchCreation(CategoryList.poisonPlants);
                     break;
                 case "things in my room":       case "4":
-                    CategoryWordSearchCreation(CategoryList.thingsInMyRoom);
                     break;
                 case "things to eat":           case "5":
-                    CategoryWordSearchCreation(CategoryList.thingsToEat);
                     break;
                 case "fabric types":            case "6":
-                    CategoryWordSearchCreation(CategoryList.fabrictypes);
                     break;
                 case "manga names":             case "7":
-                    CategoryWordSearchCreation(CategoryList.mangaList);
                     break;
                 case "fonts":                   case "8":
-                    CategoryWordSearchCreation(CategoryList.fonts);
                     break;
                 case "dnd monsters":            case "9":
-                    CategoryWordSearchCreation(CategoryList.dndMonsters);
                     break;
                 case "periodic table elements":     case "10":
-                    CategoryWordSearchCreation(CategoryList.periodicElements);
                     break;
                 case "quit":                    case "11":
                     boolean = false;
@@ -101,34 +90,40 @@ namespace WordSearch_PhoenixS
                     break;                                                                      // Should occur if you updated the words.txt file but didn't edit this list.
             }
         }
-
-        /// <summary>
-        /// Creates a word search using the inputCategory
-        /// </summary>
-        /// <param name="inputCategory"> the category the user chose </param>
-        static void CategoryWordSearchCreation(string[] inputCategory)
+        static void PlayWordSearch_Game(string[] category, char[,] wordSearch)
         {
-            char[,] newWordSearch = DefaultWordSearch(' ');                                 // Creates the default version of the word search first, filled with blanks
-            string[] eightRandomWords = RandomWordsFromCategory(inputCategory);             // Choose eight random words from inputCategory
-
-
-            for(int i = 0; i < eightRandomWords.Length; i++)                                // Passes in each random word
-            {
-                char[] randomWord = ConvertWordToCharArray(eightRandomWords[i]);            // chooses a random word from the list
-                newWordSearch = NewWordSearch(randomWord, newWordSearch, eightRandomWords); // Each time a word is passed in it creates a new word search
-            }
-
-            DisplayWordSearch(newWordSearch);
+            string[] eightRandomWords = RandomWordsFromCategory(category);
+            wordSearch = CategoryWordSearchCreation(eightRandomWords, wordSearch);
 
             Console.WriteLine("Word Search Puzzle: ");
-
+            DisplayWordSearch(wordSearch);
             Console.WriteLine();
             Console.WriteLine("Search for these words:");
             foreach (string word in eightRandomWords)
             {
                 Console.WriteLine(word);
             }
-            // change this function to output the eightRandomWords string[] later? For use in the actual solving of the word search
+
+            Console.Write("Type the word when you've found it in the wordsearch: ");
+            string? userInput = UserInput.CheckWordChoice(eightRandomWords);
+
+            int userY_axis = UserInput.CheckIfValidNumber("y");
+            int userX_axis = UserInput.CheckIfValidNumber("x");
+        }
+
+        /// <summary>
+        /// Creates a word search using the inputCategory
+        /// </summary>
+        /// <param name="inputCategory"> the category the user chose </param>
+        static char[,] CategoryWordSearchCreation(string[] eightCategoryWords, char[,] newWordSearch)
+        {
+            for(int i = 0; i < eightCategoryWords.Length; i++)                                // Passes in each random word
+            {
+                char[] randomWord = ConvertWordToCharArray(eightCategoryWords[i]);            // chooses a random word from the list
+                newWordSearch = NewWordSearch(randomWord, newWordSearch);                   // Each time a word is passed in it creates a new word search
+            }
+
+            return newWordSearch;
         }
 
         /// <summary>
@@ -172,8 +167,8 @@ namespace WordSearch_PhoenixS
         /// <returns> string array holding numbers from "01" 0 "20" </returns>
         static string[] NumberedAxisInWordSearch()
         {
-            string[] NumberedAxis = {"00","01","02","03","04","05","06","07","08","09",
-                                     "10","11","12","13","14","15","16","17","18","19"};
+            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
+                                     "11","12","13","14","15","16","17","18","19","20"};
             return NumberedAxis;
         }
 
@@ -184,46 +179,53 @@ namespace WordSearch_PhoenixS
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
         /// <param name="category"> The string array of the category the user chose</param>
         /// <returns></returns>
-        static char[,] NewWordSearch(char[] word, char[,] currentWordSearch, string[] category)
+        static char[,] NewWordSearch(char[] word, char[,] currentWordSearch)
         {
-            int searchType = SearchType.RandomNumber(4, 8);
+            int[] searchTypeList = ReturnRandomNumberList(8, 8);
+            int index = 0;
+            bool wasWordPlaced = false;
 
-            switch(searchType)
+            while (!wasWordPlaced)                                                  // while the word wasn't placed
             {
-                case 0:                     // Horizontal in Order
-                    currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 0);              // Horizontal, in order
-                    return currentWordSearch;
-                case 1:                     // horizontal in reverse
-                    currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 1);              // Horizontal, in reverse
-                    return currentWordSearch;
-                case 2:
-                    currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 0);                // Vertical, in order
-                    return currentWordSearch;
-                case 3:            // Vertical outpus
-                    currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 1);                // Vertical, in reverse
-                    return currentWordSearch;
-                case 4:             
-                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchType);    // Diagonal '/', in order
-                    return currentWordSearch;
-                case 5:
-                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchType);    // Diagonal '/', in reverse
-                    return currentWordSearch;
-                case 6: 
-                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchType);    // Diagonal '\', in order
-                    return currentWordSearch;
-                case 7:
-                    currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchType);    // Diagonal '/', in reverse
-                    return currentWordSearch;
-                default:
-                    return currentWordSearch;
+                switch (searchTypeList[index])
+                {
+                    case 0:
+                        currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
+                        break;
+                    case 1:
+                        currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
+                        break;
+                    case 2:
+                        currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
+                        break;
+                    case 3:
+                        currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
+                        break;
+                    case 4:
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
+                        break;
+                    case 5:
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        break;
+                    case 6:
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
+                        break;
+                    case 7:
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        break;
+                }
+                index++;
             }
+            return currentWordSearch;
+
+            
         }
         
         /// <summary>
         /// Creates the default word search filled with blank spaces
         /// </summary>
         /// <returns> A 20 by 20 2-dimensional character array </returns>
-        public static char[,] DefaultWordSearch(char fillWordSearch)
+        public static char[,] DefaultWordSearch()
         {
             char[,] defaultWordSearch = new char[20, 20];
 
@@ -231,7 +233,7 @@ namespace WordSearch_PhoenixS
             {
                 for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
                 {
-                    defaultWordSearch[y_axis, x_axis] = fillWordSearch;
+                    defaultWordSearch[y_axis, x_axis] = ' ';
                 }
             }
             return defaultWordSearch;
@@ -268,21 +270,9 @@ namespace WordSearch_PhoenixS
         }
 
         /// <summary>
-        /// Outputs a random letter from the alphabet (excludes X, Y, Z) uppercase
-        /// </summary>
-        /// <returns></returns>
-        public static char RandomLetter()
-        {
-            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-                                'R', 'S', 'T', 'U', 'V', 'W' };
-
-            int index = SearchType.RandomNumber(0, alphabet.Length);
-            return alphabet[index];
-        }
-        /// <summary>
         /// Creates a list of random numbers with no duplicates
         /// </summary>
-        /// <param name="maxNumberInList"> The maximum amount of integers that can be held in the array </param>
+        /// <param name="maxNumberInList"> The maximum amount of integers that can be held in the array (exclusive) </param>
         /// <param name="maxRandomNumber"> Array will be filled with numbers betwee 0 (inclusive) and maxRandomNumber (exclusive)</param>
         /// <returns></returns>
         public static int[] ReturnRandomNumberList(int maxNumberInList, int maxRandomNumber)
@@ -313,6 +303,19 @@ namespace WordSearch_PhoenixS
                 }
             }
             return randomIntList;
+        }
+
+        /// <summary>
+        /// Outputs a random letter from the alphabet (excludes X, Y, Z) uppercase
+        /// </summary>
+        /// <returns></returns>
+        public static char RandomLetter()
+        {
+            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                                'R', 'S', 'T', 'U', 'V', 'W' };
+
+            int index = SearchType.RandomNumber(0, alphabet.Length);
+            return alphabet[index];
         }
 
     }

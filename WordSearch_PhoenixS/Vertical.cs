@@ -11,11 +11,11 @@ namespace WordSearch_PhoenixS
         /// <param name="currentWordSearch"></param>
         /// <param name="orderType"></param>
         /// <returns></returns>
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType)
+        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
             currentWordSearch = RotateWordSearch(currentWordSearch);            // rotate currentWordSearch so that it can output vertically
 
-            currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType);
+            currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
 
             currentWordSearch = RotateWordSearch(currentWordSearch);           // rotates the wordsearch back to its orginal postion
 

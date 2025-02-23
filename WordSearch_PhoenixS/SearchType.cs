@@ -63,17 +63,6 @@
                         }
                     }
                 }
-                //for (int x_axisDiagonal = 0; x_axisDiagonal < diagonalWordSearch.GetLength(1); x_axisDiagonal++)
-                //{
-                //    if (diagonalWordSearch[i, x_axisDiagonal] != ' ')
-                //    {
-                //        continue;
-                //    }
-                //    else
-                //    {
-                //        diagonalWordSearch[i, x_axisDiagonal] = '0';
-                //    }
-                //}
             }
 
             return diagonalWordSearch;
@@ -231,7 +220,7 @@
             return maxRange;
         }
 
-        public static char[,] PlaceChosenWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType)
+        public static char[,] PlaceChosenWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
         {
             int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
             int validY = validIndex[0];
@@ -239,10 +228,12 @@
 
             if (validY == -1 || validX == -1)
             {
-                Console.WriteLine("No valid rows to choose from");
+                //Console.WriteLine("No valid rows to choose from");
+                wasSuccessfullyPlaced = false;
             }
             else
             {
+                wasSuccessfullyPlaced = true;
                 int chosenWord_index = 0;                                                                       // chosenWord index that will be used
                 switch (orderType)
                 {

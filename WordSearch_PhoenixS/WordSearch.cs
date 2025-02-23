@@ -18,14 +18,10 @@
             while(isPlaying)
             {
                 DisplayStartMessage(validUserInputs);
-                Console.Write("Please input your choice of wordsearch: ");
                 validInput = UserInput.CheckCategoryChoice(validUserInputs);
                 validInput = validInput.ToLower();
 
                 PlayWordSearchFromCategory(validInput, ref isPlaying, validUserInputs);
-                Console.WriteLine();
-                Console.WriteLine("Congrats! You made it through the word search");
-                Console.WriteLine("-----------------------------\n");
             }
         }
         static void DisplayStartMessage(string[] validUserInputs)
@@ -54,42 +50,41 @@
         /// <param name="input"> player input</param>
         static void PlayWordSearchFromCategory(string input, ref bool boolean, string[] categoriesDisplay)
         {
-            char[,] wordSearch = DefaultWordSearch(' ');
-
             switch (input)
             {
                 case "dog nicknames":           case "1":
-                    PlayWordSearch_Game(CategoryList.dogNicknames, wordSearch);
+                    PlayWordSearch_Game(CategoryList.dogNicknames);
                     break;
                 case "colors":                  case "2":
-                    PlayWordSearch_Game(CategoryList.colors, wordSearch);
+                    PlayWordSearch_Game(CategoryList.colors);
                     break;
                 case "poisonous flowers":       case "3":
-                    PlayWordSearch_Game(CategoryList.poisonPlants, wordSearch);
+                    PlayWordSearch_Game(CategoryList.poisonPlants);
                     break;
                 case "things in my room":       case "4":
-                    PlayWordSearch_Game(CategoryList.thingsInMyRoom, wordSearch);
+                    PlayWordSearch_Game(CategoryList.thingsInMyRoom);
                     break;
                 case "things to eat":           case "5":
-                    PlayWordSearch_Game(CategoryList.thingsToEat, wordSearch);
+                    PlayWordSearch_Game(CategoryList.thingsToEat);
                     break;
                 case "fabric types":            case "6":
-                    PlayWordSearch_Game(CategoryList.fabrictypes, wordSearch);
+                    PlayWordSearch_Game(CategoryList.fabrictypes);
                     break;
                 case "manga names":             case "7":
-                    PlayWordSearch_Game(CategoryList.mangaList, wordSearch);
+                    PlayWordSearch_Game(CategoryList.mangaList);
                     break;
                 case "fonts":                   case "8":
-                    PlayWordSearch_Game(CategoryList.fonts, wordSearch);
+                    PlayWordSearch_Game(CategoryList.fonts);
                     break;
                 case "dnd monsters":            case "9":
-                    PlayWordSearch_Game(CategoryList.dndMonsters, wordSearch);
+                    PlayWordSearch_Game(CategoryList.dndMonsters);
                     break;
                 case "periodic table elements":     case "10":
-                    PlayWordSearch_Game(CategoryList.periodicElements, wordSearch);
+                    PlayWordSearch_Game(CategoryList.periodicElements);
                     break;
                 case "quit":                    case "11":
                     boolean = false;
+                    Console.WriteLine("Bye bye");
                     break;
                 case "show list":               case "12":
                     DisplayValidUserInputs(categoriesDisplay);
@@ -99,12 +94,16 @@
                     break;                                                                      // Should occur if you updated the words.txt file but didn't edit this list.
             }
         }
-        static void PlayWordSearch_Game(string[] category, char[,] wordSearch)
+        static void PlayWordSearch_Game(string[] category)
         {
+            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with blanks,
+                                                                                                // IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
             string[] eightRandomWords = RandomWordsFromCategory(category);
-            wordSearch = CategoryWordSearchCreation(eightRandomWords, wordSearch);
 
-            FindTheWord(wordSearch, eightRandomWords);
+            wordSearch = CategoryWordSearchCreation(eightRandomWords, wordSearch);
+            PlayWordSearch_FindTheWord(wordSearch, eightRandomWords);
+
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -208,7 +207,7 @@
             int index = 0;
             bool wasWordPlaced = false;
 
-            while (!wasWordPlaced)                                                  // while the word wasn't placed
+            while (!wasWordPlaced)                                                  // while the word wasn't placed in word search
             {
                 switch (searchTypeList[index])
                 {
@@ -248,7 +247,7 @@
         /// Creates the default word search filled with blank spaces
         /// </summary>
         /// <returns> A 20 by 20 2-dimensional character array </returns>
-        public static char[,] DefaultWordSearch(char fillerChar)
+        public static char[,] DefaultWordSearch()
         {
             char[,] defaultWordSearch = new char[20, 20];
 
@@ -256,15 +255,15 @@
             {
                 for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
                 {
-                    defaultWordSearch[y_axis, x_axis] = fillerChar;
+                    defaultWordSearch[y_axis, x_axis] = ' ';
                 }
             }
             return defaultWordSearch;
         }
-        static void FindTheWord(char[,] wordSearch,string[] randomWordsList)
+        static void PlayWordSearch_FindTheWord(char[,] wordSearch,string[] randomWordsList)
         {
-            char[,] fakeWordSearch = DefaultWordSearch(' ');                                                // FOR DISPLAY PURPOSES ONLY
-
+            char[,] fakeWordSearch = DefaultWordSearch();                                                // FOR DISPLAY PURPOSES ONLY
+            string userInput = "";
             bool isValid;
             foreach(string word in randomWordsList)
             {
@@ -280,8 +279,11 @@
                         Console.WriteLine(displayWord);
                     }
 
-                    string? userInput = UserInput.CheckWordChoice(randomWordsList);
-
+                    userInput = UserInput.CheckWordChoice(randomWordsList);
+                    if (userInput == "return")
+                    {
+                        break;
+                    }
                     int userY_axis = UserInput.CheckIfValidNumber("y");
                     int userX_axis = UserInput.CheckIfValidNumber("x"); 
                     isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
@@ -300,7 +302,16 @@
                         }
                     }
                 } while (!isValid);
-
+                if (userInput == "return")
+                {
+                    break;
+                }
+            }
+            if (userInput != "return" )
+            {
+                Console.WriteLine();
+                Console.WriteLine("Congrats! You made it through the word search");
+                Console.WriteLine("-----------------------------\n");
             }
         }
         static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)

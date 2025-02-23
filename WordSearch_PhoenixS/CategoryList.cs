@@ -24,7 +24,7 @@ namespace WordSearch_PhoenixS
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);                              // Creates the file path if it doesn't exist
+            StreamReader file = new StreamReader(filePath);                     // Creates the file path if it doesn't exist
             string wordsFromFile = file.ReadToEnd();
             file.Close();
 
@@ -35,7 +35,7 @@ namespace WordSearch_PhoenixS
             {
                 if (wordList.Contains(categoryName))
                 {
-                    int position = Array.IndexOf(wordList, categoryName) + 1;           // returns the index position of the first word in 'request' in wordList[]
+                    int position = Array.IndexOf(wordList, categoryName) + 1;    // returns the index position of the first word in 'request' in wordList[]
                     returnedList[i] = wordList[position + i];
                 }
                 else
@@ -43,7 +43,7 @@ namespace WordSearch_PhoenixS
                     Console.WriteLine("Incorrect categoryName");
                 }
             }
-            return returnedList;                                                        // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
+            return returnedList;                                                 // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
         }
     }
 }

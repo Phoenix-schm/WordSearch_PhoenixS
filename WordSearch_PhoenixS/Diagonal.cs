@@ -10,7 +10,6 @@ namespace WordSearch_PhoenixS
             diagonalVersion = PlaceChosenWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);
 
             currentWordSearch = RevertDiagonalWordSearchToNormal(diagonalVersion, diagonalType);
-
             return currentWordSearch;
         }
 
@@ -18,7 +17,6 @@ namespace WordSearch_PhoenixS
         {
             char[,] upSlopeDiagonalWordSearch = TransformToDiagonalWordSearch(wordSearch, 4);
             char[,] downSlopeDiagonalWordSearch = TransformToDiagonalWordSearch(wordSearch, 6);
-
 
             bool isValidCoordinates = CheckCoordinates(userY, userX, ref upSlopeDiagonalWordSearch, chosenWord, true);
             if (!isValidCoordinates)

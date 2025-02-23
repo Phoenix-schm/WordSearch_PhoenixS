@@ -14,9 +14,10 @@ namespace WordSearch_PhoenixS
 
             while (!validInput)                                                    // no way to break out of whileloop unless the input is valid
             {
+                Console.Write("Please input your choice of wordsearch: ");
                 string? userInput = Console.ReadLine();
 
-                if (userInput != "")
+                if (userInput != "" || userInput != null)
                 {
                     foreach (string choice in validInputList)                       // checks for if userInput is one of the listed valid inputs (string)
                     {
@@ -45,13 +46,14 @@ namespace WordSearch_PhoenixS
         public static string CheckWordChoice(string[] eightCategoryWord)
         {
             bool validInput = false;
-            Console.Write("Type the word when you've found it in the wordsearch: ");
+            Console.WriteLine("Type 'return' if you wish to return to the main menu");
 
             while (!validInput)                                     // no way to break out of while
             {
+                Console.Write("Type the word when you've found it in the wordsearch: ");
                 string? userInput = Console.ReadLine();
 
-                if (userInput != "")
+                if (userInput != "" || userInput != null)
                 {
                     foreach (string word in eightCategoryWord)
                     {
@@ -59,6 +61,10 @@ namespace WordSearch_PhoenixS
                         {
                             return word;
                         }
+                    }
+                    if (userInput.ToLower() == "return")
+                    {
+                        return "return";
                     }
                     Console.WriteLine("That is not a word in the word search");
                 }
@@ -91,7 +97,7 @@ namespace WordSearch_PhoenixS
                         else
                         {
                             int.TryParse(userInput, out coordinate);
-                            coordinate -= 1;
+                            coordinate -= 1;                                                // To accomodate the off-by-one
                             if (coordinate < 0 || coordinate > 19)
                             {
                                 Console.WriteLine("That number is out of range");

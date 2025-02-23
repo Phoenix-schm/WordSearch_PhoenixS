@@ -108,9 +108,9 @@
 
             int xIndex = 0;
 
-            for (int i = 0; i < randomRowsList.Length; i++)                                                       // Going through every row in a random assortment
+            for (int rowIndex = 0; rowIndex < randomRowsList.Length; rowIndex++)                                                       // Going through every row in a random assortment
             {
-                int chosenRow = randomRowsList[i];
+                int chosenRow = randomRowsList[rowIndex];
 
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);     // Creates a random list of positions
                 

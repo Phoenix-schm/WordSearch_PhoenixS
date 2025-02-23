@@ -15,7 +15,6 @@ namespace WordSearch_PhoenixS
         {
             currentWordSearch = RotateWordSearch(currentWordSearch);            // rotate currentWordSearch so that it can output vertically
             currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
-
             currentWordSearch = RotateWordSearch(currentWordSearch);           // rotates the wordsearch back to its orginal postion
 
             return currentWordSearch;

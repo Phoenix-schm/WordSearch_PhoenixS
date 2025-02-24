@@ -40,11 +40,11 @@
         /// Displays contents of a string array
         /// </summary>
         /// <param name="validInputsList"> The list of valid user inputs </param>
-        static void DisplayValidUserInputs(string[] validInputsList)                  // displays each category/valid input and its associated number
+        static void DisplayValidUserInputs(string[] validInputsList)
         {
-            for (int i = 1; i < validInputsList.Length; i++)
+            for (int index = 1; index < validInputsList.Length; index++)
             {
-                Console.WriteLine(i + ") " +  validInputsList[i - 1]);
+                Console.WriteLine(index + ") " +  validInputsList[index - 1]);
             }
         }
 
@@ -117,9 +117,9 @@
         /// <param name="inputCategory"> the category the user chose </param>
         static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
         {
-            for(int i = 0; i < eightCategoryWords.Length; i++)                              // Passes in each random word
+            for(int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
-                newWordSearch = NewWordSearch(eightCategoryWords[i], newWordSearch);        // Each time a word is passed in it creates a new word search
+                newWordSearch = NewWordSearch(eightCategoryWords[index], newWordSearch);        // Each time a word is passed in it creates a new word search
             }
 
             return newWordSearch;
@@ -165,11 +165,11 @@
                     }
                     else                                                                                // If the coordinates were correct then take the word off the list
                     {
-                        for (int i = 0; i < randomWordsList.Length; i++)
+                        for (int index = 0; index < randomWordsList.Length; index++)
                         {
-                            if (userInput == randomWordsList[i])
+                            if (userInput == randomWordsList[index])
                             {
-                                randomWordsList[i] = "";
+                                randomWordsList[index] = "";
                             }
                         }
                     }
@@ -368,9 +368,9 @@
             // creates an int[] of random eight numbers
             int[] randomIntList = ReturnRandomNumberList(8, 15);
 
-            for (int i = 0; i < 8; i++)
+            for (int index = 0; index < 8; index++)
             {
-                randomWords[i] = categoryWordList[randomIntList[i]].ToUpper();      // Add a random word from categoryWordList into randomWords[]
+                randomWords[index] = categoryWordList[randomIntList[index]].ToUpper();      // Add a random word from categoryWordList into randomWords[]
             }
             return randomWords;
         }

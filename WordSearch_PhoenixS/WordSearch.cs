@@ -307,6 +307,34 @@
                 Console.WriteLine();
             }
         }
+        public static void DisplayWordSearch2(char[,] wordSearch)
+        {
+            // Displays the wordsearch, currently colors are for help debugging
+            for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
+            {
+                //Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
+                for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
+                {
+                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
+                    }
+                    else if (wordSearch[y_axis, x_axis] == '@')
+                    {
+                        Console.Write(" " + " " + " ");
+                    }
+                    else                                                                        // else, fill the word search with random letters
+                    {
+                        Console.ResetColor();
+                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
+                    }
+
+                }
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+        }
 
         /// <summary>
         /// Fills a fake word search with the words of realWordSearch AND random letters everywhere else
@@ -391,13 +419,13 @@
             {
                 int randomInt = SearchType.RandomNumber(0, maxRandomNumber);
 
-                if (randomIntList.Contains(randomInt) && randomInt != 0)                        // because randomIntList[] already has 0, must allow 0 to pass through
+                if (randomIntList.Contains(randomInt) && randomInt != 0)  // because randomIntList[] already has 0, must allow 0 to pass through
                 {
                     continue;
                 }
                 else
                 {
-                    if (randomInt == 0 && useZeroOnce == 0)                                     // insures 0 will occur at least once in the array
+                    if (randomInt == 0 && useZeroOnce == 0)                          // insures 0 will occur at least once in the array
                     {
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;

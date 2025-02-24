@@ -16,7 +16,7 @@ namespace WordSearch_PhoenixS
                 Console.Write("Please input your choice of wordsearch: ");
                 string? userInput = Console.ReadLine();
 
-                if (userInput != "" || userInput != null)
+                if (userInput != "" && userInput != null)
                 {
                     foreach (string choice in validChoiceList)                           // Checks for if userInput is one of the listed valid inputs (string)
                     {
@@ -56,7 +56,7 @@ namespace WordSearch_PhoenixS
                 Console.Write("Type the word when you've found it in the wordsearch: ");
                 string? userInput = Console.ReadLine();
 
-                if (userInput != "" || userInput != null)
+                if (userInput != "" && userInput != null)
                 {
                     if (userInput.ToLower() == "return")
                     {
@@ -69,7 +69,6 @@ namespace WordSearch_PhoenixS
                             return word;
                         }
                     }
-
                     Console.WriteLine("That is not a word in the word search");
                 }
                 else
@@ -79,6 +78,7 @@ namespace WordSearch_PhoenixS
             }
             return "Invalid word choice. Wait, that's not right.";                          // Should never occur
         }
+
         /// <summary>
         /// Checks if the user inputted a number between 1 and 20.
         /// </summary>
@@ -92,7 +92,7 @@ namespace WordSearch_PhoenixS
             {
                 Console.Write("Type in the " + axis + " coordinate of the first letter of the word: ");
                 string? userInput = Console.ReadLine();
-                if (userInput != null || userInput != "")
+                if (userInput != null && userInput != "")
                 {
                     int coordinate = 0;
                     char[] userInputChar = userInput.ToCharArray();

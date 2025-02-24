@@ -1,6 +1,6 @@
 ﻿namespace WordSearch_PhoenixS
 {
-    public class Horizontal : SearchType // horizontal basically runs the default version of their called function. Keeping it in to help keep away confusion.
+    public class Horizontal : SearchType // horizontal basically runs the default version of their called functions. Keeping it in to help keep away confusion.
     {
         /// <summary>
         /// Outputs words into the word search horizontally (on the x-axis).
@@ -9,7 +9,7 @@
         /// <param name="currentWordSearch"> The current word search being modified. </param>
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
+        public static char[,] OutputWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
             currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
             return currentWordSearch;

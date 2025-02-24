@@ -11,11 +11,11 @@ namespace WordSearch_PhoenixS
         /// <param name="currentWordSearch"> The current word search being modified. </param>
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
+        public static char[,] OutputWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
-            currentWordSearch = FlipWordSearch(currentWordSearch);            // rotate currentWordSearch so that it can output vertically
+            currentWordSearch = FlipWordSearch(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
             currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
-            currentWordSearch = FlipWordSearch(currentWordSearch);            // rotates the wordsearch back to its orginal postion
+            currentWordSearch = FlipWordSearch(currentWordSearch);            // Flip the wordsearch back to its orginal postion
 
             return currentWordSearch;
         }
@@ -30,7 +30,7 @@ namespace WordSearch_PhoenixS
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] currentWordSearch, string chosenWord)
         {
             currentWordSearch = FlipWordSearch(currentWordSearch);
-            bool isValidCoordinates = CheckCoordinates(userX, userY, ref currentWordSearch, chosenWord, false);        // reverse x and y to accomodate rotation 
+            bool isValidCoordinates = CheckCoordinates(userX, userY, ref currentWordSearch, chosenWord, false);        // Reverse x and y to accomodate rotation 
             currentWordSearch = FlipWordSearch(currentWordSearch);
             return isValidCoordinates;
         }

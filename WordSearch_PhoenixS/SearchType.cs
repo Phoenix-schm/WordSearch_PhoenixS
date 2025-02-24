@@ -128,7 +128,7 @@ namespace WordSearch_PhoenixS
         /// <param name="chosenWord">The chosenWord as a char[].</param>
         /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1).</param>
         /// <returns> returns the index of valid a valid y coordinate and x coordinate.</returns>
-        static int[] ReturnValidIndex(char[,] wordSearch, char[] chosenWord, int orderType)
+        static int[] ReturnValidIndex(char[,] wordSearch,string chosenWord, int orderType)
         {
             int amountOfSpaces = wordSearch.GetLength(1);                                               // Helpful with redundancy.
             int amountOfRows = wordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
@@ -229,7 +229,7 @@ namespace WordSearch_PhoenixS
         /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
         /// <param name="_chosenWord">The word being placed in the row.</param>
         /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
-        static int CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref bool rowValidity, int maxRange, char[] _chosenWord)
+        static int CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref bool rowValidity, int maxRange, string _chosenWord)
         {
             int isFilledWithBlanks = 0;
             int rowLength = _wordSearch.GetLength(1) - 1;
@@ -258,7 +258,7 @@ namespace WordSearch_PhoenixS
        /// <param name="orderType">Whether the word will be placed in order(0) or in reverse(1)</param>
        /// <param name="wasSuccessfullyPlaced">If the word could be successfully placed.</param>
        /// <returns>Returns the modified word search, now with the chosenWord in it.</returns>
-        public static char[,] PlaceChosenWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
+        public static char[,] PlaceChosenWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
         {
             int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
             int validY = validIndex[0];

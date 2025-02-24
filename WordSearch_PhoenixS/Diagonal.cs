@@ -11,7 +11,7 @@
         /// <param name="diagonalType"> Whether word will be placed upwards or downwards. </param>
         /// <param name="wasWordPlaced"> Checks if the word was placed at all.</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
+        public static char[,] OutputWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
         {
             char[,] diagonalVersion = TransformToDiagonalWordSearch(currentWordSearch, diagonalType);
             diagonalVersion = PlaceChosenWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);

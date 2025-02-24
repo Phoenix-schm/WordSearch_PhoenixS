@@ -112,6 +112,20 @@
         }
         
         /// <summary>
+        /// Creates a word search using the inputCategory
+        /// </summary>
+        /// <param name="inputCategory"> the category the user chose </param>
+        static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
+        {
+            for(int i = 0; i < eightCategoryWords.Length; i++)                              // Passes in each random word
+            {
+                newWordSearch = NewWordSearch(eightCategoryWords[i], newWordSearch);        // Each time a word is passed in it creates a new word search
+            }
+
+            return newWordSearch;
+        }
+
+        /// <summary>
         /// Prompts the user to find a word and for the words first leters y,x coordinate.
         /// Once the user has successfully found the eight words, exits the foreach loop
         /// Also asks the user if they'd like to return to the main menu, and will let them do so if they type 'return'
@@ -165,26 +179,12 @@
                     break;
                 }
             }
-            if (userInput != "return" )                                                                 // If user won
+            if (userInput != "return")                                                                 // If user won
             {
+                Console.WriteLine();
                 Console.WriteLine("Congrats! You made it through the word search");
                 Console.WriteLine("-----------------------------");
             }
-        }
-
-        /// <summary>
-        /// Creates a word search using the inputCategory
-        /// </summary>
-        /// <param name="inputCategory"> the category the user chose </param>
-        static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
-        {
-            for(int i = 0; i < eightCategoryWords.Length; i++)                              // Passes in each random word
-            {
-                char[] randomWord = eightCategoryWords[i].ToCharArray();                    // chooses a random word from the list
-                newWordSearch = NewWordSearch(randomWord, newWordSearch);                   // Each time a word is passed in it creates a new word search
-            }
-
-            return newWordSearch;
         }
 
         /// <summary>
@@ -202,11 +202,11 @@
         /// <summary>
         /// Adds 'word' to the word search. Randomly chooses how the word will be displayed in the word search
         /// </summary>
-        /// <param name="word"> Word to be added to the word search</param>
+        /// <param name="chosenWord"> Word to be added to the word search</param>
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
         /// <param name="category"> The string array of the category the user chose</param>
         /// <returns></returns>
-        static char[,] NewWordSearch(char[] word, char[,] currentWordSearch)
+        static char[,] NewWordSearch(string chosenWord, char[,] currentWordSearch)
         {
             int[] searchTypeList = ReturnRandomNumberList(8, 8);
             int index = 0;
@@ -217,28 +217,28 @@
                 switch (searchTypeList[index])
                 {
                     case 0:
-                        currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
+                        currentWordSearch = Horizontal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
                         break;
                     case 1:
-                        currentWordSearch = Horizontal.OutputWordInWordSearch(word, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
+                        currentWordSearch = Horizontal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
                         break;
                     case 2:
-                        currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
+                        currentWordSearch = Vertical.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
                         break;
                     case 3:
-                        currentWordSearch = Vertical.OutputWordInWordSearch(word, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
+                        currentWordSearch = Vertical.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
                         break;
                     case 4:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
                         break;
                     case 5:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                     case 6:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
                         break;
                     case 7:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(word, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                 }
                 index++;

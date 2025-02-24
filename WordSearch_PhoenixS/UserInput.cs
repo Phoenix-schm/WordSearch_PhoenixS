@@ -122,7 +122,7 @@ namespace WordSearch_PhoenixS
                 }
             }
 
-            Console.WriteLine("Something bad happened here.");
+            Console.WriteLine("Something bad happened here.");                      // Should never occur
             return -1;
         }
     }

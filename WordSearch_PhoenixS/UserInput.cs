@@ -4,68 +4,72 @@ namespace WordSearch_PhoenixS
     public class UserInput
     {
         /// <summary>
-        /// Checks user input for string and int's for valid inputs
+        /// Checks if the userInput contained one of the validInputList.
         /// </summary>
-        /// <param name="validInputList"> the list of categories the player can choose from</param>
-        /// <returns></returns>
-        public static string CheckCategoryChoice(string[] validInputList)
+        /// <param name="validChoiceList"> The list of categories the player can choose from.</param>
+        /// <returns>The valid userInput.</returns>
+        public static string CheckCategoryChoice(string[] validChoiceList)
         {
             bool validInput = false;
-
-            while (!validInput)                                                    // no way to break out of whileloop unless the input is valid
+            while (!validInput)                                                         // No way to break out of whileloop unless the input is valid
             {
                 Console.Write("Please input your choice of wordsearch: ");
                 string? userInput = Console.ReadLine();
 
                 if (userInput != "" || userInput != null)
                 {
-                    foreach (string choice in validInputList)                       // checks for if userInput is one of the listed valid inputs (string)
+                    foreach (string choice in validChoiceList)                           // Checks for if userInput is one of the listed valid inputs (string)
                     {
                         if (userInput.ToLower() == choice.ToLower())
                         {
                             return userInput;
                         }
                     }
-                    for (int i = 0; i <= validInputList.Length + 1; i++)            // checks if the user is a valid number
+                    for (int index = 0; index <= validChoiceList.Length + 1; index++)    // Checks if the user is a valid number
                     {
-                        if (userInput == i.ToString())
+                        if (userInput == index.ToString())
                         {
                             return userInput;
                         }
                     }
-                    Console.WriteLine("That is not a listed input. Try Again.");                 // Occcurs only if the other for/each loops don't catch anything
+                    Console.WriteLine("That is not a listed input. Try Again.");         // Occcurs only if the other user input wasn't valid
                 }
                 else
                 {
                     Console.WriteLine("Cannot input nothing. Try again.");
                 }
             }
-            return "Invalid input. Wait what?";                                     // Shouldn't occur unless something went wrong
+            return "Invalid choice. Wait what?";                                         // Shouldn't occur unless something went wrong
         }
-
-        public static string CheckWordChoice(string[] eightCategoryWord)
+        /// <summary>
+        /// Checks if userInput is one of the eightValidWords or if they typed "return".
+        /// </summary>
+        /// <param name="eightValidWords"> The eightValid words the player can choose from.</param>
+        /// <returns>The valid word.</returns>
+        public static string CheckWordChoice(string[] eightValidWords)
         {
             bool validInput = false;
             Console.WriteLine("Type 'return' if you wish to return to the main menu");
 
-            while (!validInput)                                     // no way to break out of while
+            while (!validInput)                                                             // No way to break out of whileloop without a valid userInput
             {
                 Console.Write("Type the word when you've found it in the wordsearch: ");
                 string? userInput = Console.ReadLine();
 
                 if (userInput != "" || userInput != null)
                 {
-                    foreach (string word in eightCategoryWord)
+                    if (userInput.ToLower() == "return")
+                    {
+                        return "return";
+                    }
+                    foreach (string word in eightValidWords)                                // Going through each word in eightValidWords
                     {
                         if (userInput.ToUpper() == word)
                         {
                             return word;
                         }
                     }
-                    if (userInput.ToLower() == "return")
-                    {
-                        return "return";
-                    }
+
                     Console.WriteLine("That is not a word in the word search");
                 }
                 else
@@ -73,15 +77,20 @@ namespace WordSearch_PhoenixS
                     Console.WriteLine("Cannot input nothing. Try again");
                 }
             }
-            return "Invalid input. Wait, that's not right";
+            return "Invalid word choice. Wait, that's not right.";                          // Should never occur
         }
+        /// <summary>
+        /// Checks if the user inputted a number between 1 and 20.
+        /// </summary>
+        /// <param name="axis">The axis of the word search to be asked for.</param>
+        /// <returns>The valid numbers.</returns>
         public static int CheckIfValidNumber(string axis)
         {
             bool validInput = false;
-            Console.Write("Type in the " + axis + " coordinate of the first letter of the word: ");
             
             while (!validInput)
             {
+                Console.Write("Type in the " + axis + " coordinate of the first letter of the word: ");
                 string? userInput = Console.ReadLine();
                 if (userInput != null || userInput != "")
                 {
@@ -89,7 +98,7 @@ namespace WordSearch_PhoenixS
                     char[] userInputChar = userInput.ToCharArray();
                     foreach(char letter in userInputChar)
                     {
-                        if (!Char.IsDigit(letter))
+                        if (!Char.IsDigit(letter))                                  // If userInput contains a letter
                         {
                             Console.WriteLine("That wasn't a number!");
                             break;
@@ -97,10 +106,10 @@ namespace WordSearch_PhoenixS
                         else
                         {
                             int.TryParse(userInput, out coordinate);
-                            coordinate -= 1;                                                // To accomodate the off-by-one
+                            coordinate -= 1;                                        // To accomodate the off-by-one
                             if (coordinate < 0 || coordinate > 19)
                             {
-                                Console.WriteLine("That number is out of range");
+                                Console.WriteLine("That number is out of range.");
                                 break;
                             }
                             else

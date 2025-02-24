@@ -1,24 +1,29 @@
 ﻿namespace WordSearch_PhoenixS
 {
-    public class Horizontal : SearchType
+    public class Horizontal : SearchType // horizontal basically runs the default version of their called function. Keeping it in to help keep away confusion.
     {
         /// <summary>
-        /// Outputs a word into the word search horizontally ( in the x axis)
+        /// Outputs words into the word search horizontally (on the x-axis).
         /// </summary>
-        /// <param name="chosenWord"> one of the random words </param>
-        /// <param name="currentWordSearch"> the current word search, modified each time function is used </param>
-        /// <param name="orderType"> the list of 8 random words </param>
-        /// <param name="wasWordPlaced"> returs true or false whether word was actually placed into the Word Search</param>
-        /// <returns></returns>
+        /// <param name="chosenWord"> Chosen word being placed into word search. </param>
+        /// <param name="currentWordSearch"> The current word search being modified. </param>
+        /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
+        /// <returns>Returns the new modified word search.</returns>
         public static char[,] OutputWordInWordSearch(char[] chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
             currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
-
             return currentWordSearch;
         }
+        /// <summary>
+        /// Checks the inputed user coordinates to see if they hold the first letter of the chosenWord.
+        /// </summary>
+        /// <param name="userY"> User input y-coordinate. </param>
+        /// <param name="userX"> User input x-Coordinate. </param>
+        /// <param name="wordSearch"> The current WordSearch being checked. Is modified to if the chosenWord is found. Replaces the chosenWord with '@'.</param>
+        /// <param name="chosenWord"> The current word being checked for.</param>
+        /// <returns>Returns true if the chosenWord was found and false if it wasn't.</returns>
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
-
             bool isValidCoordinates = CheckCoordinates(userY, userX, ref wordSearch, chosenWord, false);
             return isValidCoordinates;
         }

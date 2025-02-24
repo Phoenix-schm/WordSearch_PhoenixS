@@ -11,8 +11,8 @@
             string[] validUserInputs =
             {
                 "Dog Nicknames", "Colors", "Poisonous Flowers", "Things In My Room", "Things To Eat",
-                "Fabric Types", "Managa Names", "Fonts", "DND Monsters", "Periodic Table Elements", 
-                "Quit", "Show List"
+                "Fabric Types", "Manga Names", "Fonts", "DND Monsters", "Periodic Table Elements", 
+                "Quit"
             };
 
             while(isPlaying)
@@ -21,9 +21,13 @@
                 validInput = UserInput.CheckCategoryChoice(validUserInputs);
                 validInput = validInput.ToLower();
 
-                PlayWordSearchFromCategory(validInput, ref isPlaying, validUserInputs);
+                PlayWordSearch_FromCategory(validInput, ref isPlaying);
             }
         }
+        /// <summary>
+        /// Displays a string array, numbered one to the maximum amount in the array 
+        /// </summary>
+        /// <param name="validUserInputs"> string array of listed valid inputs</param>
         static void DisplayStartMessage(string[] validUserInputs)
         {
             Console.WriteLine("Welcome to the Amazing Word Search");
@@ -47,10 +51,10 @@
         /// <summary>
         /// Holds all the choices the player can make
         /// </summary>
-        /// <param name="input"> player input</param>
-        static void PlayWordSearchFromCategory(string input, ref bool boolean, string[] categoriesDisplay)
+        /// <param name="_userInput"> player input</param>
+        static void PlayWordSearch_FromCategory(string _userInput, ref bool _isPlaying)
         {
-            switch (input)
+            switch (_userInput)
             {
                 case "dog nicknames":           case "1":
                     PlayWordSearch_Game(CategoryList.dogNicknames);
@@ -83,103 +87,104 @@
                     PlayWordSearch_Game(CategoryList.periodicElements);
                     break;
                 case "quit":                    case "11":
-                    boolean = false;
+                    _isPlaying = false;
                     Console.WriteLine("Bye bye");
-                    break;
-                case "show list":               case "12":
-                    DisplayValidUserInputs(categoriesDisplay);
                     break;
                 default:
                     Console.WriteLine("How the hell did you manage to get this response?");     // somehwow the input was valid but isn't any of the listed items.
                     break;                                                                      // Should occur if you updated the words.txt file but didn't edit this list.
             }
         }
+        
+        /// <summary>
+        /// If the player decides to play,make a list of eightRandomWords, create a word search,
+        /// add those words to the word search, and then prompt the user to find the words.
+        /// </summary>
+        /// <param name="category">The category that eight random words are being taken out of.</param>
         static void PlayWordSearch_Game(string[] category)
         {
-            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with blanks,
-                                                                                                // IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
             string[] eightRandomWords = RandomWordsFromCategory(category);
-
-            wordSearch = CategoryWordSearchCreation(eightRandomWords, wordSearch);
+            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with blanks,
+                                                                                                //      IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
+            wordSearch = PlayWordSearch_CreateWordSearch(eightRandomWords, wordSearch);
             PlayWordSearch_FindTheWord(wordSearch, eightRandomWords);
-
             Console.WriteLine();
+        }
+        
+        /// <summary>
+        /// Prompts the user to find a word and for the words first leters y,x coordinate.
+        /// Once the user has successfully found the eight words, exits the foreach loop
+        /// Also asks the user if they'd like to return to the main menu, and will let them do so if they type 'return'
+        /// </summary>
+        /// <param name="wordSearch">The word search being shown.</param>
+        /// <param name="randomWordsList">The list of words the user will have to find.</param>
+        static void PlayWordSearch_FindTheWord(char[,] wordSearch,string[] randomWordsList)
+        {
+            char[,] fakeWordSearch = DefaultWordSearch();                                                // FOR DISPLAY PURPOSES ONLY
+            string userInput = "";
+            bool isValid;
+            foreach(string word in randomWordsList)
+            {
+                do
+                {
+                    fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);                    // Creates a fake word search for display ONLY    
+                    Console.WriteLine("Word Search Puzzle: ");
+                    DisplayWordSearch(fakeWordSearch, wordSearch);
+                    Console.WriteLine();
+                    Console.WriteLine("Search for these words:");
+                    foreach (string displayWord in randomWordsList)                                     // Lists out the remaining words to be found
+                    {
+                        Console.WriteLine(displayWord);
+                    }
+
+                    userInput = UserInput.CheckWordChoice(randomWordsList);                             // Prompts the user for a word, or to 'return'
+                    if (userInput == "return")
+                    {
+                        break;
+                    }
+                    int userY_axis = UserInput.CheckIfValidNumber("y");                                 // Prompting user for y and x coordinates
+                    int userX_axis = UserInput.CheckIfValidNumber("x"); 
+                    isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
+                    if (!isValid)
+                    {
+                        Console.WriteLine("That wasn't a valid coordinate. Try again.");
+                    }
+                    else                                                                                // If the coordinates were correct then take the word off the list
+                    {
+                        for (int i = 0; i < randomWordsList.Length; i++)
+                        {
+                            if (userInput == randomWordsList[i])
+                            {
+                                randomWordsList[i] = "";
+                            }
+                        }
+                    }
+                } while (!isValid);
+                if (userInput == "return")
+                {
+                    break;
+                }
+            }
+            if (userInput != "return" )                                                                 // If user won
+            {
+                Console.WriteLine("Congrats! You made it through the word search");
+                Console.WriteLine("-----------------------------");
+            }
         }
 
         /// <summary>
         /// Creates a word search using the inputCategory
         /// </summary>
         /// <param name="inputCategory"> the category the user chose </param>
-        static char[,] CategoryWordSearchCreation(string[] eightCategoryWords, char[,] newWordSearch)
+        static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
         {
-            for(int i = 0; i < eightCategoryWords.Length; i++)                                // Passes in each random word
+            for(int i = 0; i < eightCategoryWords.Length; i++)                              // Passes in each random word
             {
-                char[] randomWord = ConvertWordToCharArray(eightCategoryWords[i]);            // chooses a random word from the list
+                char[] randomWord = eightCategoryWords[i].ToCharArray();                    // chooses a random word from the list
                 newWordSearch = NewWordSearch(randomWord, newWordSearch);                   // Each time a word is passed in it creates a new word search
             }
 
             return newWordSearch;
-        }
-
-        /// <summary>
-        /// Displays the word search. Including numbered axises.
-        /// </summary>
-        /// <param name="wordSearch"> Word search to be displayed</param>
-        public static void DisplayWordSearch(char[,] fakeWordSearch, char[,] wordSearch)
-        {
-            string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
-            Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
-
-            string[] NumberedXaxis = NumberedAxisInWordSearch();
-
-
-            // Displays the wordsearch, currently colors are for help debugging
-            for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
-            {
-                Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
-                for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
-                {
-                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
-                    }
-                    else if (wordSearch[y_axis, x_axis] == '@')
-                    {
-                        Console.Write(" " + " " + " ");
-                    }
-                    else                                                                        // else, fill the word search with random letters
-                    {
-                        Console.ResetColor();
-                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
-                    }
-                    
-                }
-                Console.ResetColor();
-                Console.WriteLine();
-            }
-        }
-        static char[,] FillFakeWordSearch(char[,] fakeWordSearch, char[,] realWordSearch)
-        {
-            for (int y_axis = 0; y_axis < fakeWordSearch.GetLength(0); y_axis++)
-            {
-                for (int x_axis = 0; x_axis < fakeWordSearch.GetLength(1); x_axis++)
-                {
-                    if (realWordSearch[y_axis, x_axis] != ' ')                                  // if the real word search has a letter
-                    {
-                        fakeWordSearch[y_axis, x_axis] = realWordSearch[y_axis, x_axis];
-                    }
-                    else if (fakeWordSearch[y_axis, x_axis] != ' ')                             // if there's already a letter in fakeWordSearch
-                    {
-                        continue;
-                    }
-                    else                                                                        // fakeWordSearch is empty
-                    {
-                        fakeWordSearch[y_axis, x_axis] = RandomLetter();
-                    }
-                }
-            }
-            return fakeWordSearch;
         }
 
         /// <summary>
@@ -239,14 +244,104 @@
                 index++;
             }
             return currentWordSearch;
-
-            
         }
         
         /// <summary>
-        /// Creates the default word search filled with blank spaces
+        /// Checks the parameters userY and userX for if they correctly are the index of chosenWords first letter
         /// </summary>
-        /// <returns> A 20 by 20 2-dimensional character array </returns>
+        /// <param name="userY">The inputted y-coordinate.</param>
+        /// <param name="userX">The inputted x-coordinate.</param>
+        /// <param name="wordSearch">The word search being checked.</param>
+        /// <param name="chosenWord">The word being checked for.</param>
+        /// <returns></returns>
+        static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
+        {
+            bool isValid = Horizontal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
+            if (!isValid)
+            {
+                isValid = Vertical.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
+                if (!isValid)
+                {
+                    isValid = Diagonal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
+                }
+            }
+            return isValid;
+        }
+
+        /// <summary>
+        /// Displays the word search. Including numbered axises.
+        /// </summary>
+        /// <param name="fakeWordSearch">The word search meant only for display.</param>
+        /// <param name="wordSearch">The word search filled with blanks spaces and will and actually be modified.</param>
+        public static void DisplayWordSearch(char[,] fakeWordSearch, char[,] wordSearch)
+        {
+            string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
+            Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
+
+            string[] NumberedXaxis = NumberedAxisInWordSearch();
+
+
+            // Displays the wordsearch, currently colors are for help debugging
+            for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
+            {
+                Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
+                for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
+                {
+                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                    }
+                    else if (wordSearch[y_axis, x_axis] == '@')
+                    {
+                        Console.Write(" " + " " + " ");
+                    }
+                    else                                                                        // else, fill the word search with random letters
+                    {
+                        Console.ResetColor();
+                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                    }
+                    
+                }
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+        }
+
+        /// <summary>
+        /// Fills a fake word search with the words of realWordSearch AND random letters everywhere else
+        /// </summary>
+        /// <param name="fakeWordSearch">The fake word search being displayed.</param>
+        /// <param name="realWordSearch">The real word search being modified and checked in the game.</param>
+        /// <returns></returns>
+        static char[,] FillFakeWordSearch(char[,] fakeWordSearch, char[,] realWordSearch)
+        {
+            for (int y_axis = 0; y_axis < fakeWordSearch.GetLength(0); y_axis++)
+            {
+                for (int x_axis = 0; x_axis < fakeWordSearch.GetLength(1); x_axis++)
+                {
+                    if (realWordSearch[y_axis, x_axis] != ' ')                                  // If the real word search has a letter
+                    {
+                        fakeWordSearch[y_axis, x_axis] = realWordSearch[y_axis, x_axis];
+                    }
+                    else if (fakeWordSearch[y_axis, x_axis] != ' ')                             // If there's already a letter in fakeWordSearch
+                    {
+                        continue;
+                    }
+                    else                                                                        // FakeWordSearch has an empty space
+                    {
+                        fakeWordSearch[y_axis, x_axis] = RandomLetter();
+                    }
+                }
+            }
+            return fakeWordSearch;
+        }
+
+        /// <summary>
+        /// The default version of the word search filled with blanks.
+        /// Important due to creating a blank [20,20] fills the grid with '\0' and makes checking and modifications useless.
+        /// </summary>
+        /// <returns>A default word search.</returns>
         public static char[,] DefaultWordSearch()
         {
             char[,] defaultWordSearch = new char[20, 20];
@@ -260,86 +355,7 @@
             }
             return defaultWordSearch;
         }
-        static void PlayWordSearch_FindTheWord(char[,] wordSearch,string[] randomWordsList)
-        {
-            char[,] fakeWordSearch = DefaultWordSearch();                                                // FOR DISPLAY PURPOSES ONLY
-            string userInput = "";
-            bool isValid;
-            foreach(string word in randomWordsList)
-            {
-                do
-                {
-                    fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);
-                    Console.WriteLine("Word Search Puzzle: ");
-                    DisplayWordSearch(fakeWordSearch, wordSearch);
-                    Console.WriteLine();
-                    Console.WriteLine("Search for these words:");
-                    foreach (string displayWord in randomWordsList)
-                    {
-                        Console.WriteLine(displayWord);
-                    }
 
-                    userInput = UserInput.CheckWordChoice(randomWordsList);
-                    if (userInput == "return")
-                    {
-                        break;
-                    }
-                    int userY_axis = UserInput.CheckIfValidNumber("y");
-                    int userX_axis = UserInput.CheckIfValidNumber("x"); 
-                    isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
-                    if (!isValid)
-                    {
-                        Console.WriteLine("That wasn't a valid coordinate. Try again.");
-                    }
-                    else
-                    {
-                        for (int i = 0; i < randomWordsList.Length; i++)
-                        {
-                            if (userInput == randomWordsList[i])
-                            {
-                                randomWordsList[i] = "";
-                            }
-                        }
-                    }
-                } while (!isValid);
-                if (userInput == "return")
-                {
-                    break;
-                }
-            }
-            if (userInput != "return" )
-            {
-                Console.WriteLine();
-                Console.WriteLine("Congrats! You made it through the word search");
-                Console.WriteLine("-----------------------------\n");
-            }
-        }
-        static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
-        {
-            bool isValid = Horizontal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
-            if (!isValid)
-            {
-                isValid = Vertical.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
-                if (!isValid)
-                {
-                    isValid = Diagonal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
-                }
-            }
-            return isValid;
-
-        }
-
-        /// <summary>
-        /// Converts a string 'word' into a character array. Used for converting category words into character arrays
-        /// </summary>
-        /// <param name="word"> word to be converted in a character array</param>
-        /// <returns> The character array of 'word'</returns>
-        static char[] ConvertWordToCharArray(string word)
-        {
-            char[] charOfWord = word.ToCharArray();
-            return charOfWord;
-        }
-        
         /// <summary>
         /// Creates a string[] of eight random words of user choice category
         /// </summary>
@@ -360,18 +376,18 @@
         }
 
         /// <summary>
-        /// Creates a list of random numbers with no duplicates
+        /// Returns a list of random numbers, no duplicates.
         /// </summary>
-        /// <param name="maxNumberInList"> The maximum amount of integers that can be held in the array (exclusive) </param>
-        /// <param name="maxRandomNumber"> Array will be filled with numbers betwee 0 (inclusive) and maxRandomNumber (exclusive)</param>
-        /// <returns>index of random numbers, no duplicates </returns>
-        public static int[] ReturnRandomNumberList(int maxNumberInList, int maxRandomNumber)
+        /// <param name="maxIndexOfList">The maximum amount fo numbers that can be in the list.</param>
+        /// <param name="maxRandomNumber">The largest number that can be input into the list.</param>
+        /// <returns>Returns a list of random numbers.</returns>
+        public static int[] ReturnRandomNumberList(int maxIndexOfList, int maxRandomNumber)
         {
             int index = 0;
-            int[] randomIntList = new int[maxNumberInList];
+            int[] randomIntList = new int[maxIndexOfList];
             int useZeroOnce = 0;
 
-            while (index < maxNumberInList)
+            while (index < maxIndexOfList)
             {
                 int randomInt = SearchType.RandomNumber(0, maxRandomNumber);
 

@@ -4,6 +4,7 @@ namespace WordSearch_PhoenixS
 {
     public class CategoryList
     {
+        // All ten categories
         public static string[] dogNicknames = CreateCategoryList("DogNames");              // 01
         public static string[] colors = CreateCategoryList("Colors");                      // 02
         public static string[] poisonPlants = CreateCategoryList("PoisonousPlants");       // 03
@@ -19,8 +20,7 @@ namespace WordSearch_PhoenixS
         ///  Creates an array holding just the list of items of a category
         /// </summary>
         /// <param name="categoryName"> the name of the category </param>
-        /// <param name="wordList"> the array it's accessing (should be an array made from words.txt file)</param>
-        /// <returns></returns>
+        /// <returns>A list of 15 strings.</returns>
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
@@ -40,7 +40,7 @@ namespace WordSearch_PhoenixS
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect categoryName");
+                    Console.WriteLine("Incorrect categoryName.");
                 }
             }
             return returnedList;                                                 // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines

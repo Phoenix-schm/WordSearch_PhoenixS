@@ -118,8 +118,12 @@ namespace WordSearch_PhoenixS
                             }
                         }
                     }
-                    
                 }
+                else
+                {
+                    Console.WriteLine("Cannot input nothing.");
+                }
+                
             }
 
             Console.WriteLine("Something bad happened here.");                      // Should never occur

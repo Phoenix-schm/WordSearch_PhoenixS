@@ -11,10 +11,10 @@
         /// <param name="diagonalType"> Whether word will be placed upwards or downwards. </param>
         /// <param name="wasWordPlaced"> Checks if the word was placed at all.</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] OutputWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
+        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
         {
             char[,] diagonalVersion = TransformToDiagonalWordSearch(currentWordSearch, diagonalType);
-            diagonalVersion = PlaceChosenWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);
+            diagonalVersion = SearchType_PlaceWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);
 
             currentWordSearch = RevertDiagonalWordSearchToNormal(diagonalVersion, diagonalType);
             return currentWordSearch;
@@ -33,11 +33,11 @@
             char[,] upSlopeDiagonalWordSearch = TransformToDiagonalWordSearch(wordSearch, 4);
             char[,] downSlopeDiagonalWordSearch = TransformToDiagonalWordSearch(wordSearch, 6);
 
-            bool isValidCoordinates = CheckCoordinates(userY, userX, ref upSlopeDiagonalWordSearch, chosenWord, true);
+            bool isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref upSlopeDiagonalWordSearch, chosenWord, true);
             if (!isValidCoordinates)        // If upSlope doesn't return true with the user coordinates
             {
                 userX = wordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
-                isValidCoordinates = CheckCoordinates(userY, userX, ref downSlopeDiagonalWordSearch, chosenWord, true);
+                isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref downSlopeDiagonalWordSearch, chosenWord, true);
                 wordSearch = RevertDiagonalWordSearchToNormal(downSlopeDiagonalWordSearch, 6);
             }
             else

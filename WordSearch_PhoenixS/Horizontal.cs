@@ -9,9 +9,9 @@
         /// <param name="currentWordSearch"> The current word search being modified. </param>
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] OutputWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
+        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
-            currentWordSearch = PlaceChosenWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
+            currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
             return currentWordSearch;
         }
         /// <summary>
@@ -24,7 +24,7 @@
         /// <returns>Returns true if the chosenWord was found and false if it wasn't.</returns>
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
-            bool isValidCoordinates = CheckCoordinates(userY, userX, ref wordSearch, chosenWord, false);
+            bool isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord, false);
             return isValidCoordinates;
         }
     }

@@ -124,14 +124,14 @@ namespace WordSearch_PhoenixS
         /// <summary>
         /// Checks a random assortment of rows and spaces in that row to see if the chosenWord can fit inside the row.
         /// </summary>
-        /// <param name="wordSearch">The current word search being checked. Modified based on SearchType.</param>
+        /// <param name="currentWordSearch">The current word search being checked. Modified based on SearchType.</param>
         /// <param name="chosenWord">The chosenWord as a char[].</param>
         /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1).</param>
         /// <returns> returns the index of valid a valid y coordinate and x coordinate.</returns>
-        static int[] ReturnValidIndex(char[,] wordSearch,string chosenWord, int orderType)
+        static int[] ReturnValidIndex(char[,] currentWordSearch,string chosenWord, int orderType)
         {
-            int amountOfSpaces = wordSearch.GetLength(1);                                               // Helpful with redundancy.
-            int amountOfRows = wordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
+            int amountOfSpaces = currentWordSearch.GetLength(1);                                               // Helpful with redundancy.
+            int amountOfRows = currentWordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
             int[] random_RowList = WordSearch.ReturnRandomNumberList(amountOfRows, amountOfRows);       // Creates a list of random rows, no duplicates
 
             for (int random_rowIndex = 0; random_rowIndex < random_RowList.Length; random_rowIndex++)   // Going through every row in a random assortment
@@ -142,18 +142,19 @@ namespace WordSearch_PhoenixS
                 int minRange_NewWordPosition = -1;
                 int maxRange_NewWordPosition = -1;
                 
-                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, wordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
+                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, currentWordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
 
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
                 
                 for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place in the row to start at
                 {
-                    if (maxRange_NewWordPosition > -1)                                                        // If the CheckRowIsEntirelyBlank() returned true
+                    if (maxRange_NewWordPosition > -1)                                                              // If the CheckRowIsEntirelyBlank() proved the row was entirely blank
                     {
                         break;
                     }
 
-                    ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, wordSearch, randomPosition, 0, 0, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
+                    ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, currentWordSearch, randomPosition, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
+                    
                     if (minRange_NewWordPosition > -1)
                     {
                         break;
@@ -210,8 +211,21 @@ namespace WordSearch_PhoenixS
                 }                                                                           // else, maxRange doesn't change
             }
         }
-        static void ReturnValidIndex_CheckRowCanContainWord(int chosenRow, string chosenWord, char[,] wordSearch, int randomPosition, int canWordFitHere, int additionalRange, ref int minRange, ref int maxRange)
+
+
+        /// <summary>
+        /// Checks the chosenRow for if it can hold the chosenWord
+        /// </summary>
+        /// <param name="chosenRow">Row being checked</param>
+        /// <param name="chosenWord">Word that the method is trying to fit into chosenRow.</param>
+        /// <param name="wordSearch">The current word search being checked</param>
+        /// <param name="randomPosition">A random position for the word to be placed at.</param>
+        /// <param name="minRange">Referenced minimum range that the chosenWord could possibly fit into.</param>
+        /// <param name="maxRange">Referenced maximum range the chosenWord could possibly fit into.</param>
+        static void ReturnValidIndex_CheckRowCanContainWord(int chosenRow, string chosenWord, char[,] wordSearch, int randomPosition, ref int minRange, ref int maxRange)
         {
+            int canWordFitHere = 0;
+            int additionalRange = 0;
             for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                        // Checking every space from that randomPosition
             {
                 if (wordSearch[chosenRow, space] == ' ' && canWordFitHere < chosenWord.Length)           // If there's blank spaces
@@ -246,15 +260,15 @@ namespace WordSearch_PhoenixS
             }
         }
 
-       /// <summary>
-       /// Places the word in the modifiedd word search based on SearchType.
-       /// </summary>
-       /// <param name="chosenWord">Word being placed into the word search.</param>
-       /// <param name="currentWordSearch">The current modified word search.</param>
-       /// <param name="orderType">Whether the word will be placed in order(0) or in reverse(1)</param>
-       /// <param name="wasSuccessfullyPlaced">If the word could be successfully placed.</param>
-       /// <returns>Returns the modified word search, now with the chosenWord in it.</returns>
-        public static char[,] PlaceChosenWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
+        /// <summary>
+        /// Places the word in the modifiedd word search based on SearchType.
+        /// </summary>
+        /// <param name="chosenWord">Word being placed into the word search.</param>
+        /// <param name="currentWordSearch">The current modified word search.</param>
+        /// <param name="orderType">Whether the word will be placed in order(0) or in reverse(1)</param>
+        /// <param name="wasSuccessfullyPlaced">If the word could be successfully placed.</param>
+        /// <returns>Returns the modified word search, now with the chosenWord in it.</returns>
+        public static char[,] SearchType_PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
         {
             int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
             int validY = validIndex[0];
@@ -297,7 +311,7 @@ namespace WordSearch_PhoenixS
         /// <param name="chosenWord">The chosenWord being placed into the word search.</param>
         /// <param name="isDiagonal">If the modified word search is diagonal.</param>
         /// <returns></returns>
-        public static bool CheckCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord, bool isDiagonal)
+        public static bool SearchType_CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord, bool isDiagonal)
         {
             int chosenWordIndex = 0;
             int y_axis = userY;

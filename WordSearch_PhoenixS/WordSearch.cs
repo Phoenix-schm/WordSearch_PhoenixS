@@ -218,28 +218,28 @@
                 switch (searchTypeList[index])
                 {
                     case 0:
-                        currentWordSearch = Horizontal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
+                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
                         break;
                     case 1:
-                        currentWordSearch = Horizontal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
+                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
                         break;
                     case 2:
-                        currentWordSearch = Vertical.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
+                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
                         break;
                     case 3:
-                        currentWordSearch = Vertical.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
+                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
                         break;
                     case 4:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
                         break;
                     case 5:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                     case 6:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
                         break;
                     case 7:
-                        currentWordSearch = Diagonal.OutputWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                 }
                 index++;

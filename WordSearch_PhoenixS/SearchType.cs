@@ -134,71 +134,33 @@ namespace WordSearch_PhoenixS
             int amountOfRows = wordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
             int[] random_RowList = WordSearch.ReturnRandomNumberList(amountOfRows, amountOfRows);       // Creates a list of random rows, no duplicates
 
-            for (int random_rowIndex = 0; random_rowIndex < random_RowList.Length; random_rowIndex++)               // Going through every row in a random assortment
+            for (int random_rowIndex = 0; random_rowIndex < random_RowList.Length; random_rowIndex++)   // Going through every row in a random assortment
             {
                 int chosenRow = random_RowList[random_rowIndex];
 
+                // The minimum and maximum range that the word can be placed in
+                int minRange_NewWordPosition = -1;
+                int maxRange_NewWordPosition = -1;
+                
+                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, wordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
+
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
                 
-                // The minimum and maximum range that the word can be placed in
-                int minRange_NewWordPosition = 0;
-                int maxRange_NewWordPosition = 0;
-
-                bool validRow = false;
-                maxRange_NewWordPosition = CheckRowIsEntirelyBlank(chosenRow, wordSearch, ref validRow, maxRange_NewWordPosition, chosenWord);
-
                 for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place in the row to start at
                 {
-                    if (validRow == true)                                                                       // If the CheckRowIsEntirelyBlank() returned true
+                    if (maxRange_NewWordPosition > -1)                                                        // If the CheckRowIsEntirelyBlank() returned true
                     {
                         break;
                     }
-                    int additionalRange = 0;
-                    int canFitHere = 0;
 
-                    for (int space = randomPosition; space < amountOfSpaces; space++)                        // Checking every space from that randomPosition
-                    {
-                        if (wordSearch[chosenRow, space] == ' ' && canFitHere < chosenWord.Length)             // If there's blank spaces
-                        {
-                            canFitHere++;
-                        }
-                        else if (wordSearch[chosenRow, space] == ' ' && space < amountOfSpaces && canFitHere >= chosenWord.Length) // If there's still room in the row and the word can already fit
-                        {
-                            additionalRange++;
-                        }
-                        else if (wordSearch[chosenRow, space] != ' ' && canFitHere >= chosenWord.Length)       // If there is a letter, but the word can fit beforehand
-                        {
-                            additionalRange += canFitHere;
-                            // defaults to in order index
-                            minRange_NewWordPosition = space - additionalRange;
-                            maxRange_NewWordPosition = space - chosenWord.Length;
-                            validRow = true;
-                            break;
-                        }
-                        else if (canFitHere >= chosenWord.Length)                                          // There's no more space, but the word can fit
-                        {                                                                                  // (also procks for the space after a word was already found int the row)
-                            additionalRange += canFitHere;
-                            // defaults to in order index
-                            minRange_NewWordPosition = space - additionalRange;
-                            maxRange_NewWordPosition = space - chosenWord.Length;
-                            validRow = true;
-                            break;
-                        }
-                        else                                                                              // if there's no room for the new word
-                        {
-                            canFitHere = 0;
-                            additionalRange = 0;
-                            validRow = false;
-                            break;
-                        }
-                    }
-                    if (validRow == true)
+                    ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, wordSearch, randomPosition, 0, 0, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
+                    if (minRange_NewWordPosition > -1)
                     {
                         break;
                     }
                 }
 
-                if (validRow == true)
+                if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
                 {
                     int chosenSpace = 0;
                     switch (orderType)
@@ -229,7 +191,7 @@ namespace WordSearch_PhoenixS
         /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
         /// <param name="_chosenWord">The word being placed in the row.</param>
         /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
-        static int CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref bool rowValidity, int maxRange, string _chosenWord)
+        static void ReturnValidIndex_CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref int minRange, ref int maxRange, string _chosenWord)
         {
             int isFilledWithBlanks = 0;
             int rowLength = _wordSearch.GetLength(1) - 1;
@@ -242,12 +204,46 @@ namespace WordSearch_PhoenixS
                 }
                 if (isFilledWithBlanks > rowLength)                                         // If the whole row contains blanks
                 {
-                    rowValidity = true;
                     maxRange = rowLength - _chosenWord.Length;
+                    minRange = 0;
                     break;
                 }                                                                           // else, maxRange doesn't change
             }
-            return maxRange;
+        }
+        static void ReturnValidIndex_CheckRowCanContainWord(int chosenRow, string chosenWord, char[,] wordSearch, int randomPosition, int canWordFitHere, int additionalRange, ref int minRange, ref int maxRange)
+        {
+            for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                        // Checking every space from that randomPosition
+            {
+                if (wordSearch[chosenRow, space] == ' ' && canWordFitHere < chosenWord.Length)           // If there's blank spaces
+                {
+                    canWordFitHere++;
+                }
+                else if (wordSearch[chosenRow, space] == ' ' && space < wordSearch.GetLength(1) && canWordFitHere >= chosenWord.Length) // If there's still room in the row and the word can already fit
+                {
+                    additionalRange++;
+                }
+                else if (wordSearch[chosenRow, space] != ' ' && canWordFitHere >= chosenWord.Length)       // If there is a letter, but the word can fit beforehand
+                {
+                    additionalRange += canWordFitHere;
+                    // Defaults to "in order" index
+                    minRange = space - additionalRange;
+                    maxRange = space - chosenWord.Length;
+                    break;
+                }
+                else if (canWordFitHere >= chosenWord.Length)                                          // There's no more space, but the word can fit
+                {                                                                                  // (also procks when there's space after a letter)
+                    additionalRange += canWordFitHere;
+                    // Defaults to "in order" index
+                    minRange = space - additionalRange;
+                    maxRange = space - chosenWord.Length;
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+                // Else, there's no room in the row
+            }
         }
 
        /// <summary>
@@ -306,7 +302,7 @@ namespace WordSearch_PhoenixS
             int chosenWordIndex = 0;
             int y_axis = userY;
 
-            if (isDiagonal == true)
+            if (isDiagonal)
             {
                 y_axis = userY + userX ;
             }
@@ -327,8 +323,7 @@ namespace WordSearch_PhoenixS
                     return true;
                 }
             }
-            // reset variable checker
-            chosenWordIndex = 0;
+            chosenWordIndex = 0;                                                                // Reset variable checker
             for (int x_axis = userX; x_axis >= wordSearch.GetLowerBound(1); x_axis--)           // Checks for word in reverse
             {
                 if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 

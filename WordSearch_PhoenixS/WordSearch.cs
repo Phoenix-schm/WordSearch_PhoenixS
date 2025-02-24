@@ -144,6 +144,7 @@
                     fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);                    // Creates a fake word search for display ONLY    
                     Console.WriteLine("Word Search Puzzle: ");
                     DisplayWordSearch(fakeWordSearch, wordSearch);
+
                     Console.WriteLine();
                     Console.WriteLine("Search for these words:");
                     foreach (string displayWord in randomWordsList)                                     // Lists out the remaining words to be found
@@ -179,7 +180,7 @@
                     break;
                 }
             }
-            if (userInput != "return")                                                                 // If user won
+            if (userInput != "return")                                                                  // If user won
             {
                 Console.WriteLine();
                 Console.WriteLine("Congrats! You made it through the word search");
@@ -280,14 +281,13 @@
 
             string[] NumberedXaxis = NumberedAxisInWordSearch();
 
-
             // Displays the wordsearch, currently colors are for help debugging
             for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
             {
                 Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
+                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')       // if there's a letter, turn it green (for debugging purposes)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
@@ -302,34 +302,6 @@
                         Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
                     }
                     
-                }
-                Console.ResetColor();
-                Console.WriteLine();
-            }
-        }
-        public static void DisplayWordSearch2(char[,] wordSearch)
-        {
-            // Displays the wordsearch, currently colors are for help debugging
-            for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
-            {
-                //Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
-                for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
-                {
-                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')                               // if there's a letter, turn it green (for debugging purposes)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
-                    }
-                    else if (wordSearch[y_axis, x_axis] == '@')
-                    {
-                        Console.Write(" " + " " + " ");
-                    }
-                    else                                                                        // else, fill the word search with random letters
-                    {
-                        Console.ResetColor();
-                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
-                    }
-
                 }
                 Console.ResetColor();
                 Console.WriteLine();

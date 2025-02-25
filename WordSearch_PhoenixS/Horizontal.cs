@@ -8,6 +8,7 @@
         /// <param name="chosenWord"> Chosen word being placed into word search. </param>
         /// <param name="currentWordSearch"> The current word search being modified. </param>
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
+        /// <param name="wasWordPlaced">Boolean check for if the word was actually placed in the current word search.</param>
         /// <returns>Returns the new modified word search.</returns>
         public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {

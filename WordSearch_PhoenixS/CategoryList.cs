@@ -4,18 +4,6 @@ namespace WordSearch_PhoenixS
 {
     public class CategoryList
     {
-        // All ten categories
-        public static string[] dogNicknames = CreateCategoryList("DogNames");              // 01
-        public static string[] colors = CreateCategoryList("Colors");                      // 02
-        public static string[] poisonPlants = CreateCategoryList("PoisonousPlants");       // 03
-        public static string[] thingsToEat = CreateCategoryList("ThingsToEat");            // 04
-        public static string[] thingsInMyRoom = CreateCategoryList("ThingsInMyRoom");      // 05
-        public static string[] fabrictypes = CreateCategoryList("FabricTypes");            // 06
-        public static string[] mangaList = CreateCategoryList("MangaList");                // 07
-        public static string[] fonts = CreateCategoryList("Fonts");                        // 08
-        public static string[] dndMonsters = CreateCategoryList("DNDmonsters");            // 09
-        public static string[] periodicElements = CreateCategoryList("PeriodicElements");  // 10
-
         /// <summary>
         ///  Creates an array holding just the list of items of a category
         /// </summary>

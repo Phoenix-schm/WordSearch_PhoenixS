@@ -188,6 +188,7 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="_chosenRow">Row being checked.</param>
         /// <param name="_wordSearch">The current word search being used.</param>
+        /// <param name="minRange">The min possible index the word can start to be placed at.</param>
         /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
         /// <param name="_chosenWord">The word being placed in the row.</param>
         /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>

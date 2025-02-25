@@ -51,34 +51,34 @@
             switch (userInput)
             {
                 case "dog nicknames":           case "1":
-                    PlayWordSearch_Game(CategoryList.dogNicknames);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("dog nicknames"));
                     break;
                 case "colors":                  case "2":
-                    PlayWordSearch_Game(CategoryList.colors);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("colors"));
                     break;
-                case "poisonous flowers":       case "3":
-                    PlayWordSearch_Game(CategoryList.poisonPlants);
+                case "poisonous plants":       case "3":
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("poisonous plants"));
                     break;
                 case "things in my room":       case "4":
-                    PlayWordSearch_Game(CategoryList.thingsInMyRoom);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("things in my room"));
                     break;
                 case "things to eat":           case "5":
-                    PlayWordSearch_Game(CategoryList.thingsToEat);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("things to eat"));
                     break;
                 case "fabric types":            case "6":
-                    PlayWordSearch_Game(CategoryList.fabrictypes);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("fabric types"));
                     break;
                 case "manga names":             case "7":
-                    PlayWordSearch_Game(CategoryList.mangaList);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("manga list"));
                     break;
                 case "fonts":                   case "8":
-                    PlayWordSearch_Game(CategoryList.fonts);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("fonts"));
                     break;
                 case "dnd monsters":            case "9":
-                    PlayWordSearch_Game(CategoryList.dndMonsters);
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("ddd monsters"));
                     break;
-                case "periodic table elements":     case "10":
-                    PlayWordSearch_Game(CategoryList.periodicElements);
+                case "periodic elements":     case "10":
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("periodic elements"));
                     break;
                 case "quit":                    case "11":
                     _isPlaying = false;
@@ -113,7 +113,7 @@
         {
             for(int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
-                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch);        // Each time a word is passed in it creates a new word search
+                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, eightCategoryWords);        // Each time a word is passed in it creates a new word search
             }
             return newWordSearch;
         }
@@ -187,7 +187,7 @@
         /// <param name="chosenWord"> Word to be added to the word search</param>
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
         /// <returns>New word search to be modified.</returns>
-        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch)
+        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch, string[] eightCategoryWords)
         {
             int[] searchTypeList = ReturnRandomNumberList(8, 8);
             int index = 0;
@@ -222,6 +222,12 @@
                         break;
                 }
                 index++;
+                if (index == searchTypeList.Length)                         // Edge case scenario that a word cannot be placed in the word search at ALL
+                {                                                           //      Biggest possible point of failure. If words can never be placed into the word search
+                                                                            //      Then this while loop will go on forever. Make sure that words are short enough not to cause issues.
+                    char[,] startOverWordSearch = DefaultWordSearch();
+                    PlayWordSearch_CreateWordSearch(eightCategoryWords, startOverWordSearch);
+                }
             }
             return currentWordSearch;
         }
@@ -386,7 +392,7 @@
                 }
                 else
                 {
-                    if (randomInt == 0 && useZeroOnce == 0)                          // insures 0 will occur at least once in the array
+                    if (randomInt == 0 && useZeroOnce == 0)                // insures 0 will occur at least once in the array
                     {
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;

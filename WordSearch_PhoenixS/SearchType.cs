@@ -315,15 +315,20 @@ namespace WordSearch_PhoenixS
         {
             int chosenWordIndex = 0;
             int y_axis = userY;
+            int wordSearchIndex = 0;
 
             if (isDiagonal)
             {
                 y_axis = userY + userX ;
             }
 
-            for (int x_axis = userX; x_axis < wordSearch.GetLength(1); x_axis++)                // Checks for word in order
+            for (int x_axis = userX; wordSearchIndex < chosenWord.Length - 1; x_axis++, wordSearchIndex++)                // Checks for word in order
             {
-                if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
+                if (x_axis > wordSearch.GetUpperBound(1))
+                {
+                    break;
+                }
+                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
                 {
                     chosenWordIndex++;
                 }
@@ -338,9 +343,15 @@ namespace WordSearch_PhoenixS
                 }
             }
             chosenWordIndex = 0;                                                                // Reset variable checker
-            for (int x_axis = userX; x_axis >= wordSearch.GetLowerBound(1); x_axis--)           // Checks for word in reverse
+            wordSearchIndex = 0;
+            for (int x_axis = userX; wordSearchIndex < chosenWord.Length - 1; x_axis--, wordSearchIndex++)           // Checks for word in reverse
             {
-                if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
+
+                if (x_axis < wordSearch.GetLowerBound(1))
+                {
+                    break;
+                }
+                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
                 {
                     chosenWordIndex++;
                 }

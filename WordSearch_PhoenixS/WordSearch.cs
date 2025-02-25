@@ -257,6 +257,7 @@
         /// <returns></returns>
         static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
+
             bool isValid = Horizontal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
             if (!isValid)
             {

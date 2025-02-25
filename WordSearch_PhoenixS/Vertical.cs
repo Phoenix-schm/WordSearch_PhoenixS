@@ -10,13 +10,13 @@ namespace WordSearch_PhoenixS
         /// <param name="chosenWord"> Chosen word being placed into word search. </param>
         /// <param name="currentWordSearch"> The current word search being modified. </param>
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
+        /// <param name="wasWordPlaced">Boolean for if the word was actually placed into the row.</param>
         /// <returns>Returns the new modified word search.</returns>
         public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
         {
-            currentWordSearch = FlipWordSearch(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
+            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
             currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
-            currentWordSearch = FlipWordSearch(currentWordSearch);            // Flip the wordsearch back to its orginal postion
-
+            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip the wordsearch back to its orginal postion
             return currentWordSearch;
         }
         /// <summary>
@@ -29,9 +29,9 @@ namespace WordSearch_PhoenixS
         /// <returns></returns>
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] currentWordSearch, string chosenWord)
         {
-            currentWordSearch = FlipWordSearch(currentWordSearch);
+            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);
             bool isValidCoordinates = SearchType_CheckUserCoordinates(userX, userY, ref currentWordSearch, chosenWord, false);        // Reverse x and y to accomodate rotation 
-            currentWordSearch = FlipWordSearch(currentWordSearch);
+            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);
             return isValidCoordinates;
         }
     }

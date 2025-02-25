@@ -53,7 +53,7 @@ namespace WordSearch_PhoenixS
 
             while (!validInput)                                                             // No way to break out of whileloop without a valid userInput
             {
-                Console.Write("Type the word when you've found it in the wordsearch: ");
+                Console.Write("Type a word when you've found it in the wordsearch: ");
                 string? userInput = Console.ReadLine();
 
                 if (userInput != "" && userInput != null)
@@ -123,7 +123,6 @@ namespace WordSearch_PhoenixS
                 {
                     Console.WriteLine("Cannot input nothing.");
                 }
-                
             }
 
             Console.WriteLine("Something bad happened here.");                      // Should never occur

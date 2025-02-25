@@ -17,29 +17,22 @@
 
             while(isPlaying)
             {
-                DisplayStartMessage(validUserInputs);
+                Console.WriteLine("Welcome to the Amazing Word Search");
+                Console.WriteLine("You have ten categories to choose from:");
+                DisplayValidUserInputs(validUserInputs);
+                Console.WriteLine("-------------------------- \n");
+
                 validInput = UserInput.CheckCategoryChoice(validUserInputs);
                 validInput = validInput.ToLower();
 
                 PlayWordSearch_FromCategory(validInput, ref isPlaying);
             }
         }
-        /// <summary>
-        /// Displays a string array, numbered one to the maximum amount in the array 
-        /// </summary>
-        /// <param name="validUserInputs"> string array of listed valid inputs</param>
-        static void DisplayStartMessage(string[] validUserInputs)
-        {
-            Console.WriteLine("Welcome to the Amazing Word Search");
-            Console.WriteLine("You have ten categories to choose from:");
-            DisplayValidUserInputs(validUserInputs);
-            Console.WriteLine("-------------------------- \n");
-        }
 
         /// <summary>
-        /// Displays contents of a string array
+        /// Displays contents of a string array.
         /// </summary>
-        /// <param name="validInputsList"> The list of valid user inputs </param>
+        /// <param name="validInputsList"> The list of valid user inputs.</param>
         static void DisplayValidUserInputs(string[] validInputsList)
         {
             for (int index = 1; index < validInputsList.Length; index++)
@@ -49,12 +42,13 @@
         }
 
         /// <summary>
-        /// Holds all the choices the player can make
+        /// Holds all the choices the player can make.
         /// </summary>
-        /// <param name="_userInput"> player input</param>
-        static void PlayWordSearch_FromCategory(string _userInput, ref bool _isPlaying)
+        /// <param name="userInput">Player input that will run through the switch statement.</param>
+        /// <param name="_isPlaying">Boolean checking if the user has chosen to quit.</param>
+        static void PlayWordSearch_FromCategory(string userInput, ref bool _isPlaying)
         {
-            switch (_userInput)
+            switch (userInput)
             {
                 case "dog nicknames":           case "1":
                     PlayWordSearch_Game(CategoryList.dogNicknames);
@@ -119,9 +113,8 @@
         {
             for(int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
-                newWordSearch = NewWordSearch(eightCategoryWords[index], newWordSearch);        // Each time a word is passed in it creates a new word search
+                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch);        // Each time a word is passed in it creates a new word search
             }
-
             return newWordSearch;
         }
 
@@ -144,8 +137,8 @@
                     fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);                    // Creates a fake word search for display ONLY    
                     Console.WriteLine("Word Search Puzzle: ");
                     DisplayWordSearch(fakeWordSearch, wordSearch);
-
                     Console.WriteLine();
+
                     Console.WriteLine("Search for these words:");
                     foreach (string displayWord in randomWordsList)                                     // Lists out the remaining words to be found
                     {
@@ -189,30 +182,16 @@
         }
 
         /// <summary>
-        /// Used to display the numbered axis' of the word search
-        /// Creates the numbered axis' 01 - 20 in a string array
-        /// </summary>
-        /// <returns> string array holding numbers from "01" 0 "20" </returns>
-        static string[] NumberedAxisInWordSearch()
-        {
-            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
-                                     "11","12","13","14","15","16","17","18","19","20"};
-            return NumberedAxis;
-        }
-
-        /// <summary>
         /// Adds 'word' to the word search. Randomly chooses how the word will be displayed in the word search
         /// </summary>
         /// <param name="chosenWord"> Word to be added to the word search</param>
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
-        /// <param name="category"> The string array of the category the user chose</param>
-        /// <returns></returns>
-        static char[,] NewWordSearch(string chosenWord, char[,] currentWordSearch)
+        /// <returns>New word search to be modified.</returns>
+        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch)
         {
             int[] searchTypeList = ReturnRandomNumberList(8, 8);
             int index = 0;
             bool wasWordPlaced = false;
-
             while (!wasWordPlaced)                                                  // while the word wasn't placed in word search
             {
                 switch (searchTypeList[index])
@@ -246,7 +225,7 @@
             }
             return currentWordSearch;
         }
-        
+
         /// <summary>
         /// Checks the parameters userY and userX for if they correctly are the index of chosenWords first letter
         /// </summary>
@@ -257,7 +236,6 @@
         /// <returns></returns>
         static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
         {
-
             bool isValid = Horizontal.CheckUserCoordinates(userY, userX, ref wordSearch, chosenWord);
             if (!isValid)
             {
@@ -288,23 +266,21 @@
                 Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')       // if there's a letter, turn it green (for debugging purposes)
+                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                        Console.ResetColor();
                     }
-                    else if (wordSearch[y_axis, x_axis] == '@')
+                    else if (wordSearch[y_axis, x_axis] == '@')                                 // If the word was found already
                     {
                         Console.Write(" " + " " + " ");
                     }
-                    else                                                                        // else, fill the word search with random letters
+                    else                                                                        // Else, show fake word search's random letters
                     {
-                        Console.ResetColor();
                         Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
                     }
-                    
                 }
-                Console.ResetColor();
                 Console.WriteLine();
             }
         }
@@ -342,7 +318,7 @@
         /// The default version of the word search filled with blanks.
         /// Important due to creating a blank [20,20] fills the grid with '\0' and makes checking and modifications useless.
         /// </summary>
-        /// <returns>A default word search.</returns>
+        /// <returns>A default word search filled with blank characters.</returns>
         public static char[,] DefaultWordSearch()
         {
             char[,] defaultWordSearch = new char[20, 20];
@@ -358,10 +334,22 @@
         }
 
         /// <summary>
+        /// Used to display the numbered axis' of the word search
+        /// Creates the numbered axis' 01 - 20 in a string array
+        /// </summary>
+        /// <returns> string array holding numbers from "01" 0 "20" </returns>
+        static string[] NumberedAxisInWordSearch()
+        {
+            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
+                                     "11","12","13","14","15","16","17","18","19","20"};
+            return NumberedAxis;
+        }
+
+        /// <summary>
         /// Creates a string[] of eight random words of user choice category
         /// </summary>
         /// <param name="categoryWordList"> The list of words that the eight words will be chosen from </param>
-        /// <returns> Returns a string array of eight random words, no repeats </returns>
+        /// <returns> Returns a string array of eight random words, no repeats.</returns>
         static string[] RandomWordsFromCategory(string[] categoryWordList)
         {
             string[] randomWords = new string[8];
@@ -415,12 +403,11 @@
         /// <summary>
         /// Outputs a random letter from the alphabet (excludes X, Y, Z) uppercase
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns a random letter.</returns>
         public static char RandomLetter()
         {
             char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
                                 'R', 'S', 'T', 'U', 'V', 'W' };
-
             int index = SearchType.RandomNumber(0, alphabet.Length);
             return alphabet[index];
         }

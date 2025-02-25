@@ -23,7 +23,7 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="currentWordSearch">The current word search beinng modified.</param>
         /// <returns>currentWordSearch but flipped.</returns>
-        public static char[,] FlipWordSearch(char[,] currentWordSearch)
+        public static char[,] ModifyWordSearch_FlipXYaxis(char[,] currentWordSearch)
         {
             char[,] newWordSearch = new char[20, 20];
 
@@ -43,7 +43,7 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="currentWordSearch">The current word search being modified</param>
         /// <returns></returns>
-        public static char[,] ReverseWordSearch(char[,] currentWordSearch)
+        public static char[,] ModifyWordSearch_ReverseXaxis(char[,] currentWordSearch)
         {
             char[,] newWordsearch = new char[20, 20];
 
@@ -65,11 +65,11 @@ namespace WordSearch_PhoenixS
         /// <param name="diagonalType">If the diagonal type is an up slope(less than 6) or a down slope (6 or 7). 
         /// Based on the SearchTypeList[index] in WordSearch.NewWordSearch()</param>
         /// <returns>The list of diagonals in the current word search.</returns>
-        public static char[,] TransformToDiagonalWordSearch(char[,] currentWordSearch, int diagonalType)
+        public static char[,] ModifyWordSearch_TransformToDiagonal(char[,] currentWordSearch, int diagonalType)
         {
             if (diagonalType == 6 || diagonalType == 7)
             {
-                currentWordSearch = ReverseWordSearch(currentWordSearch);
+                currentWordSearch = ModifyWordSearch_ReverseXaxis(currentWordSearch);
             }
 
             char[,] diagonalWordSearch = new char[40, 20];                                                      //[y,x] y is double the length of
@@ -96,7 +96,7 @@ namespace WordSearch_PhoenixS
         /// <param name="diagonalWordSearch">The word search listed as its diagonals.</param>
         /// <param name="diagonalType">If the diagonal type is an up slope(less than 6) or a down slope (6 or 7). 
         /// <returns>The word search as 20 by 20.</returns>
-        public static char[,] RevertDiagonalWordSearchToNormal(char[,] diagonalWordSearch, int diagonalType)
+        public static char[,] ModifyWordSearch_RevertDiagonalToNormal(char[,] diagonalWordSearch, int diagonalType)
         {
             char[,] normalWordSearch = new char[20,20];
 
@@ -115,7 +115,7 @@ namespace WordSearch_PhoenixS
             }
             if (diagonalType == 6 || diagonalType == 7)                                              // Reverses the reverse 
             {
-                normalWordSearch = ReverseWordSearch(normalWordSearch);
+                normalWordSearch = ModifyWordSearch_ReverseXaxis(normalWordSearch);
             }
 
             return normalWordSearch;
@@ -188,7 +188,6 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="_chosenRow">Row being checked.</param>
         /// <param name="_wordSearch">The current word search being used.</param>
-        /// <param name="rowValidity">Can the row ontain the word. Is true if the row is completely blank.</param>
         /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
         /// <param name="_chosenWord">The word being placed in the row.</param>
         /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
@@ -226,7 +225,7 @@ namespace WordSearch_PhoenixS
         {
             int canWordFitHere = 0;
             int additionalRange = 0;
-            for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                        // Checking every space from that randomPosition
+            for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                   // Checking every space from that randomPosition
             {
                 if (wordSearch[chosenRow, space] == ' ' && canWordFitHere < chosenWord.Length)           // If there's blank spaces
                 {
@@ -244,19 +243,20 @@ namespace WordSearch_PhoenixS
                     maxRange = space - chosenWord.Length;
                     break;
                 }
-                else if (canWordFitHere >= chosenWord.Length)                                          // There's no more space, but the word can fit
-                {                                                                                  // (also procks when there's space after a letter)
+                else if (canWordFitHere >= chosenWord.Length)                        // There's no more space, but the word can fit
+                {                                                                    // (also procks when there's space after a letter)
                     additionalRange += canWordFitHere;
                     // Defaults to "in order" index
                     minRange = space - additionalRange;
                     maxRange = space - chosenWord.Length;
                     break;
                 }
-                else
+                else                                                                // Else, there was a letter before the word could fit
                 {
-                    break;
+                    canWordFitHere = 0;
+                    additionalRange = 0;
+                    continue;
                 }
-                // Else, there's no room in the row
             }
         }
 
@@ -282,7 +282,7 @@ namespace WordSearch_PhoenixS
             else
             {
                 wasSuccessfullyPlaced = true;
-                int chosenWord_index = 0;                                                                       // chosenWord index that will be used
+                int chosenWord_index = 0;                                       // chosenWord index that will be used
                 switch (orderType)
                 {
                     case 0: // Outputs the chosenWord in order into the chosen row starting at ValidX
@@ -314,25 +314,25 @@ namespace WordSearch_PhoenixS
         public static bool SearchType_CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord, bool isDiagonal)
         {
             int chosenWordIndex = 0;
+            int canWordFitHere = 0;
             int y_axis = userY;
-            int wordSearchIndex = 0;
 
             if (isDiagonal)
             {
                 y_axis = userY + userX ;
             }
 
-            for (int x_axis = userX; wordSearchIndex < chosenWord.Length - 1; x_axis++, wordSearchIndex++)                // Checks for word in order
+            for (int x_axis = userX; canWordFitHere < chosenWord.Length - 1; x_axis++, canWordFitHere++)    // Checks for word in order
             {
                 if (x_axis > wordSearch.GetUpperBound(1))
                 {
                     break;
                 }
-                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
+                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])            // If each successive x-coordinate contains the successive letter in chosenWord 
                 {
                     chosenWordIndex++;
                 }
-                if (chosenWordIndex == chosenWord.Length - 1)                                   // If the word was correctly found
+                if (chosenWordIndex == chosenWord.Length - 1)                                  // If the word was correctly found
                 {
                     chosenWordIndex = 0;
                     for (int chosenSpace = x_axis + 1; chosenWordIndex < chosenWord.Length; chosenSpace--, chosenWordIndex++)   // Replace the chosenWord with '@'
@@ -342,16 +342,16 @@ namespace WordSearch_PhoenixS
                     return true;
                 }
             }
-            chosenWordIndex = 0;                                                                // Reset variable checker
-            wordSearchIndex = 0;
-            for (int x_axis = userX; wordSearchIndex < chosenWord.Length - 1; x_axis--, wordSearchIndex++)           // Checks for word in reverse
+            // Resets variable checkers
+            chosenWordIndex = 0;
+            canWordFitHere = 0;
+            for (int x_axis = userX; canWordFitHere < chosenWord.Length - 1; x_axis--, canWordFitHere++)    // Checks for word in reverse
             {
-
                 if (x_axis < wordSearch.GetLowerBound(1))
                 {
                     break;
                 }
-                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])                  // If each successive x-coordinate contains the successive letter in chosenWord 
+                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])             // If each successive x-coordinate contains the successive letter in chosenWord 
                 {
                     chosenWordIndex++;
                 }

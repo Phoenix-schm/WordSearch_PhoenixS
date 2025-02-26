@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     public class Vertical : SearchType
     {
@@ -12,10 +10,10 @@ namespace WordSearch_PhoenixS
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <param name="wasWordPlaced">Boolean for if the word was actually placed into the row.</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
+        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasWordPlaced)
         {
             currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
-            currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
+            currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);
             currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip the wordsearch back to its orginal postion
             return currentWordSearch;
         }

@@ -11,7 +11,7 @@
             string[] validUserInputs =
             {
                 "Dog Nicknames", "Colors", "Poisonous Flowers", "Things In My Room", "Things To Eat",
-                "Fabric Types", "Manga Names", "Fonts", "DND Monsters", "Periodic Table Elements", 
+                "Fabric Types", "Manga Names", "Fonts", "DND Monsters", "Periodic Elements", 
                 "Quit"
             };
 
@@ -56,7 +56,7 @@
                 case "colors":                  case "2":
                     PlayWordSearch_Game(CategoryList.CreateCategoryList("colors"));
                     break;
-                case "poisonous plants":       case "3":
+                case "poisonous plants":        case "3":
                     PlayWordSearch_Game(CategoryList.CreateCategoryList("poisonous plants"));
                     break;
                 case "things in my room":       case "4":
@@ -75,9 +75,9 @@
                     PlayWordSearch_Game(CategoryList.CreateCategoryList("fonts"));
                     break;
                 case "dnd monsters":            case "9":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("ddd monsters"));
+                    PlayWordSearch_Game(CategoryList.CreateCategoryList("dnd monsters"));
                     break;
-                case "periodic elements":     case "10":
+                case "periodic elements":       case "10":
                     PlayWordSearch_Game(CategoryList.CreateCategoryList("periodic elements"));
                     break;
                 case "quit":                    case "11":
@@ -127,22 +127,20 @@
         /// <param name="randomWordsList">The list of words the user will have to find.</param>
         static void PlayWordSearch_FindTheWord(char[,] wordSearch,string[] randomWordsList)
         {
-            char[,] fakeWordSearch = DefaultWordSearch();                                                // FOR DISPLAY PURPOSES ONLY
             string userInput = "";
             bool isValid;
             foreach(string word in randomWordsList)
             {
-                do
-                {
-                    fakeWordSearch = FillFakeWordSearch(fakeWordSearch, wordSearch);                    // Creates a fake word search for display ONLY    
+                do                                                                  // isValid gets set to true when there's a correct checkUserCoordinates
+                {                                                                   // Must use do-while so that it goes through this loop again
                     Console.WriteLine("Word Search Puzzle: ");
-                    DisplayWordSearch(fakeWordSearch, wordSearch);
+                    DisplayWordSearch(wordSearch);
                     Console.WriteLine();
 
                     Console.WriteLine("Search for these words:");
                     foreach (string displayWord in randomWordsList)                                     // Lists out the remaining words to be found
                     {
-                        Console.WriteLine(displayWord);
+                        Console.WriteLine(displayWord.ToUpper());
                     }
 
                     userInput = UserInput.CheckWordChoice(randomWordsList);                             // Prompts the user for a word, or to 'return'
@@ -197,28 +195,32 @@
                 switch (searchTypeList[index])
                 {
                     case 0:
-                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);              // Horizontal, in order
+                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);              // Horizontal, in order
                         break;
                     case 1:
-                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);              // Horizontal, in reverse
+                        chosenWord = ReverseChosenWord(chosenWord);
+                        currentWordSearch = Horizontal.PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);              // Horizontal, in reverse
                         break;
                     case 2:
-                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, ref wasWordPlaced);                // Vertical, in order
+                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);                // Vertical, in order
                         break;
                     case 3:
-                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, ref wasWordPlaced);                // Vertical, in reverse
+                        chosenWord = ReverseChosenWord(chosenWord);
+                        currentWordSearch = Vertical.PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);                // Vertical, in reverse
                         break;
                     case 4:
-                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in order
                         break;
                     case 5:
-                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        chosenWord = ReverseChosenWord(chosenWord);
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                     case 6:
-                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 0, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, searchTypeList[index], ref wasWordPlaced);    // Diagonal '\', in order
                         break;
                     case 7:
-                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, 1, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
+                        chosenWord = ReverseChosenWord(chosenWord);
+                        currentWordSearch = Diagonal.PlaceWordInWordSearch(chosenWord, currentWordSearch, searchTypeList[index], ref wasWordPlaced);    // Diagonal '/', in reverse
                         break;
                 }
                 index++;
@@ -259,7 +261,7 @@
         /// </summary>
         /// <param name="fakeWordSearch">The word search meant only for display.</param>
         /// <param name="wordSearch">The word search filled with blanks spaces and will and actually be modified.</param>
-        public static void DisplayWordSearch(char[,] fakeWordSearch, char[,] wordSearch)
+        public static void DisplayWordSearch(char[,] wordSearch)
         {
             string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
             Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
@@ -272,10 +274,10 @@
                 Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (wordSearch[y_axis, x_axis] != ' ' && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
-                    {
+                    if (Char.IsLower(wordSearch[y_axis,x_axis]) && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
+                    {                                                                                       //  and make it Uppercase
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                        Console.Write(" " + Char.ToUpper(wordSearch[y_axis, x_axis]) + " ");
                         Console.ResetColor();
                     }
                     else if (wordSearch[y_axis, x_axis] == '@')                                 // If the word was found already
@@ -284,7 +286,7 @@
                     }
                     else                                                                        // Else, show fake word search's random letters
                     {
-                        Console.Write(" " + fakeWordSearch[y_axis, x_axis] + " ");
+                        Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
                     }
                 }
                 Console.WriteLine();
@@ -292,36 +294,7 @@
         }
 
         /// <summary>
-        /// Fills a fake word search with the words of realWordSearch AND random letters everywhere else
-        /// </summary>
-        /// <param name="fakeWordSearch">The fake word search being displayed.</param>
-        /// <param name="realWordSearch">The real word search being modified and checked in the game.</param>
-        /// <returns></returns>
-        static char[,] FillFakeWordSearch(char[,] fakeWordSearch, char[,] realWordSearch)
-        {
-            for (int y_axis = 0; y_axis < fakeWordSearch.GetLength(0); y_axis++)
-            {
-                for (int x_axis = 0; x_axis < fakeWordSearch.GetLength(1); x_axis++)
-                {
-                    if (realWordSearch[y_axis, x_axis] != ' ')                                  // If the real word search has a letter
-                    {
-                        fakeWordSearch[y_axis, x_axis] = realWordSearch[y_axis, x_axis];
-                    }
-                    else if (fakeWordSearch[y_axis, x_axis] != ' ')                             // If there's already a letter in fakeWordSearch
-                    {
-                        continue;
-                    }
-                    else                                                                        // FakeWordSearch has an empty space
-                    {
-                        fakeWordSearch[y_axis, x_axis] = RandomLetter();
-                    }
-                }
-            }
-            return fakeWordSearch;
-        }
-
-        /// <summary>
-        /// The default version of the word search filled with blanks.
+        /// The default version of the word search filled with random uppercase letters.
         /// Important due to creating a blank [20,20] fills the grid with '\0' and makes checking and modifications useless.
         /// </summary>
         /// <returns>A default word search filled with blank characters.</returns>
@@ -333,7 +306,7 @@
             {
                 for (int x_axis = 0; x_axis < defaultWordSearch.GetLength(1); x_axis++)
                 {
-                    defaultWordSearch[y_axis, x_axis] = ' ';
+                    defaultWordSearch[y_axis, x_axis] = RandomLetter();
                 }
             }
             return defaultWordSearch;
@@ -350,6 +323,12 @@
                                      "11","12","13","14","15","16","17","18","19","20"};
             return NumberedAxis;
         }
+        static string ReverseChosenWord(string chosenWord)
+        {
+            char[] wordToChar = chosenWord.ToCharArray();
+            Array.Reverse(wordToChar);
+            return string.Join("", wordToChar);
+        }
 
         /// <summary>
         /// Creates a string[] of eight random words of user choice category
@@ -365,7 +344,7 @@
 
             for (int index = 0; index < 8; index++)
             {
-                randomWords[index] = categoryWordList[randomIntList[index]].ToUpper();      // Add a random word from categoryWordList into randomWords[]
+                randomWords[index] = categoryWordList[randomIntList[index]].ToLower();      // Add a random word from categoryWordList into randomWords[]
             }
             return randomWords;
         }
@@ -392,7 +371,7 @@
                 }
                 else
                 {
-                    if (randomInt == 0 && useZeroOnce == 0)                // insures 0 will occur at least once in the array
+                    if (randomInt == 0 && useZeroOnce == 0)              // insures 0 will occur at least once in the array
                     {
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;

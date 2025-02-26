@@ -124,7 +124,7 @@
         /// <param name="currentWordSearch">The current word search being checked. Modified based on SearchType.</param>
         /// <param name="chosenWord">The chosenWord as a char[].</param>
         /// <returns> returns the index of valid a valid y coordinate and x coordinate.</returns>
-        static int[] ReturnValidIndex(char[,] currentWordSearch,string chosenWord)
+        static int[] ReturnValidIndex(char[,] currentWordSearch, string chosenWord)
         {
             int amountOfSpaces = currentWordSearch.GetLength(1);                                               // Helpful with redundancy.
             int amountOfRows = currentWordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
@@ -137,21 +137,14 @@
                 // The minimum and maximum range that the word can be placed in
                 int minRange_NewWordPosition = -1;
                 int maxRange_NewWordPosition = -1;
-                
-                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, currentWordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
 
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
-                
-                for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place over and over
-                {
-                    if (maxRange_NewWordPosition > -1)                                                              // If the CheckRowIsEntirelyBlank() proved the row was entirely blank
-                    {
-                        break;
-                    }
 
+                for (int randomPosition = randomPositionList[0]; randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place over and over
+                {
                     ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, currentWordSearch, randomPosition, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
-                    
-                    if (minRange_NewWordPosition > -1)
+
+                    if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
                     {
                         break;
                     }
@@ -167,38 +160,10 @@
             int[] invalidIndex = { -1, -1 };                            // If there was nowhere for the word to fit in this SearchType
             return invalidIndex;
         }
-        
-        /// <summary>
-        /// Checks a chosenRow to see if its entirely blank
-        /// </summary>
-        /// <param name="_chosenRow">Row being checked.</param>
-        /// <param name="_wordSearch">The current word search being used.</param>
-        /// <param name="minRange">The min possible index the word can start to be placed at.</param>
-        /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
-        /// <param name="_chosenWord">The word being placed in the row.</param>
-        /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
-        static void ReturnValidIndex_CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref int minRange, ref int maxRange, string _chosenWord)
-        {
-            int isFilledWithBlanks = 0;
-            int rowLength = _wordSearch.GetLength(1) - 1;
-
-            for (int space = 0; space <= rowLength; space++)                                // Checks if row only contains Uppercase letters
-            {
-                if (Char.IsUpper(_wordSearch[_chosenRow, space]))
-                {
-                    isFilledWithBlanks++;
-                }
-                if (isFilledWithBlanks > rowLength)                                         // If the whole row contains Uppercase
-                {
-                    maxRange = rowLength - _chosenWord.Length;
-                    minRange = 0;
-                    break;
-                }                                                                           // else, maxRange doesn't change
-            }
-        }
 
         /// <summary>
         /// Checks the chosenRow for if it can hold the chosenWord
+        /// Note: Uppercase letters are blank spaces that can be filled in and Lowercase letters are other words from the category
         /// </summary>
         /// <param name="chosenRow">Row being checked</param>
         /// <param name="chosenWord">Word that the method is trying to fit into chosenRow.</param>

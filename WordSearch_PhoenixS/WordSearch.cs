@@ -35,7 +35,7 @@
         /// <param name="validInputsList"> The list of valid user inputs.</param>
         static void DisplayValidUserInputs(string[] validInputsList)
         {
-            for (int index = 1; index < validInputsList.Length; index++)
+            for (int index = 1; index <= validInputsList.Length; index++)
             {
                 Console.WriteLine(index + ") " +  validInputsList[index - 1]);
             }

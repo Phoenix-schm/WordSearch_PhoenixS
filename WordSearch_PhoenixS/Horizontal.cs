@@ -10,9 +10,9 @@
         /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <param name="wasWordPlaced">Boolean check for if the word was actually placed in the current word search.</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasWordPlaced)
+        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasWordPlaced)
         {
-            currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, orderType, ref wasWordPlaced);
+            currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);
             return currentWordSearch;
         }
         /// <summary>

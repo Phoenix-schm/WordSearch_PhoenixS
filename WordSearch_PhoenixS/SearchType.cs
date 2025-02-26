@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     public class SearchType
     {
@@ -14,8 +12,7 @@ namespace WordSearch_PhoenixS
         public static int RandomNumber(int minNumber, int maxNumber)
         {
             Random random = new Random();
-            int randomNumber = random.Next(minNumber, maxNumber);
-            return randomNumber;
+            return random.Next(minNumber, maxNumber);
         }
 
         /// <summary>
@@ -126,9 +123,8 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="currentWordSearch">The current word search being checked. Modified based on SearchType.</param>
         /// <param name="chosenWord">The chosenWord as a char[].</param>
-        /// <param name="orderType"> Whether the word is being placed in order(0) or in reverse(1).</param>
         /// <returns> returns the index of valid a valid y coordinate and x coordinate.</returns>
-        static int[] ReturnValidIndex(char[,] currentWordSearch,string chosenWord, int orderType)
+        static int[] ReturnValidIndex(char[,] currentWordSearch,string chosenWord)
         {
             int amountOfSpaces = currentWordSearch.GetLength(1);                                               // Helpful with redundancy.
             int amountOfRows = currentWordSearch.GetLength(0);                                                 // Insure's this can be used for diagonal wordSearch placement
@@ -146,7 +142,7 @@ namespace WordSearch_PhoenixS
 
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
                 
-                for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place in the row to start at
+                for (int randomPosition = randomPositionList[0];  randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place over and over
                 {
                     if (maxRange_NewWordPosition > -1)                                                              // If the CheckRowIsEntirelyBlank() proved the row was entirely blank
                     {
@@ -161,20 +157,9 @@ namespace WordSearch_PhoenixS
                     }
                 }
 
-                if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
+                if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)                                 // If there was a valid index position to place the word
                 {
-                    int chosenSpace = 0;
-                    switch (orderType)
-                    {
-                        case 0:                 // in order
-                            chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
-                            break;
-                        case 1:                 // in reverse
-                            minRange_NewWordPosition += chosenWord.Length - 1;
-                            maxRange_NewWordPosition += chosenWord.Length;
-                            chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
-                            break;
-                    }
+                    int chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
                     int[] validIndex = { chosenRow, chosenSpace };
                     return validIndex;
                 }
@@ -197,13 +182,13 @@ namespace WordSearch_PhoenixS
             int isFilledWithBlanks = 0;
             int rowLength = _wordSearch.GetLength(1) - 1;
 
-            for (int space = 0; space <= rowLength; space++)                                // Checks if row only contains blank spaces
+            for (int space = 0; space <= rowLength; space++)                                // Checks if row only contains Uppercase letters
             {
-                if (_wordSearch[_chosenRow, space] == ' ')
+                if (Char.IsUpper(_wordSearch[_chosenRow, space]))
                 {
                     isFilledWithBlanks++;
                 }
-                if (isFilledWithBlanks > rowLength)                                         // If the whole row contains blanks
+                if (isFilledWithBlanks > rowLength)                                         // If the whole row contains Uppercase
                 {
                     maxRange = rowLength - _chosenWord.Length;
                     minRange = 0;
@@ -211,7 +196,6 @@ namespace WordSearch_PhoenixS
                 }                                                                           // else, maxRange doesn't change
             }
         }
-
 
         /// <summary>
         /// Checks the chosenRow for if it can hold the chosenWord
@@ -228,15 +212,15 @@ namespace WordSearch_PhoenixS
             int additionalRange = 0;
             for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                   // Checking every space from that randomPosition
             {
-                if (wordSearch[chosenRow, space] == ' ' && canWordFitHere < chosenWord.Length)           // If there's blank spaces
+                if (Char.IsUpper(wordSearch[chosenRow, space]) && canWordFitHere < chosenWord.Length)           // If there's Uppercase spaces
                 {
                     canWordFitHere++;
                 }
-                else if (wordSearch[chosenRow, space] == ' ' && space < wordSearch.GetLength(1) && canWordFitHere >= chosenWord.Length) // If there's still room in the row and the word can already fit
+                else if (Char.IsUpper(wordSearch[chosenRow, space]) && space < wordSearch.GetLength(1) && canWordFitHere >= chosenWord.Length) // If there's still room in the row and the word can already fit
                 {
                     additionalRange++;
                 }
-                else if (wordSearch[chosenRow, space] != ' ' && canWordFitHere >= chosenWord.Length)       // If there is a letter, but the word can fit beforehand
+                else if (!Char.IsUpper(wordSearch[chosenRow, space]) && canWordFitHere >= chosenWord.Length)       // If there is a Lowercase, but the word can fit beforehand
                 {
                     additionalRange += canWordFitHere;
                     // Defaults to "in order" index
@@ -252,7 +236,7 @@ namespace WordSearch_PhoenixS
                     maxRange = space - chosenWord.Length;
                     break;
                 }
-                else                                                                // Else, there was a letter before the word could fit
+                else                                                                // Else, there was an Uppercase before the word could fit
                 {
                     canWordFitHere = 0;
                     additionalRange = 0;
@@ -266,38 +250,25 @@ namespace WordSearch_PhoenixS
         /// </summary>
         /// <param name="chosenWord">Word being placed into the word search.</param>
         /// <param name="currentWordSearch">The current modified word search.</param>
-        /// <param name="orderType">Whether the word will be placed in order(0) or in reverse(1)</param>
         /// <param name="wasSuccessfullyPlaced">If the word could be successfully placed.</param>
         /// <returns>Returns the modified word search, now with the chosenWord in it.</returns>
-        public static char[,] SearchType_PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, ref bool wasSuccessfullyPlaced)
+        public static char[,] SearchType_PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasSuccessfullyPlaced)
         {
-            int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord, orderType);
+            int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord);
             int validY = validIndex[0];
             int validX = validIndex[1];
 
             if (validY == -1 || validX == -1)
             {
-                //Console.WriteLine("No valid rows to choose from");
                 // Do nothing and continue to returning the unmodified word search
             }
             else
             {
                 wasSuccessfullyPlaced = true;
-                int chosenWord_index = 0;                                       // chosenWord index that will be used
-                switch (orderType)
+                int chosenWordIndex = 0;
+                for (int xAxis = validX; chosenWordIndex < chosenWord.Length; xAxis++, chosenWordIndex++)
                 {
-                    case 0: // Outputs the chosenWord in order into the chosen row starting at ValidX
-                        for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis++, chosenWord_index++)
-                        {
-                            currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
-                        }
-                        break;
-                    case 1: // Outputs the chosenWord in reverse into the chosen row starting at validX
-                        for (int xAxis = validX; chosenWord_index < chosenWord.Length; xAxis--, chosenWord_index++)
-                        {
-                            currentWordSearch[validY, xAxis] = chosenWord[chosenWord_index];
-                        }
-                        break;
+                    currentWordSearch[validY, xAxis] = chosenWord[chosenWordIndex];
                 }
             }
             return currentWordSearch;

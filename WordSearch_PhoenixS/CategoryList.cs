@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     public class CategoryList
     {

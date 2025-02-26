@@ -1,5 +1,4 @@
-﻿
-namespace WordSearch_PhoenixS
+﻿namespace WordSearch_PhoenixS
 {
     public class UserInput
     {
@@ -64,7 +63,7 @@ namespace WordSearch_PhoenixS
                     }
                     foreach (string word in eightValidWords)                                // Going through each word in eightValidWords
                     {
-                        if (userInput.ToUpper() == word)
+                        if (userInput.ToLower() == word)
                         {
                             return word;
                         }

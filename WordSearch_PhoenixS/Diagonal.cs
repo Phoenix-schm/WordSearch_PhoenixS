@@ -11,10 +11,10 @@
         /// <param name="diagonalType"> Whether word will be placed upwards or downwards. </param>
         /// <param name="wasWordPlaced"> Checks if the word was placed at all.</param>
         /// <returns>Returns the new modified word search.</returns>
-        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int orderType, int diagonalType, ref bool wasWordPlaced)
+        public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, int diagonalType, ref bool wasWordPlaced)
         {
             char[,] diagonalVersion = ModifyWordSearch_TransformToDiagonal(currentWordSearch, diagonalType);
-            diagonalVersion = SearchType_PlaceWordInWordSearch(chosenWord, diagonalVersion, orderType, ref wasWordPlaced);
+            diagonalVersion = SearchType_PlaceWordInWordSearch(chosenWord, diagonalVersion, ref wasWordPlaced);
 
             currentWordSearch = ModifyWordSearch_RevertDiagonalToNormal(diagonalVersion, diagonalType);
             return currentWordSearch;

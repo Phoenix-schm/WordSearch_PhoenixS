@@ -6,20 +6,20 @@
         {
             Invalid,
             Dog_Nicknames, Colors, Poisonous_Plants, Things_In_My_Room, Things_To_Eat,
-            Fabric_Types, Manga_Names, Fonts, DND_Monsters, Periodic_Elements,
+            Fabric_Types, Manga_Titles, Fonts, DND_Monsters, Periodic_Elements,
             Quit
         }
         static void Main(string[] args)
         {
             // variable declarations
             bool isPlaying = true;
-            string? userInput;
+            string userInput;
 
             while (isPlaying)
             {
                 Console.WriteLine("Welcome to the Amazing Word Search");
                 Console.WriteLine("You have ten categories to choose from:");
-                DisplayValidUserInputs();
+                DisplayValidChoices();
                 Console.WriteLine("-------------------------- \n");
 
                 userInput = UserInput.CheckCategoryChoice();
@@ -30,7 +30,7 @@
                 else
                 {
                     string[] eightRandomWords = RandomWordsFromCategory(CategoryList.CreateCategoryList(userInput));
-                    char[,] wordSearch = DefaultWordSearch();                               // Creates word search and fills it with Uppercase letters,
+                    char[,] wordSearch = DefaultWordSearch();                               // Creates word search and fills it with random Uppercase letters,
                                                                                             //      IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
                     wordSearch = CreateWordSearch(eightRandomWords, wordSearch);
                     PlayWordSearchGame(wordSearch, eightRandomWords);
@@ -42,7 +42,7 @@
         /// <summary>
         /// Displays contents of ValidChoices enum
         /// </summary>
-        static void DisplayValidUserInputs()
+        static void DisplayValidChoices()
         {
             foreach (ValidChoices choice in Enum.GetValues(typeof(ValidChoices)))
             {
@@ -104,12 +104,14 @@
                         break;
                     }
 
-                    int userY_axis = UserInput.CheckIfValidNumber("y");                                 // Prompting user for y and x coordinates
+                    int userY_axis = UserInput.CheckIfValidNumber("y");                                  // Prompting user for y and x coordinates
                     int userX_axis = UserInput.CheckIfValidNumber("x");
                     isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
                     if (!isValid)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("That wasn't a valid coordinate. Try again.");
+                        Console.ResetColor();
                     }
                     else                                                                                // If the coordinates were correct then take the word off the list
                     {
@@ -131,7 +133,7 @@
             if (userInput != "return")                                                                  // If user won
             {
                 Console.WriteLine();
-                Console.WriteLine("Congrats! You made it through the word search");
+                Console.WriteLine("Congrats! You made it through the word search.");
                 Console.WriteLine("-----------------------------");
             }
         }
@@ -183,7 +185,7 @@
                 index++;
                 if (index == searchTypeList.Length)                         // Edge case scenario that a word cannot be placed in the word search at ALL
                 {                                                           //      Biggest possible point of failure. If words can never be placed into the word search, this will go on foever
-                    char[,] restartWordSearch = DefaultWordSearch();        //      Make sure words are not long enough to permantally keep it resetting endlessly
+                    char[,] restartWordSearch = DefaultWordSearch();        //      Make sure words are not long enough to permanently keep it resetting endlessly
                     wordIndex = 0;                                          // Reset wordIndex so that it runs through word list again
                     return restartWordSearch;
                 }
@@ -273,20 +275,25 @@
         /// Used to display the numbered axis' of the word search
         /// Creates the numbered axis' 01 - 20 in a string array
         /// </summary>
-        /// <returns> string array holding numbers from "01" 0 "20" </returns>
+        /// <returns> string array holding numbers from "01" to "20" </returns>
         static string[] NumberedAxisInWordSearch()
         {
             string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
                                      "11","12","13","14","15","16","17","18","19","20"};
             return NumberedAxis;
         }
+
+        /// <summary>
+        /// Outputs a the reverse of a string.
+        /// </summary>
+        /// <param name="chosenWord">Word being reversed</param>
+        /// <returns>Reverse of a string.</returns>
         static string ReverseChosenWord(string chosenWord)
         {
             char[] wordToChar = chosenWord.ToCharArray();
             Array.Reverse(wordToChar);
             return string.Join("", wordToChar);
         }
-
         /// <summary>
         /// Creates a string[] of eight random words of user choice category
         /// </summary>
@@ -328,7 +335,7 @@
                 }
                 else
                 {
-                    if (randomInt == 0 && useZeroOnce == 0)              // insures 0 will occur at least once in the array
+                    if (randomInt == 0 && useZeroOnce == 0)               // insures 0 will occur at least once in the array
                     {
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;

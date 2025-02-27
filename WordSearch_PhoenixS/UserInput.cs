@@ -18,7 +18,7 @@
                 {
                     foreach (WordSearch.ValidChoices choice in Enum.GetValues(typeof(WordSearch.ValidChoices)))
                     {
-                        string choiceString = choice.ToString().Replace("_", " ");              // .Replace() replaces left parameter with right paramteter
+                        string choiceString = choice.ToString().Replace("_", " ");      // .Replace() replaces left parameter with right paramteter
                         int choiceInt = (int)choice;
 
                         if (choiceString == "Invalid")
@@ -34,14 +34,17 @@
                             return choiceString.ToLower();
                         }
                     }
-                    Console.WriteLine("That is not a listed input. Try Again.");         // Occcurs only if the other user input wasn't valid
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("That is not a listed input. Try Again.");        // Occcurs only if the other user input wasn't valid
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Cannot input nothing. Try again.");
                 }
+                Console.ResetColor();
             }
-            return "Invalid choice. Wait what?";                                         // Shouldn't occur unless something went wrong
+            return "Invalid choice. Wait what?";                                        // Shouldn't occur unless something went wrong
         }
         /// <summary>
         /// Checks if userInput is one of the eightValidWords or if they typed "return".
@@ -60,7 +63,7 @@
 
                 if (userInput != "" && userInput != null)
                 {
-                    if (userInput.ToLower() == "return" || userInput == "7")
+                    if (userInput.ToLower() == "return")
                     {
                         return "return";
                     }
@@ -71,12 +74,15 @@
                             return word;
                         }
                     }
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("That is not a word in the word search");
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Cannot input nothing. Try again");
                 }
+                Console.ResetColor();
             }
             return "Invalid word choice. Wait, that's not right.";                          // Should never occur
         }
@@ -94,40 +100,28 @@
             {
                 Console.Write("Type in the " + axis + " coordinate of the first letter of the word: ");
                 string? userInput = Console.ReadLine();
+
                 if (userInput != null && userInput != "")
                 {
-                    int coordinate = 0;
-                    char[] userInputChar = userInput.ToCharArray();
-                    foreach (char letter in userInputChar)
+                    int[] validCoordinates = new int[20];
+                    for (int coordinate = 1; coordinate <= validCoordinates.Length; coordinate++)           // Checks between 1 and 20 (inclusive)
                     {
-                        if (!Char.IsDigit(letter))                                  // If userInput contains a letter
+                        if (userInput == coordinate.ToString())
                         {
-                            Console.WriteLine("That wasn't a number!");
-                            break;
-                        }
-                        else
-                        {
-                            int.TryParse(userInput, out coordinate);
-                            coordinate -= 1;                                        // To accomodate the off-by-one
-                            if (coordinate < 0 || coordinate > 19)
-                            {
-                                Console.WriteLine("That number is out of range.");
-                                break;
-                            }
-                            else
-                            {
-                                return coordinate;
-                            }
+                            return coordinate - 1;                          // -1 to accomodate off-by-one in word search array
                         }
                     }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("That wasn't a valid coordinate.");
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Cannot input nothing.");
                 }
+                Console.ResetColor();
             }
-
-            Console.WriteLine("Something bad happened here.");                      // Should never occur
+            Console.WriteLine("Something bad happened here.");             // Should never occur
             return -1;
         }
     }

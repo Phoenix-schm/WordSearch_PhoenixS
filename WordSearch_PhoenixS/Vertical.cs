@@ -11,9 +11,9 @@
         /// <returns>Returns the new modified word search.</returns>
         public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasWordPlaced)
         {
-            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
+            currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
             currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);
-            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);            // Flip the wordsearch back to its orginal postion
+            currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);            // Flip the wordsearch back to its orginal postion
             return currentWordSearch;
         }
         /// <summary>
@@ -26,10 +26,29 @@
         /// <returns></returns>
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] currentWordSearch, string chosenWord)
         {
-            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);
+            currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);
             bool isValidCoordinates = SearchType_CheckUserCoordinates(userX, userY, ref currentWordSearch, chosenWord, false);        // Reverse x and y to accomodate rotation 
-            currentWordSearch = ModifyWordSearch_FlipXYaxis(currentWordSearch);
+            currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);
             return isValidCoordinates;
+        }
+
+        /// <summary>
+        /// Flips the x and the y coordinates of the word search.
+        /// </summary>
+        /// <param name="currentWordSearch">The current word search beinng modified.</param>
+        /// <returns>currentWordSearch but flipped.</returns>
+        static char[,] TransformWordSearch_FlipXYaxis(char[,] currentWordSearch)
+        {
+            char[,] newWordSearch = new char[20, 20];
+
+            for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
+            {
+                for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
+                {
+                    newWordSearch[x_axis, y_axis] = currentWordSearch[y_axis, x_axis];
+                }
+            }
+            return newWordSearch;
         }
     }
 }

@@ -10,8 +10,8 @@
         public static string[] CreateCategoryList(string categoryName)
         {
             string filePath = "words.txt";
-            StreamReader file = new StreamReader(filePath);                     // Creates the file path if it doesn't exist
-            string wordsFromFile = file.ReadToEnd();
+            StreamReader file = new StreamReader(filePath);                     // Reads filePath
+            string wordsFromFile = file.ReadToEnd();                            // and createsa string of the whole file
             file.Close();
 
             string[] AllCategoriesList = wordsFromFile.Split("\r\n");
@@ -26,7 +26,9 @@
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Incorrect categoryName.");
+                    Console.ResetColor();
                 }
             }
             return returnedWordList;                                                 // Should return a valid a list full of the category words

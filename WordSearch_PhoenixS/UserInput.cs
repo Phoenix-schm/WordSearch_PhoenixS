@@ -60,7 +60,7 @@
 
                 if (userInput != "" && userInput != null)
                 {
-                    if (userInput.ToLower() == "return")
+                    if (userInput.ToLower() == "return" || userInput == "7")
                     {
                         return "return";
                     }

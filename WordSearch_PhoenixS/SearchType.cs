@@ -139,16 +139,12 @@
                 int minRange_NewWordPosition = -1;
                 int maxRange_NewWordPosition = -1;
 
-                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, currentWordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
 
-                for (int randomPosition = randomPositionList[0]; randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place over and over
+                for (int randomPositionIndex = 0; randomPositionIndex < randomPositionList.Length; randomPositionIndex++)     // Going through every space in a random assortment
                 {
-                    if (maxRange_NewWordPosition > -1)
-                    {
-                        break;
-                    }
-                    ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, currentWordSearch, randomPosition, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
+                    int chosenSpace = randomPositionList[randomPositionIndex];
+                    ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, currentWordSearch, chosenSpace, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
 
                     if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
                     {
@@ -168,35 +164,6 @@
         }
 
         /// <summary>
-        /// Checks a chosenRow to see if its entirely blank
-        /// </summary>
-        /// <param name="_chosenRow">Row being checked.</param>
-        /// <param name="_wordSearch">The current word search being used.</param>
-        /// <param name="minRange">The min possible index the word can start to be placed at.</param>
-        /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
-        /// <param name="_chosenWord">The word being placed in the row.</param>
-        /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
-        static void ReturnValidIndex_CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref int minRange, ref int maxRange, string _chosenWord)
-        {
-            int isFilledWithBlanks = 0;
-            int rowLength = _wordSearch.GetLength(1) - 1;
-
-            for (int space = 0; space <= rowLength; space++)                                // Checks if row only contains Uppercase letters
-            {
-                if (Char.IsUpper(_wordSearch[_chosenRow, space]))
-                {
-                    isFilledWithBlanks++;
-                }
-                if (isFilledWithBlanks > rowLength)                                         // If the whole row contains Uppercase
-                {
-                    maxRange = rowLength - _chosenWord.Length;
-                    minRange = 0;
-                    break;
-                }                                                                           // else, maxRange doesn't change
-            }
-        }
-
-        /// <summary>
         /// Checks the chosenRow for if it can hold the chosenWord
         /// Note: Uppercase letters are blank spaces that can be filled in and Lowercase letters are other words from the category
         /// </summary>
@@ -212,15 +179,19 @@
             int additionalRange = 0;
             for (int space = randomPosition; space < wordSearch.GetLength(1); space++)                   // Checking every space from that randomPosition
             {
-                if (Char.IsUpper(wordSearch[chosenRow, space]) && canWordFitHere < chosenWord.Length)           // If there's Uppercase spaces
+                while (space != wordSearch.GetLength(1) && Char.IsUpper(wordSearch[chosenRow, space]))          // Exits once it runs into a lowercase letter
                 {
-                    canWordFitHere++;
+                    if (canWordFitHere < chosenWord.Length)                                             // If there's still letters in the word
+                    {
+                        canWordFitHere++;
+                    }
+                    else if (canWordFitHere == chosenWord.Length)    // If there's still room in the row and the word can already fit
+                    {
+                        additionalRange++;
+                    }
+                    space++;
                 }
-                else if (Char.IsUpper(wordSearch[chosenRow, space]) && space < wordSearch.GetLength(1) && canWordFitHere >= chosenWord.Length) // If there's still room in the row and the word can already fit
-                {
-                    additionalRange++;
-                }
-                else if (!Char.IsUpper(wordSearch[chosenRow, space]) && canWordFitHere >= chosenWord.Length)       // If there is a Lowercase, but the word can fit beforehand
+                if (canWordFitHere == chosenWord.Length)                    // If there is a Lowercase, but the word can fit beforehand
                 {
                     additionalRange += canWordFitHere;
                     // Defaults to "in order" index
@@ -228,19 +199,10 @@
                     maxRange = space - chosenWord.Length;
                     break;
                 }
-                else if (canWordFitHere >= chosenWord.Length)                        // There's no more space, but the word can fit
-                {                                                                    // (also procks when there's space after a letter)
-                    additionalRange += canWordFitHere;
-                    // Defaults to "in order" index
-                    minRange = space - additionalRange;
-                    maxRange = space - chosenWord.Length;
-                    break;
-                }
-                else                                                                // Else, there was an Uppercase before the word could fit
+                else if (canWordFitHere < chosenWord.Length)               // Else, there was an Lowercase before the word could fit
                 {
                     canWordFitHere = 0;
                     additionalRange = 0;
-                    continue;
                 }
             }
         }

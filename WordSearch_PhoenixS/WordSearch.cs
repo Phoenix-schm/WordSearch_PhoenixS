@@ -13,7 +13,7 @@
         {
             // variable declarations
             bool isPlaying = true;
-            string? validInput;
+            string? userInput;
 
             while (isPlaying)
             {
@@ -22,10 +22,20 @@
                 DisplayValidUserInputs();
                 Console.WriteLine("-------------------------- \n");
 
-                validInput = UserInput.CheckCategoryChoice();
-                validInput = validInput.ToLower();
-
-                PlayWordSearch_FromCategory(validInput, ref isPlaying);
+                userInput = UserInput.CheckCategoryChoice();
+                if (userInput == "quit")
+                {
+                    isPlaying = false;
+                }
+                else
+                {
+                    string[] eightRandomWords = RandomWordsFromCategory(CategoryList.CreateCategoryList(userInput));
+                    char[,] wordSearch = DefaultWordSearch();                               // Creates word search and fills it with Uppercase letters,
+                                                                                            //      IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
+                    wordSearch = CreateWordSearch(eightRandomWords, wordSearch);
+                    PlayWordSearchGame(wordSearch, eightRandomWords);
+                    Console.WriteLine();
+                }
             }
         }
 
@@ -50,47 +60,15 @@
         }
 
         /// <summary>
-        /// Holds all the choices the player can make.
-        /// </summary>
-        /// <param name="userInput">Player input that will run through the switch statement.</param>
-        /// <param name="_isPlaying">Boolean checking if the user has chosen to quit.</param>
-        static void PlayWordSearch_FromCategory(string userInput, ref bool _isPlaying)
-        {
-            if (userInput == "quit")
-            {
-                _isPlaying = false;
-            }
-            else
-            {
-                PlayWordSearch_Game(CategoryList.CreateCategoryList(userInput));
-            }
-        }
-
-        /// <summary>
-        /// If the player decides to play, make a list of eightRandomWords, create a word search,
-        /// add those words to the word search, and then prompt the user to find the words.
-        /// </summary>
-        /// <param name="category">The category that eight random words are being taken out of.</param>
-        static void PlayWordSearch_Game(string[] category)
-        {
-            string[] eightRandomWords = RandomWordsFromCategory(category);
-            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with Uppercase letters,
-                                                                                                //      IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
-            wordSearch = PlayWordSearch_CreateWordSearch(eightRandomWords, wordSearch);
-            PlayWordSearch_FindTheWord(wordSearch, eightRandomWords);
-            Console.WriteLine();
-        }
-
-        /// <summary>
         /// Creates a word search using the inputCategory
         /// </summary>
         /// <param name="eightCategoryWords"> the category the user chose </param>
         /// <param name="newWordSearch">The word search created with each word added to it.</param>
-        static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
+        static char[,] CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
         {
             for (int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
-                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, eightCategoryWords);        // Each time a word is passed in it creates a new word search
+                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, eightCategoryWords, ref index);        // Each time a word is passed in it creates a new word search
             }
             return newWordSearch;
         }
@@ -101,12 +79,12 @@
         /// Also asks the user if they'd like to return to the main menu, and will let them do so if they type 'return'
         /// </summary>
         /// <param name="wordSearch">The word search being shown.</param>
-        /// <param name="randomWordsList">The list of words the user will have to find.</param>
-        static void PlayWordSearch_FindTheWord(char[,] wordSearch, string[] randomWordsList)
+        /// <param name="eightRandomWords">The list of words the user will have to find.</param>
+        static void PlayWordSearchGame(char[,] wordSearch, string[] eightRandomWords)
         {
             string userInput = "";
             bool isValid;
-            foreach (string word in randomWordsList)
+            foreach (string word in eightRandomWords)
             {
                 do                                                                  // isValid gets set to true when there's a correct checkUserCoordinates
                 {                                                                   // Must use do-while so that it goes through this loop again
@@ -115,16 +93,17 @@
                     Console.WriteLine();
 
                     Console.WriteLine("Search for these words:");
-                    foreach (string displayWord in randomWordsList)                                     // Lists out the remaining words to be found
+                    foreach (string displayWord in eightRandomWords)                                     // Lists out the remaining words to be found
                     {
                         Console.WriteLine(displayWord.ToUpper());
                     }
 
-                    userInput = UserInput.CheckWordChoice(randomWordsList);                             // Prompts the user for a word, or to 'return'
+                    userInput = UserInput.CheckWordChoice(eightRandomWords);                             // Prompts the user for a word, or to 'return'
                     if (userInput == "return")
                     {
                         break;
                     }
+
                     int userY_axis = UserInput.CheckIfValidNumber("y");                                 // Prompting user for y and x coordinates
                     int userX_axis = UserInput.CheckIfValidNumber("x");
                     isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
@@ -134,11 +113,11 @@
                     }
                     else                                                                                // If the coordinates were correct then take the word off the list
                     {
-                        for (int index = 0; index < randomWordsList.Length; index++)
+                        for (int index = 0; index < eightRandomWords.Length; index++)
                         {
-                            if (userInput == randomWordsList[index])
+                            if (userInput == eightRandomWords[index])
                             {
-                                randomWordsList[index] = "";
+                                eightRandomWords[index] = "";
                             }
                         }
                     }
@@ -163,7 +142,7 @@
         /// <param name="chosenWord"> Word to be added to the word search</param>
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
         /// <returns>New word search to be modified.</returns>
-        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch, string[] eightCategoryWords)
+        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch, string[] eightCategoryWords, ref int wordIndex)
         {
             int[] searchTypeList = ReturnRandomNumberList(8, 8);
             int index = 0;
@@ -203,10 +182,10 @@
                 }
                 index++;
                 if (index == searchTypeList.Length)                         // Edge case scenario that a word cannot be placed in the word search at ALL
-                {                                                           //      Biggest possible point of failure. If words can never be placed into the word search
-                                                                            //      Then this while loop will go on forever. Make sure that words are short enough not to cause issues.
-                    char[,] startOverWordSearch = DefaultWordSearch();
-                    PlayWordSearch_CreateWordSearch(eightCategoryWords, startOverWordSearch);
+                {                                                           //      Biggest possible point of failure. If words can never be placed into the word search, this will go on foever
+                    char[,] restartWordSearch = DefaultWordSearch();        //      Make sure words are not long enough to permantally keep it resetting endlessly
+                    wordIndex = 0;                                          // Reset wordIndex so that it runs through word list again
+                    return restartWordSearch;
                 }
             }
             return currentWordSearch;

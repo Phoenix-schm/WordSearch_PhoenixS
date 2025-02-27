@@ -4,6 +4,7 @@
     {
         /// <summary>
         /// Checks if the userInput contained one of the ValidChoices enum.
+        /// Something something
         /// </summary>
         /// <returns>The valid userInput.</returns>
         public static string CheckCategoryChoice()

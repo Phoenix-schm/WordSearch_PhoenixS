@@ -16,7 +16,8 @@
         }
 
         /// <summary>
-        /// Flips the x and the y coordinates of the word search.
+        /// Flips the x and the y coordinates of the word search. 
+        /// In use for Vertical word outputs
         /// </summary>
         /// <param name="currentWordSearch">The current word search beinng modified.</param>
         /// <returns>currentWordSearch but flipped.</returns>
@@ -44,7 +45,7 @@
         {
             char[,] newWordsearch = new char[20, 20];
 
-            for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++ )
+            for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
             {
                 int reversalX_axis = currentWordSearch.GetUpperBound(1);
                 for (int x_axis = 0; x_axis < currentWordSearch.GetLength(1); x_axis++)
@@ -56,7 +57,7 @@
         }
 
         /// <summary>
-        /// Takes apart the word search into its diagonals.
+        /// Takes apart the word search and outputs its diagonals.
         /// </summary>
         /// <param name="currentWordSearch">The current word search being taken apart.</param>
         /// <param name="diagonalType">If the diagonal type is an up slope(less than 6) or a down slope (6 or 7). 
@@ -70,8 +71,8 @@
             }
 
             char[,] diagonalWordSearch = new char[40, 20];                                                      //[y,x] y is double the length of
-                                                                                                                //the y_axis of currentWordSearch
-            for (int diagonalY_axis = 0; diagonalY_axis < diagonalWordSearch.GetLength(0); diagonalY_axis++)           
+                                                                                                                //  the y_axis of currentWordSearch
+            for (int diagonalY_axis = 0; diagonalY_axis < diagonalWordSearch.GetLength(0); diagonalY_axis++)
             {
                 for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
                 {
@@ -95,7 +96,7 @@
         /// <returns>The word search as 20 by 20.</returns>
         public static char[,] ModifyWordSearch_RevertDiagonalToNormal(char[,] diagonalWordSearch, int diagonalType)
         {
-            char[,] normalWordSearch = new char[20,20];
+            char[,] normalWordSearch = new char[20, 20];
 
             for (int y_axis = 0; y_axis < normalWordSearch.GetLength(0); y_axis++)
             {
@@ -138,10 +139,15 @@
                 int minRange_NewWordPosition = -1;
                 int maxRange_NewWordPosition = -1;
 
+                ReturnValidIndex_CheckRowIsEntirelyBlank(chosenRow, currentWordSearch, ref minRange_NewWordPosition, ref maxRange_NewWordPosition, chosenWord);
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);       // Creates a random list of positions in the row
 
                 for (int randomPosition = randomPositionList[0]; randomPosition < randomPositionList.Length; randomPosition++)     // Picks a random place over and over
                 {
+                    if (maxRange_NewWordPosition > -1)
+                    {
+                        break;
+                    }
                     ReturnValidIndex_CheckRowCanContainWord(chosenRow, chosenWord, currentWordSearch, randomPosition, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
 
                     if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
@@ -159,6 +165,35 @@
             }
             int[] invalidIndex = { -1, -1 };                            // If there was nowhere for the word to fit in this SearchType
             return invalidIndex;
+        }
+
+        /// <summary>
+        /// Checks a chosenRow to see if its entirely blank
+        /// </summary>
+        /// <param name="_chosenRow">Row being checked.</param>
+        /// <param name="_wordSearch">The current word search being used.</param>
+        /// <param name="minRange">The min possible index the word can start to be placed at.</param>
+        /// <param name="maxRange">The max possible index the word can start to be placed at.</param>
+        /// <param name="_chosenWord">The word being placed in the row.</param>
+        /// <returns>Returns the modified maxRange to be either 0 (if there's already a word in the row) or the length of the row minus the chosenWord length</returns>
+        static void ReturnValidIndex_CheckRowIsEntirelyBlank(int _chosenRow, char[,] _wordSearch, ref int minRange, ref int maxRange, string _chosenWord)
+        {
+            int isFilledWithBlanks = 0;
+            int rowLength = _wordSearch.GetLength(1) - 1;
+
+            for (int space = 0; space <= rowLength; space++)                                // Checks if row only contains Uppercase letters
+            {
+                if (Char.IsUpper(_wordSearch[_chosenRow, space]))
+                {
+                    isFilledWithBlanks++;
+                }
+                if (isFilledWithBlanks > rowLength)                                         // If the whole row contains Uppercase
+                {
+                    maxRange = rowLength - _chosenWord.Length;
+                    minRange = 0;
+                    break;
+                }                                                                           // else, maxRange doesn't change
+            }
         }
 
         /// <summary>
@@ -238,7 +273,7 @@
             }
             return currentWordSearch;
         }
-        
+
         /// <summary>
         /// Checks the [y,x] coordinates of the modified wordSearch. Based on SearchType.
         /// </summary>
@@ -256,7 +291,7 @@
 
             if (isDiagonal)
             {
-                y_axis = userY + userX ;
+                y_axis = userY + userX;
             }
 
             for (int x_axis = userX; canWordFitHere < chosenWord.Length - 1; x_axis++, canWordFitHere++)    // Checks for word in order
@@ -296,7 +331,7 @@
                 {
                     chosenWordIndex = 0;
                     for (int chosenSpace = x_axis - 1; chosenWordIndex < chosenWord.Length; chosenSpace++, chosenWordIndex++)   // Replace the chosenWord with '@'
-                    { 
+                    {
                         wordSearch[y_axis, chosenSpace] = '@';
                     }
                     return true;

@@ -14,22 +14,22 @@
             string wordsFromFile = file.ReadToEnd();
             file.Close();
 
-            string[] wordList = wordsFromFile.Split("\r\n");
-            string[] returnedList = new string[15];
+            string[] AllCategoriesList = wordsFromFile.Split("\r\n");
+            string[] returnedWordList = new string[15];
 
-            for (int i = 0; i < returnedList.Length; i++)
+            for (int i = 0; i < returnedWordList.Length; i++)
             {
-                if (wordList.Contains(categoryName))
+                if (AllCategoriesList.Contains(categoryName))
                 {
-                    int position = Array.IndexOf(wordList, categoryName) + 1;    // returns the index position of the first word in 'request' in wordList[]
-                    returnedList[i] = wordList[position + i];
+                    int position = Array.IndexOf(AllCategoriesList, categoryName) + 1;    // returns the index position of the first word in 'request' in wordList[]
+                    returnedWordList[i] = AllCategoriesList[position + i];
                 }
                 else
                 {
                     Console.WriteLine("Incorrect categoryName.");
                 }
             }
-            return returnedList;                                                 // Shouldn't happen if 'categoryName' is valid, Will return a blank array of 15 lines
+            return returnedWordList;                                                 // Should return a valid a list full of the category words
         }
     }
 }

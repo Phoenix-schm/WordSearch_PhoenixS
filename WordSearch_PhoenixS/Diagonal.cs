@@ -7,7 +7,6 @@
         /// </summary>
         /// <param name="chosenWord"> Word being placed into the word search.</param>
         /// <param name="currentWordSearch"> The current word search being modified. </param>
-        /// <param name="orderType"> Whether word will be placed in order or in reverse.</param>
         /// <param name="diagonalType"> Whether word will be placed upwards or downwards. </param>
         /// <param name="wasWordPlaced"> Checks if the word was placed at all.</param>
         /// <returns>Returns the new modified word search.</returns>
@@ -24,27 +23,27 @@
         /// </summary>
         /// <param name="userY"> User input y-coordinate. </param>
         /// <param name="userX"> User input x-Coordinate. </param>
-        /// <param name="wordSearch"> The current WordSearch being checked. Is modified to if the chosenWord is found. Replaces the chosenWord with '@'.</param>
+        /// <param name="currentWordSearch"> The current WordSearch being checked. Is modified to if the chosenWord is found. Replaces the chosenWord with '@'.</param>
         /// <param name="chosenWord"> The current word being checked for.</param>
         /// <returns>Returns true if the chosenWord was found and false if it wasn't.</returns>
-        public static bool CheckUserCoordinates(int userY, int userX, ref char[,] wordSearch, string chosenWord)
+        public static bool CheckUserCoordinates(int userY, int userX, ref char[,] currentWordSearch, string chosenWord)
         {
             //Create alternate versions of the wordSearch as its diagonals
-            char[,] upSlopeDiagonalWordSearch = ModifyWordSearch_TransformToDiagonal(wordSearch, 4);
-            char[,] downSlopeDiagonalWordSearch = ModifyWordSearch_TransformToDiagonal(wordSearch, 6);
+            char[,] upSlopeDiagonalWordSearch = ModifyWordSearch_TransformToDiagonal(currentWordSearch, 4);
+            char[,] downSlopeDiagonalWordSearch = ModifyWordSearch_TransformToDiagonal(currentWordSearch, 6);
 
             bool isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref upSlopeDiagonalWordSearch, chosenWord, true);
             if (!isValidCoordinates)        // If upSlope doesn't return true with the user coordinates
             {
-                userX = wordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
+                userX = currentWordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
                 isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref downSlopeDiagonalWordSearch, chosenWord, true);
-                wordSearch = ModifyWordSearch_RevertDiagonalToNormal(downSlopeDiagonalWordSearch, 6);
+                currentWordSearch = ModifyWordSearch_RevertDiagonalToNormal(downSlopeDiagonalWordSearch, 6);
             }
             else
             {
-                wordSearch = ModifyWordSearch_RevertDiagonalToNormal(upSlopeDiagonalWordSearch, 4);
+                currentWordSearch = ModifyWordSearch_RevertDiagonalToNormal(upSlopeDiagonalWordSearch, 4);
             }
-            return isValidCoordinates;    
+            return isValidCoordinates;
         }
     }
 }

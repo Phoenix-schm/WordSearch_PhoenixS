@@ -3,11 +3,10 @@
     public class UserInput
     {
         /// <summary>
-        /// Checks if the userInput contained one of the validInputList.
+        /// Checks if the userInput contained one of the ValidChoices enum.
         /// </summary>
-        /// <param name="validChoiceList"> The list of categories the player can choose from.</param>
         /// <returns>The valid userInput.</returns>
-        public static string CheckCategoryChoice(string[] validChoiceList)
+        public static string CheckCategoryChoice()
         {
             bool validInput = false;
             while (!validInput)                                                         // No way to break out of whileloop unless the input is valid
@@ -17,18 +16,22 @@
 
                 if (userInput != "" && userInput != null)
                 {
-                    foreach (string choice in validChoiceList)                           // Checks for if userInput is one of the listed valid inputs (string)
+                    foreach (WordSearch.ValidChoices choice in Enum.GetValues(typeof(WordSearch.ValidChoices)))
                     {
-                        if (userInput.ToLower() == choice.ToLower())
+                        string choiceString = WordSearch.ConvertEnumChoiceToString(choice);
+                        int choiceInt = (int)choice;
+
+                        if (choiceString == "Invalid")
                         {
-                            return userInput;
+                            continue;
                         }
-                    }
-                    for (int index = 0; index <= validChoiceList.Length + 1; index++)    // Checks if the user is a valid number
-                    {
-                        if (userInput == index.ToString())
+                        else if (userInput == choiceInt.ToString())
                         {
-                            return userInput;
+                            return choiceString.ToLower();
+                        }
+                        else if (userInput.ToLower() == choiceString.ToLower())
+                        {
+                            return choiceString.ToLower();
                         }
                     }
                     Console.WriteLine("That is not a listed input. Try Again.");         // Occcurs only if the other user input wasn't valid
@@ -86,7 +89,7 @@
         public static int CheckIfValidNumber(string axis)
         {
             bool validInput = false;
-            
+
             while (!validInput)
             {
                 Console.Write("Type in the " + axis + " coordinate of the first letter of the word: ");
@@ -95,7 +98,7 @@
                 {
                     int coordinate = 0;
                     char[] userInputChar = userInput.ToCharArray();
-                    foreach(char letter in userInputChar)
+                    foreach (char letter in userInputChar)
                     {
                         if (!Char.IsDigit(letter))                                  // If userInput contains a letter
                         {

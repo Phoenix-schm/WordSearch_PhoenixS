@@ -7,7 +7,6 @@
         /// </summary>
         /// <param name="chosenWord"> Chosen word being placed into word search. </param>
         /// <param name="currentWordSearch"> The current word search being modified. </param>
-        /// <param name="orderType"> Whether the word will be placed in order(0) or in reverse(1).</param>
         /// <param name="wasWordPlaced">Boolean for if the word was actually placed into the row.</param>
         /// <returns>Returns the new modified word search.</returns>
         public static char[,] PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasWordPlaced)
@@ -22,7 +21,7 @@
         /// </summary>
         /// <param name="userY"> User input y-coordinate. </param>
         /// <param name="userX"> User input x-Coordinate. </param>
-        /// <param name="wordSearch"> The current WordSearch being checked. Is modified to if the chosenWord is found. Replaces the chosenWord with '@'.</param>
+        /// <param name="currentWordSearch"> The current WordSearch being checked. Is modified if the chosenWord is found. Replaces the chosenWord with '@'.</param>
         /// <param name="chosenWord"> The current word being checked for.</param>
         /// <returns></returns>
         public static bool CheckUserCoordinates(int userY, int userX, ref char[,] currentWordSearch, string chosenWord)

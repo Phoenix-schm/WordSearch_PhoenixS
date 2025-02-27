@@ -2,27 +2,27 @@
 {
     class WordSearch
     {
+        public enum ValidChoices
+        {
+            Invalid,
+            Dog_Nicknames, Colors, Poisonous_Plants, Things_In_My_Room, Things_To_Eat,
+            Fabric_Types, Manga_Names, Fonts, DND_Monsters, Periodic_Elements,
+            Quit
+        }
         static void Main(string[] args)
         {
             // variable declarations
             bool isPlaying = true;
             string? validInput;
 
-            string[] validUserInputs =
-            {
-                "Dog Nicknames", "Colors", "Poisonous Flowers", "Things In My Room", "Things To Eat",
-                "Fabric Types", "Manga Names", "Fonts", "DND Monsters", "Periodic Elements", 
-                "Quit"
-            };
-
-            while(isPlaying)
+            while (isPlaying)
             {
                 Console.WriteLine("Welcome to the Amazing Word Search");
                 Console.WriteLine("You have ten categories to choose from:");
-                DisplayValidUserInputs(validUserInputs);
+                DisplayValidUserInputs();
                 Console.WriteLine("-------------------------- \n");
 
-                validInput = UserInput.CheckCategoryChoice(validUserInputs);
+                validInput = UserInput.CheckCategoryChoice();
                 validInput = validInput.ToLower();
 
                 PlayWordSearch_FromCategory(validInput, ref isPlaying);
@@ -30,14 +30,22 @@
         }
 
         /// <summary>
-        /// Displays contents of a string array.
+        /// Displays contents of ValidChoices enum
         /// </summary>
-        /// <param name="validInputsList"> The list of valid user inputs.</param>
-        static void DisplayValidUserInputs(string[] validInputsList)
+        static void DisplayValidUserInputs()
         {
-            for (int index = 1; index <= validInputsList.Length; index++)
+            foreach (ValidChoices choice in Enum.GetValues(typeof(ValidChoices)))
             {
-                Console.WriteLine(index + ") " +  validInputsList[index - 1]);
+                string choiceString = ConvertEnumChoiceToString(choice);
+                if (choice == ValidChoices.Invalid)
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.Write((int)choice + ") " + choiceString);
+                    Console.WriteLine();
+                }
             }
         }
 
@@ -48,70 +56,39 @@
         /// <param name="_isPlaying">Boolean checking if the user has chosen to quit.</param>
         static void PlayWordSearch_FromCategory(string userInput, ref bool _isPlaying)
         {
-            switch (userInput)
+            if (userInput == "quit")
             {
-                case "dog nicknames":           case "1":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("dog nicknames"));
-                    break;
-                case "colors":                  case "2":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("colors"));
-                    break;
-                case "poisonous plants":        case "3":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("poisonous plants"));
-                    break;
-                case "things in my room":       case "4":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("things in my room"));
-                    break;
-                case "things to eat":           case "5":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("things to eat"));
-                    break;
-                case "fabric types":            case "6":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("fabric types"));
-                    break;
-                case "manga names":             case "7":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("manga list"));
-                    break;
-                case "fonts":                   case "8":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("fonts"));
-                    break;
-                case "dnd monsters":            case "9":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("dnd monsters"));
-                    break;
-                case "periodic elements":       case "10":
-                    PlayWordSearch_Game(CategoryList.CreateCategoryList("periodic elements"));
-                    break;
-                case "quit":                    case "11":
-                    _isPlaying = false;
-                    Console.WriteLine("Bye bye");
-                    break;
-                default:
-                    Console.WriteLine("How the hell did you manage to get this response?");     // somehwow the input was valid but isn't any of the listed items.
-                    break;                                                                      // Should occur if you updated the words.txt file but didn't edit this list.
+                _isPlaying = false;
+            }
+            else
+            {
+                PlayWordSearch_Game(CategoryList.CreateCategoryList(userInput));
             }
         }
-        
+
         /// <summary>
-        /// If the player decides to play,make a list of eightRandomWords, create a word search,
+        /// If the player decides to play, make a list of eightRandomWords, create a word search,
         /// add those words to the word search, and then prompt the user to find the words.
         /// </summary>
         /// <param name="category">The category that eight random words are being taken out of.</param>
         static void PlayWordSearch_Game(string[] category)
         {
             string[] eightRandomWords = RandomWordsFromCategory(category);
-            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with blanks,
+            char[,] wordSearch = DefaultWordSearch();                                           // Creates word search and fills it with Uppercase letters,
                                                                                                 //      IMPORTANT! Otherwise wordsearch is fill with '\0' and won't fill properly
             wordSearch = PlayWordSearch_CreateWordSearch(eightRandomWords, wordSearch);
             PlayWordSearch_FindTheWord(wordSearch, eightRandomWords);
             Console.WriteLine();
         }
-        
+
         /// <summary>
         /// Creates a word search using the inputCategory
         /// </summary>
-        /// <param name="inputCategory"> the category the user chose </param>
+        /// <param name="eightCategoryWords"> the category the user chose </param>
+        /// <param name="newWordSearch">The word search created with each word added to it.</param>
         static char[,] PlayWordSearch_CreateWordSearch(string[] eightCategoryWords, char[,] newWordSearch)
         {
-            for(int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
+            for (int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
                 newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, eightCategoryWords);        // Each time a word is passed in it creates a new word search
             }
@@ -125,11 +102,11 @@
         /// </summary>
         /// <param name="wordSearch">The word search being shown.</param>
         /// <param name="randomWordsList">The list of words the user will have to find.</param>
-        static void PlayWordSearch_FindTheWord(char[,] wordSearch,string[] randomWordsList)
+        static void PlayWordSearch_FindTheWord(char[,] wordSearch, string[] randomWordsList)
         {
             string userInput = "";
             bool isValid;
-            foreach(string word in randomWordsList)
+            foreach (string word in randomWordsList)
             {
                 do                                                                  // isValid gets set to true when there's a correct checkUserCoordinates
                 {                                                                   // Must use do-while so that it goes through this loop again
@@ -149,7 +126,7 @@
                         break;
                     }
                     int userY_axis = UserInput.CheckIfValidNumber("y");                                 // Prompting user for y and x coordinates
-                    int userX_axis = UserInput.CheckIfValidNumber("x"); 
+                    int userX_axis = UserInput.CheckIfValidNumber("x");
                     isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
                     if (!isValid)
                     {
@@ -166,6 +143,7 @@
                         }
                     }
                 } while (!isValid);
+
                 if (userInput == "return")
                 {
                     break;
@@ -274,7 +252,7 @@
                 Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
-                    if (Char.IsLower(wordSearch[y_axis,x_axis]) && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
+                    if (Char.IsLower(wordSearch[y_axis, x_axis]) && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
                     {                                                                                       //  and make it Uppercase
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write(" " + Char.ToUpper(wordSearch[y_axis, x_axis]) + " ");
@@ -284,7 +262,7 @@
                     {
                         Console.Write(" " + " " + " ");
                     }
-                    else                                                                        // Else, show fake word search's random letters
+                    else                                                                        // Else, show random Uppercase letters
                     {
                         Console.Write(" " + wordSearch[y_axis, x_axis] + " ");
                     }
@@ -310,6 +288,36 @@
                 }
             }
             return defaultWordSearch;
+        }
+        /// <summary>
+        /// Converts an enum to into a string, replacing '_' with a space
+        /// </summary>
+        /// <param name="validChoice">A sungle enum being inputted</param>
+        /// <returns>The enum as a string sentence</returns>
+        public static string ConvertEnumChoiceToString(Enum validChoice)
+        {
+            string[] choiceArray = validChoice.ToString().Split('_');
+            string choiceToString = "";
+            for (int i = 0; i < choiceArray.Length; i++)
+            {
+                if (choiceArray.Length == 1)
+                {
+                    choiceToString = choiceArray[i];
+                    break;
+                }
+                else
+                {
+                    if (i < choiceArray.Length - 1)
+                    {
+                        choiceToString += choiceArray[i] + " ";
+                    }
+                    else
+                    {
+                        choiceToString += choiceArray[i];
+                    }
+                }
+            }
+            return choiceToString;
         }
 
         /// <summary>
@@ -337,16 +345,16 @@
         /// <returns> Returns a string array of eight random words, no repeats.</returns>
         static string[] RandomWordsFromCategory(string[] categoryWordList)
         {
-            string[] randomWords = new string[8];
+            string[] randomWordsList = new string[8];
 
             // creates an int[] of random eight numbers
             int[] randomIntList = ReturnRandomNumberList(8, 15);
 
             for (int index = 0; index < 8; index++)
             {
-                randomWords[index] = categoryWordList[randomIntList[index]].ToLower();      // Add a random word from categoryWordList into randomWords[]
+                randomWordsList[index] = categoryWordList[randomIntList[index]].ToLower();      // Add a random word from categoryWordList into randomWords[]
             }
-            return randomWords;
+            return randomWordsList;
         }
 
         /// <summary>
@@ -376,7 +384,7 @@
                         randomIntList[index++] = randomInt;
                         useZeroOnce++;
                     }
-                    else if (randomInt != 0)                                                    
+                    else if (randomInt != 0)
                     {
                         randomIntList[index++] = randomInt;
                     }

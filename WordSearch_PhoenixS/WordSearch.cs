@@ -36,7 +36,7 @@
         {
             foreach (ValidChoices choice in Enum.GetValues(typeof(ValidChoices)))
             {
-                string choiceString = ConvertEnumChoiceToString(choice);
+                string choiceString = choice.ToString().Replace("_", " ");              // .Replace() replaces left parameter with right paramteter
                 if (choice == ValidChoices.Invalid)
                 {
                     continue;
@@ -288,36 +288,6 @@
                 }
             }
             return defaultWordSearch;
-        }
-        /// <summary>
-        /// Converts an enum to into a string, replacing '_' with a space
-        /// </summary>
-        /// <param name="validChoice">A sungle enum being inputted</param>
-        /// <returns>The enum as a string sentence</returns>
-        public static string ConvertEnumChoiceToString(Enum validChoice)
-        {
-            string[] choiceArray = validChoice.ToString().Split('_');
-            string choiceToString = "";
-            for (int i = 0; i < choiceArray.Length; i++)
-            {
-                if (choiceArray.Length == 1)
-                {
-                    choiceToString = choiceArray[i];
-                    break;
-                }
-                else
-                {
-                    if (i < choiceArray.Length - 1)
-                    {
-                        choiceToString += choiceArray[i] + " ";
-                    }
-                    else
-                    {
-                        choiceToString += choiceArray[i];
-                    }
-                }
-            }
-            return choiceToString;
         }
 
         /// <summary>

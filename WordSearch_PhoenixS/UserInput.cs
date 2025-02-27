@@ -4,7 +4,6 @@
     {
         /// <summary>
         /// Checks if the userInput contained one of the ValidChoices enum.
-        /// Something something
         /// </summary>
         /// <returns>The valid userInput.</returns>
         public static string CheckCategoryChoice()
@@ -19,7 +18,7 @@
                 {
                     foreach (WordSearch.ValidChoices choice in Enum.GetValues(typeof(WordSearch.ValidChoices)))
                     {
-                        string choiceString = WordSearch.ConvertEnumChoiceToString(choice);
+                        string choiceString = choice.ToString().Replace("_", " ");              // .Replace() replaces left parameter with right paramteter
                         int choiceInt = (int)choice;
 
                         if (choiceString == "Invalid")

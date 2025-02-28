@@ -14,6 +14,7 @@
             currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);            // Flip currentWordSearch so that it can output vertically
             currentWordSearch = SearchType_PlaceWordInWordSearch(chosenWord, currentWordSearch, ref wasWordPlaced);
             currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);            // Flip the wordsearch back to its orginal postion
+
             return currentWordSearch;
         }
         /// <summary>
@@ -29,6 +30,7 @@
             currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);
             bool isValidCoordinates = SearchType_CheckUserCoordinates(userX, userY, ref currentWordSearch, chosenWord, false);        // Reverse x and y to accomodate rotation 
             currentWordSearch = TransformWordSearch_FlipXYaxis(currentWordSearch);
+
             return isValidCoordinates;
         }
 

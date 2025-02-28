@@ -69,17 +69,12 @@
                     int chosenSpace = randomPositionList[randomPositionIndex];
                     CheckRowCanFitWord(chosenRow, chosenWord, currentWordSearch, chosenSpace, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
 
-                    if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)
+                    if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)                 // If the row can fit the word at a random position
                     {
-                        break;
+                        chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
+                        int[] validIndex = { chosenRow, chosenSpace };
+                        return validIndex;
                     }
-                }
-
-                if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)                     // If there was a valid index position to place the word
-                {
-                    int chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
-                    int[] validIndex = { chosenRow, chosenSpace };
-                    return validIndex;
                 }
             }
             int[] invalidIndex = { -1, -1 };                            // If there was nowhere for the word to fit in this SearchType

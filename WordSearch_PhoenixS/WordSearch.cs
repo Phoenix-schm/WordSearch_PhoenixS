@@ -83,7 +83,7 @@
         static void PlayWordSearchGame(char[,] wordSearch, string[] eightRandomWords)
         {
             string userInput = "";
-            bool isValid;
+            bool isValidCoordinates;
             foreach (string word in eightRandomWords)
             {
                 do                                                                  // isValid gets set to true when there's a correct checkUserCoordinates
@@ -106,8 +106,8 @@
 
                     int userY_axis = UserInput.CheckIfValidNumber("y");                                  // Prompting user for y and x coordinates
                     int userX_axis = UserInput.CheckIfValidNumber("x");
-                    isValid = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
-                    if (!isValid)
+                    isValidCoordinates = CheckUserCoordinates(userY_axis, userX_axis, ref wordSearch, userInput);
+                    if (!isValidCoordinates)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("That wasn't a valid coordinate. Try again.");
@@ -123,7 +123,7 @@
                             }
                         }
                     }
-                } while (!isValid);
+                } while (!isValidCoordinates);
 
                 if (userInput == "return")
                 {

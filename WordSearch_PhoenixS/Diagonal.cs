@@ -14,8 +14,8 @@
         {
             char[,] diagonalVersion = TransformWordSearch_ToDiagonal(currentWordSearch, diagonalType);
             diagonalVersion = SearchType_PlaceWordInWordSearch(chosenWord, diagonalVersion, ref wasWordPlaced);
-
             currentWordSearch = TransformWordSearch_RevertDiagonal(diagonalVersion, diagonalType);
+
             return currentWordSearch;
         }
 

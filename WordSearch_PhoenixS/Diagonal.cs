@@ -38,12 +38,9 @@
             {
                 userX = currentWordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
                 isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref downSlopeDiagonalWordSearch, chosenWord, true);
-                currentWordSearch = TransformWordSearch_RevertDiagonal(downSlopeDiagonalWordSearch, 6);
             }
-            else
-            {
-                currentWordSearch = TransformWordSearch_RevertDiagonal(upSlopeDiagonalWordSearch, 4);
-            }
+
+            currentWordSearch = TransformWordSearch_RevertDiagonal(upSlopeDiagonalWordSearch, 4);
             return isValidCoordinates;
         }
 

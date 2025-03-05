@@ -68,7 +68,7 @@
         {
             for (int index = 0; index < eightCategoryWords.Length; index++)                              // Passes in each random word
             {
-                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, eightCategoryWords, ref index);        // Each time a word is passed in it creates a new word search
+                newWordSearch = ModifyCurrentWordSearch(eightCategoryWords[index], newWordSearch, ref index);        // Each time a word is passed in it creates a new word search
             }
             return newWordSearch;
         }
@@ -143,8 +143,9 @@
         /// </summary>
         /// <param name="chosenWord"> Word to be added to the word search</param>
         /// <param name="currentWordSearch"> The current iteratioin of the word search</param>
+        /// <param name="wordIndex">The word index of the eightCategoryWords in CreateWordsearch(), resets to 0 if the words couldn't be fit.</param>
         /// <returns>New word search to be modified.</returns>
-        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch, string[] eightCategoryWords, ref int wordIndex)
+        static char[,] ModifyCurrentWordSearch(string chosenWord, char[,] currentWordSearch, ref int wordIndex)
         {
             int[] searchTypeList = ReturnRandomNumberList(8, 8);
             int index = 0;
@@ -222,15 +223,15 @@
         /// <param name="wordSearch">The word search filled with blanks spaces and will and actually be modified.</param>
         public static void DisplayWordSearch(char[,] wordSearch)
         {
-            string NumberedYaxis = string.Join(" ", NumberedAxisInWordSearch());
-            Console.WriteLine("  " + NumberedYaxis);                                            // Displays the column numbers
+            string[] numberedAxis = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20"};
 
-            string[] NumberedXaxis = NumberedAxisInWordSearch();
+            string numberedYaxis = string.Join(" ", numberedAxis);
+            Console.WriteLine("  " + numberedYaxis);                                            // Displays the column numbers
 
             // Displays the wordsearch, currently colors are for help debugging
             for (int y_axis = 0; y_axis < wordSearch.GetLength(0); y_axis++)
             {
-                Console.Write(NumberedXaxis[y_axis]);                                           // Displays the row number
+                Console.Write(numberedAxis[y_axis]);                                           // Displays the row number
                 for (int x_axis = 0; x_axis < wordSearch.GetLength(1); x_axis++)
                 {
                     if (Char.IsLower(wordSearch[y_axis, x_axis]) && wordSearch[y_axis, x_axis] != '@')       // If there's a letter, turn it green (for debugging purposes)
@@ -269,18 +270,6 @@
                 }
             }
             return defaultWordSearch;
-        }
-
-        /// <summary>
-        /// Used to display the numbered axis' of the word search
-        /// Creates the numbered axis' 01 - 20 in a string array
-        /// </summary>
-        /// <returns> string array holding numbers from "01" to "20" </returns>
-        static string[] NumberedAxisInWordSearch()
-        {
-            string[] NumberedAxis = {"01","02","03","04","05","06","07","08","09","10",
-                                     "11","12","13","14","15","16","17","18","19","20"};
-            return NumberedAxis;
         }
 
         /// <summary>

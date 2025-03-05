@@ -19,17 +19,13 @@
                     foreach (WordSearch.ValidChoices choice in Enum.GetValues(typeof(WordSearch.ValidChoices)))
                     {
                         string choiceString = choice.ToString().Replace("_", " ");      // .Replace() replaces left parameter with right paramteter
-                        int choiceInt = (int)choice;
+                        int choiceInt = (int)choice;                                    // ToString() doesn't like modifying a cast
 
                         if (choiceString == "Invalid")
                         {
                             continue;
                         }
-                        else if (userInput == choiceInt.ToString())
-                        {
-                            return choiceString.ToLower();
-                        }
-                        else if (userInput.ToLower() == choiceString.ToLower())
+                        else if (userInput == choiceInt.ToString() || userInput.ToLower() == choiceString.ToLower()) // checks userinput is either a correct number or choice name
                         {
                             return choiceString.ToLower();
                         }

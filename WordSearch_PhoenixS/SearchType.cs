@@ -157,6 +157,7 @@
                 {
                     chosenWordIndex++;
                 }
+
                 if (chosenWordIndex == chosenWord.Length - 1)                                  // If the word was correctly found
                 {
                     chosenWordIndex = 0;
@@ -180,6 +181,7 @@
                 {
                     chosenWordIndex++;
                 }
+
                 if (chosenWordIndex == chosenWord.Length - 1)                                   // If the word was correctly found
                 {
                     chosenWordIndex = 0;

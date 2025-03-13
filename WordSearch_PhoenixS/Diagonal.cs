@@ -36,11 +36,14 @@
             bool isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref upSlopeDiagonalWordSearch, chosenWord, true);
             if (!isValidCoordinates)        // If upSlope doesn't return true with the user coordinates
             {
-                userX = currentWordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
-                isValidCoordinates = SearchType_CheckUserCoordinates(userY, userX, ref downSlopeDiagonalWordSearch, chosenWord, true);
+                int specialX = currentWordSearch.GetLength(1) - userX - 1;    // Modify userX to account for downSlope diagonal
+                isValidCoordinates = SearchType_CheckUserCoordinates(userY, specialX, ref downSlopeDiagonalWordSearch, chosenWord, true);
+                currentWordSearch = TransformWordSearch_RevertDiagonal(downSlopeDiagonalWordSearch, 6);
             }
-
-            currentWordSearch = TransformWordSearch_RevertDiagonal(upSlopeDiagonalWordSearch, 4);
+            else
+            {
+                currentWordSearch = TransformWordSearch_RevertDiagonal(upSlopeDiagonalWordSearch, 4);
+            }
             return isValidCoordinates;
         }
 
@@ -81,9 +84,9 @@
         /// </summary>
         /// <param name="currentWordSearch">The current word search being modified</param>
         /// <returns></returns>
-        static char[,] TransformWordSearch_ReverseXaxis(char[,] currentWordSearch)
+        public static char[,] TransformWordSearch_ReverseXaxis(char[,] currentWordSearch)
         {
-            char[,] newWordsearch = new char[20, 20];
+            char[,] newWordsearch = new char[currentWordSearch.GetLength(0), currentWordSearch.GetLength(1)];
 
             for (int y_axis = 0; y_axis < currentWordSearch.GetLength(0); y_axis++)
             {

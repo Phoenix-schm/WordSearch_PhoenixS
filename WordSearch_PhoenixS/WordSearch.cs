@@ -186,9 +186,9 @@
                 index++;
                 if (index == searchTypeList.Length)                         // Edge case scenario that a word cannot be placed in the word search at ALL
                 {                                                           //      Biggest possible point of failure. If words can never be placed into the word search, this will go on foever
-                    char[,] restartWordSearch = DefaultWordSearch();        //      Make sure words are not long enough to permanently keep it resetting endlessly
+                                                                            //      Make sure words are not long enough to permanently keep it resetting endlessly
                     wordIndex = 0;                                          // Reset wordIndex so that it runs through word list again
-                    return restartWordSearch;
+                    return DefaultWordSearch();
                 }
             }
             return currentWordSearch;
@@ -219,7 +219,6 @@
         /// <summary>
         /// Displays the word search. Including numbered axises.
         /// </summary>
-        /// <param name="fakeWordSearch">The word search meant only for display.</param>
         /// <param name="wordSearch">The word search filled with blanks spaces and will and actually be modified.</param>
         public static void DisplayWordSearch(char[,] wordSearch)
         {

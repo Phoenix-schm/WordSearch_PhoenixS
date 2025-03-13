@@ -23,23 +23,21 @@
         /// <returns>Returns the modified word search, now with the chosenWord in it.</returns>
         public static char[,] SearchType_PlaceWordInWordSearch(string chosenWord, char[,] currentWordSearch, ref bool wasSuccessfullyPlaced)
         {
-            int[] validIndex = ReturnValidIndex(currentWordSearch, chosenWord);
-            int validY = validIndex[0];
-            int validX = validIndex[1];
+            int[]? validIndex = ReturnValidIndex(currentWordSearch, chosenWord);
 
-            if (validY == -1 || validX == -1)
-            {
-                // Do nothing and continue to returning the unmodified word search
-            }
-            else
+            if (validIndex != null)
             {
                 wasSuccessfullyPlaced = true;
+
+                int validY = validIndex[0];
+                int validX = validIndex[1];
                 int chosenWordIndex = 0;
                 for (int xAxis = validX; chosenWordIndex < chosenWord.Length; xAxis++, chosenWordIndex++)
                 {
                     currentWordSearch[validY, xAxis] = chosenWord[chosenWordIndex];
                 }
             }
+
             return currentWordSearch;
         }
 
@@ -49,36 +47,36 @@
         /// <param name="currentWordSearch">The current word search being checked. Modified based on SearchType.</param>
         /// <param name="chosenWord">The chosenWord as a char[].</param>
         /// <returns> returns the index of valid a valid y coordinate and x coordinate.</returns>
-        static int[] ReturnValidIndex(char[,] currentWordSearch, string chosenWord)
+        static int[]? ReturnValidIndex(char[,] currentWordSearch, string chosenWord)
         {
             int amountOfSpaces = currentWordSearch.GetLength(1);                                        // Helpful with redundancy.
             int amountOfRows = currentWordSearch.GetLength(0);                                          // Insure's this can be used for diagonal wordSearch placement
             int[] random_RowList = WordSearch.ReturnRandomNumberList(amountOfRows, amountOfRows);       // Creates a list of random rows, no duplicates
 
+            int[]? validIndex = null;
+            bool canWordFit = false;
             for (int random_rowIndex = 0; random_rowIndex < random_RowList.Length; random_rowIndex++)   // Going through every row in a random assortment
             {
                 int chosenRow = random_RowList[random_rowIndex];
-
-                // The minimum and maximum range that the word can be placed in
-                int minRange_NewWordPosition = -1;
-                int maxRange_NewWordPosition = -1;
 
                 int[] randomPositionList = WordSearch.ReturnRandomNumberList(amountOfSpaces, amountOfSpaces);               // Creates a random list of positions in the row
                 for (int randomPositionIndex = 0; randomPositionIndex < randomPositionList.Length; randomPositionIndex++)   // Going through every space in a random assortment
                 {
                     int chosenSpace = randomPositionList[randomPositionIndex];
-                    CheckRowCanFitWord(chosenRow, chosenWord, currentWordSearch, chosenSpace, ref minRange_NewWordPosition, ref maxRange_NewWordPosition);
+                    canWordFit = CheckRowCanFitWord(chosenRow, chosenSpace, chosenWord, currentWordSearch);
 
-                    if (maxRange_NewWordPosition > -1 && minRange_NewWordPosition > -1)                 // If the row can fit the word at a random position
+                    if (canWordFit)
                     {
-                        chosenSpace = RandomNumber(minRange_NewWordPosition, maxRange_NewWordPosition);
-                        int[] validIndex = { chosenRow, chosenSpace };
-                        return validIndex;
+                        validIndex = [chosenRow, chosenSpace];
+                        break;
                     }
                 }
+                if (canWordFit)
+                {
+                    break;
+                }
             }
-            int[] invalidIndex = { -1, -1 };                            // If there was nowhere for the word to fit in this SearchType
-            return invalidIndex;
+            return validIndex;
         }
 
         /// <summary>
@@ -86,44 +84,30 @@
         /// Note: Uppercase letters are blank spaces that can be filled in and Lowercase letters are other words from the category
         /// </summary>
         /// <param name="chosenRow">Row being checked</param>
+        /// <param name="chosenSpace">A random position for the word to be placed at.</param>
         /// <param name="chosenWord">Word that the method is trying to fit into chosenRow.</param>
         /// <param name="wordSearch">The current word search being checked</param>
-        /// <param name="chosenSpace">A random position for the word to be placed at.</param>
-        /// <param name="minRange">Referenced minimum range that the chosenWord could possibly fit into.</param>
-        /// <param name="maxRange">Referenced maximum range the chosenWord could possibly fit into.</param>
-        static void CheckRowCanFitWord(int chosenRow, string chosenWord, char[,] wordSearch, int chosenSpace, ref int minRange, ref int maxRange)
+        static bool CheckRowCanFitWord(int chosenRow, int chosenSpace, string chosenWord, char[,] wordSearch)
         {
             int canWordFitHere = 0;
-            int additionalRange = 0;
-            for (int space = chosenSpace; space < wordSearch.GetLength(1); space++)                     // Checking every space from that randomPosition
+            bool isValidIndex = false;
+
+            while (chosenSpace != wordSearch.GetLength(1) && Char.IsUpper(wordSearch[chosenRow, chosenSpace]))  // Exits once it runs into a lowercase letter or the end of the row
             {
-                while (space != wordSearch.GetLength(1) && Char.IsUpper(wordSearch[chosenRow, space]))  // Exits once it runs into a lowercase letter or the end of the row
+                if (canWordFitHere < chosenWord.Length)                                             // If there's still letters in the word
                 {
-                    if (canWordFitHere < chosenWord.Length)                                             // If there's still letters in the word
-                    {
-                        canWordFitHere++;
-                    }
-                    else if (canWordFitHere == chosenWord.Length)    // If there's still room in the row and the word can already fit
-                    {
-                        additionalRange++;
-                    }
-                    space++;
+                    canWordFitHere++;
                 }
 
-                if (canWordFitHere == chosenWord.Length)             // If there is a Lowercase/end of row, but the word can fit beforehand
+                if (canWordFitHere == chosenWord.Length)    // If there's still room in the row and the word can already fit
                 {
-                    additionalRange += canWordFitHere;
-                    // Defaults to "in order" index
-                    minRange = space - additionalRange;
-                    maxRange = space - chosenWord.Length;
+                    isValidIndex = true;
                     break;
                 }
-                else                                                // Else, there was an Lowercase before the word could fit
-                {
-                    canWordFitHere = 0;
-                    additionalRange = 0;
-                }
+                chosenSpace++;
             }
+            
+            return isValidIndex;
         }
 
 
@@ -145,9 +129,24 @@
                 y_axis = userY + userX;
             }
 
+            bool isValidCoordinates = CheckCoordinates_InOrder(y_axis, userX, ref wordSearch, chosenWord);
+            if (!isValidCoordinates)
+            {
+                wordSearch = Diagonal.TransformWordSearch_ReverseXaxis(wordSearch);     // for diagonal add one to y, minus 1 to x
+                userX = wordSearch.GetLength(1) - userX - 1;                                    // inverse x to accomodate
+
+                isValidCoordinates = CheckCoordinates_InOrder(y_axis, userX, ref wordSearch, chosenWord);
+                wordSearch = Diagonal.TransformWordSearch_ReverseXaxis(wordSearch);
+            }
+            return isValidCoordinates;
+        }
+
+        static bool CheckCoordinates_InOrder(int y_axis, int userX, ref char[,] wordSearch, string chosenWord)
+        {
             int chosenWordIndex = 0;
             int canWordFitHere = 0;
-            for (int x_axis = userX; canWordFitHere < chosenWord.Length - 1; x_axis++, canWordFitHere++)    // Checks for word in order
+            bool isValid = false;
+            for (int x_axis = userX; chosenWordIndex < chosenWord.Length; x_axis++, chosenWordIndex++)    // Checks for word in order
             {
                 if (x_axis > wordSearch.GetUpperBound(1))
                 {
@@ -155,44 +154,21 @@
                 }
                 else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])            // If each successive x-coordinate contains the successive letter in chosenWord 
                 {
-                    chosenWordIndex++;
+                    canWordFitHere++;
                 }
 
-                if (chosenWordIndex == chosenWord.Length - 1)                                  // If the word was correctly found
+
+                if (canWordFitHere == chosenWord.Length - 1)                                  // If the word was correctly found
                 {
+                    isValid = true;
                     chosenWordIndex = 0;
-                    for (int chosenSpace = x_axis + 1; chosenWordIndex < chosenWord.Length; chosenSpace--, chosenWordIndex++)   // Replace the chosenWord with '@'
+                    for (int chosenSpace = userX; chosenWordIndex < chosenWord.Length; chosenSpace++, chosenWordIndex++)   // Replace the chosenWord with '@'
                     {
                         wordSearch[y_axis, chosenSpace] = '@';
                     }
-                    return true;
                 }
             }
-            // Resets variable checkers
-            chosenWordIndex = 0;
-            canWordFitHere = 0;
-            for (int x_axis = userX; canWordFitHere < chosenWord.Length - 1; x_axis--, canWordFitHere++)    // Checks for word in reverse
-            {
-                if (x_axis < wordSearch.GetLowerBound(1))
-                {
-                    break;
-                }
-                else if (wordSearch[y_axis, x_axis] == chosenWord[chosenWordIndex])             // If each successive x-coordinate contains the successive letter in chosenWord 
-                {
-                    chosenWordIndex++;
-                }
-
-                if (chosenWordIndex == chosenWord.Length - 1)                                   // If the word was correctly found
-                {
-                    chosenWordIndex = 0;
-                    for (int chosenSpace = x_axis - 1; chosenWordIndex < chosenWord.Length; chosenSpace++, chosenWordIndex++)   // Replace the chosenWord with '@'
-                    {
-                        wordSearch[y_axis, chosenSpace] = '@';
-                    }
-                    return true;
-                }
-            }
-            return false;
+            return isValid;
         }
     }
 }
